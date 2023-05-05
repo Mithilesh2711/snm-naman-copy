@@ -1,0 +1,256 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Add Full and Final</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>full_final" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>        
+
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>                
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                  <input type="hidden"   id="ff_beforelwmtotalsewa" name="ff_beforelwmtotalsewa" value="<% if @listFullFinal !=nil %><%=@listFullFinal.ff_beforelwmtotalsewa%><% end %>"/>
+                   <input type="hidden"  id="ff_totallwm" name="ff_totallwm" value="<% if @listFullFinal !=nil %><%=@listFullFinal.ff_totallwm%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @listFullFinal !=nil %><%=@listFullFinal.id%><% end %>"/>
+                <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+         
+          <label class="col-form-label col-md-2">Department<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <select class="form-control" required name="ff_departcode" id="al_depcode" onchange="get_all_sewadar_by_department();" >
+             <option value="">-Select-</option>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>"  <% if @listFullFinal !=nil && @listFullFinal.ff_departcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %>><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+          </div>
+         
+          <label class="col-form-label col-md-2">Sewadar Code<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+            <select class="form-control"   name="ff_sewacode" required id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+              <option value="">-Select-</option>
+              <%
+               if @empDetail && @empDetail.length >0
+                @empDetail.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @listFullFinal !=nil && @listFullFinal.ff_sewacode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+          </div>
+
+      </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+           <label class="col-form-label col-md-2">Sewadar<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            
+                  <select class="form-control" autofocus="" required name="ls_empcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                    <option value="">-Select-</option>
+                        <%
+                      if @empDetail && @empDetail.length >0
+                        @empDetail.each do |sewdnm|
+                      %>
+                      <option value="<%=sewdnm.sw_sewcode%>" <% if @listFullFinal !=nil && @listFullFinal.ff_sewacode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewadar_name%></option>
+                      <%
+                        end
+                      end
+                    %>
+                    </select>
+           
+          </div>
+          
+           <label class="col-form-label col-md-2">Leaving Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+                      <input class="form-control" required autocomplete="off" name="ff_leavingdate" id="ff_leavingdate" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_leavingdate)%><% end %>" type="text"/>
+                    </div> </div>
+      </div>
+        
+           <div class="form-group row">
+          <label class="col-form-label col-md-2">Full Final Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+                      <input class="form-control" required autocomplete="off" name="ff_fullandfinaldate" id="ff_fullandfinaldate" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_fullandfinaldate)%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Reason for leaving<span class="mandatory">*</span></label>
+          <div class="col-md-4">
+       <textarea rows="2" required maxlength="250" class="form-control" name="ff_leavingreason" id="ff_leavingreason"><% if @listFullFinal !=nil%><%=@listFullFinal.ff_leavingreason%><% end %></textarea></div>
+                  </div>
+
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Date of Joining<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" readonly ="" required autocomplete="off" name="ff_datejoing" id="ff_datejoing"  type="text" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_datejoing)%><% end %>"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Date of Birth<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+     <input class="form-control" required autocomplete="off" readonly ="" name="ff_dob" id="ff_dob" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_dob)%><% end %>" type="text"/>
+       </div>
+                  </div>
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Date of superannuation<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div >
+                      <input class="form-control" readonly ="" required autocomplete="off" name="ff_datesupan" id="ff_datesupan" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_datesupan)%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Total Sewa<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+     <input class="form-control" readonly ="" required autocomplete="off" name="ff_totalsewa" id="ff_totalsewa" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_totalsewa%><% end %>" type="text"/>
+       </div>
+                  </div>
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Maintenance Allowance<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" required readonly ="" required autocomplete="off" name="ff_maintenancealw" id="ff_maintenancealw" value="<% if @listFullFinal !=nil%><%=currency_formatted(@listFullFinal.ff_maintenancealw)%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Total Advance<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+     <input class="form-control" readonly ="" required autocomplete="off" name="ff_totaladvance" id="ff_totaladvance" value="<% if @listFullFinal !=nil%><%=currency_formatted(@listFullFinal.ff_totaladvance)%><% end %>" type="text"/>
+       </div>
+                  </div>
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Total EL</label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" readonly =""  autocomplete="off" name="ff_totalel" id="ff_totalel" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_totalel%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Encashment of EL</label>
+          <div class="col-md-3">
+     <input class="form-control" readonly =""  autocomplete="off" name="ff_encashel" id="ff_encashel" value="<% if @listFullFinal !=nil%><%=currency_formatted(@listFullFinal.ff_encashel)%><% end %>" type="text"/>
+       </div>
+                  </div>
+
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Advance Ex-gratia<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" readonly =""  required autocomplete="off" name="ff_exgratiatued" id="ff_exgratiatued" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_exgratiatued%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Vacant<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+     <input class="form-control" readonly =""  autocomplete="off" name="ff_vaccant" id="ff_vaccant" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_vaccant%><% end %>" type="text"/>
+       </div>
+                  </div>
+
+                  <div class="form-group row">
+          <label class="col-form-label col-md-2">Ex-gratia Amount</label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" readonly =""  autocomplete="off" name="ff_gratiaamount" id="ff_gratiaamount" value="<% if @listFullFinal !=nil%><%=currency_formatted(@listFullFinal.ff_gratiaamount)%><% end %>" type="text"/>
+            </div> 
+            </div>
+         <label class="col-form-label col-md-2">Golden hand shake</label>
+          <div class="col-md-3">
+     <input class="form-control" onkeypress="return isNumberKeys(event);" onchange="check_number_months();" maxlength="2" autocomplete="off" name="ff_goldenhandshake" id="ff_goldenhandshake" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_goldenhandshake%><% end %>" type="text"/>
+       </div>
+                  </div>
+
+         <div class="form-group row">
+          <label class="col-form-label col-md-2">Previous Salary</label>
+          <div class="col-md-3">
+           <div>
+                      <input class="form-control" onkeypress="return isNumberFloatKey(event);" autocomplete="off" maxlength="20" name="ff_prevsalary" id="ff_prevsalary" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_prevsalary%><% end %>" type="text"/>
+            </div> 
+            </div>
+               <label class="col-form-label col-md-2">Date of Reguliazation</label>
+              <div class="col-md-3">
+                  <div>
+                              <input class="form-control" readonly =""  autocomplete="off" name="ff_datereguliazation" id="ff_datereguliazation" value="<% if @listFullFinal !=nil%><%=formatted_date(@listFullFinal.ff_datereguliazation)%><% end %>" type="text"/>
+                    </div> 
+                </div>
+
+
+         
+                  </div>
+                  <div class="form-group row">
+                <label class="col-form-label col-md-2">Deduction 1</label>
+                <div class="col-md-3">
+                <div>
+                      <input class="form-control" onkeypress="return isNumberFloatKey(event);" autocomplete="off" maxlength="20" name="ff_deductfirst" id="ff_deductfirst" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_deductfirst%><% end %>" type="text"/>
+            </div> 
+            </div>
+               <label class="col-form-label col-md-2">Remark 1</label>
+              <div class="col-md-3">
+                  <div>
+                              <input class="form-control" maxlength="50" autocomplete="off" name="ff_deductfirstrmk" id="ff_deductfirstrmk" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_deductfirstrmk%><% end %>" type="text"/>
+                    </div> 
+                </div>
+
+
+         
+                  </div>
+                  <div class="form-group row">
+                <label class="col-form-label col-md-2">Deduction 2</label>
+                <div class="col-md-3">
+                <div>
+                      <input class="form-control" onkeypress="return isNumberFloatKey(event);" autocomplete="off" maxlength="20" name="ff_deductsecond" id="ff_deductsecond" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_deductsecond%><% end %>" type="text"/>
+            </div> 
+            </div>
+               <label class="col-form-label col-md-2">Remark 2</label>
+              <div class="col-md-3">
+                  <div>
+                              <input class="form-control" maxlength="50" autocomplete="off" name="ff_deductsecrmk" id="ff_deductsecrmk" value="<% if @listFullFinal !=nil%><%=@listFullFinal.ff_datereguliazation%><% end %>" type="text"/>
+                    </div> 
+                </div>
+
+
+         
+                  </div>
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn">Save</button>
+          <% if @listFullFinal !=nil%>
+          <a href="<%=root_url%>full_final/1_prt_<%=@listFullFinal.id%>_full_final_report.pdf" target="_blank"><button class="btn btn-success submit-btn" type="button">Print</button></a>
+          <% end %>
+          <a href="<%=root_url%>full_final"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+        </div>
+
+
+
+        
+          
+        
+      </div>
+                <% end %>
+    </div>
+  </div>
+  <!-- /Page Content -->

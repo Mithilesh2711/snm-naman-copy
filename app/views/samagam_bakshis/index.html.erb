@@ -1,0 +1,58 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+    <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+		    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Processing for <%=@HrMonths%>, <%=@Hryears%></h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+		<!-- /Page Header -->
+		<div class="row">
+			
+				<div class="col-md-12">
+
+						<div class="form-group row">
+					
+				
+					<div class="col-md-2">
+						
+					</div>
+					
+					 </div>
+            <div class="col-md-2 selectedprocess hidden">
+                  <img src="<%=root_url%>images/spining_loader.gif" />
+            </div>
+						<div class="col-md-2">
+						 <p class="calculatebttnprocess"><a href="javascript:;" id="calculatebttnprocess" onclick="print_bakshis_sewa();" class="btn btn-sm btn-info" style="width: 100%;font-size: 15px;">Process Bakshis</a></p>
+ 
+						</div>
+					</div>
+					
+				<input type="hidden" id="bankreports" value="<%=@PrintBnkPath%>"/>		
+			    <input type="hidden" id="departmentwisereports" value="<%=@PrintDeptPath%>"/>
+        <div class="col-md-10" style="text-align: center;">
+          <input type="radio" checked id="print_type_1" name="print_type" value="BR"/>&nbsp;Bakshis Register&nbsp;&nbsp;<input type="radio" id="print_type_2" name="print_type" value="BANK"/>&nbsp;Bank Format&nbsp;&nbsp;<input type="radio" id="print_type_2" name="print_type" value="DEPARTMENT"/>&nbsp;Bakshis Department Summary
+        </div>
+				</div>
+        
+				<div class="col-md-10 submit-section printedprocess" style="text-align: center;">
+                              <a href="javascript:;" rel="<%=@PrintPath%>" id="printexceled" onclick="print_salary_slip();">
+                                <button class="btn btn-success submit-btn m-l-5 " type="button">Print</button>
+                              </a>
+
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+				
+				</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

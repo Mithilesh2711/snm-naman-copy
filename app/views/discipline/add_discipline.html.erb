@@ -1,0 +1,144 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Add Discipline</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>discipline" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>        
+
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>                
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value=""/>
+                <div class="row">
+                 <div class = "col-md-12">
+                  <div class =" form-group row">
+                  <label class="col-form-label col-md-2">Request No<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                          <input type="text"  required="" readonly autocomplete="off" maxlength="20" class="form-control" name="dsp_reqno" id="dsp_reqno" value="<% if @lastEntryNo %><%=@lastEntryNo%><% end %>">
+             </div>
+
+             <label class="col-form-label col-md-2">Discipline Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+                      <input class="form-control" required autocomplete="off" name="dsp_date" id="dsp_date" value="<% if session[:request_ls_fromdate] %><%=format_oblig_date(session[:request_ls_fromdate])%><% end%>" type="text"/>
+                    </div> </div>
+                    
+
+
+
+                  </div>
+                 </div>
+                </div>
+
+              
+                <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          
+          <label class="col-form-label col-md-2">Department<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <select class="form-control" name="dsp_depcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                        <option value="">-Select -</option>
+                                        <%
+                                          mydepartlist = get_sewa_all_department()
+                                          if mydepartlist.length >0
+                                           mydepartlist.each do |nedpts|
+                                        %>
+                                        <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+                                        <%
+                                           end
+                                         end
+
+                                         %>
+
+                                        </select>
+          </div>
+         
+          <label class="col-form-label col-md-2">Sewadar Code<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+	<select class="form-control" required name="dsp_empcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+             
+              <%
+              if @markedFieldAlw
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+          </div>
+
+      </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+         
+          <label class="col-form-label col-md-2">Sewadar<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            	<select required class="form-control" name="sewdarname" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+              <%
+              if @markedFieldAlw
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+            </select> 
+          </div>
+
+          <label class="col-form-label col-md-2">Remarks<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+       <textarea rows="2" required maxlength="250" class="form-control" name="dsp_rem" id="dsp_rem"><% if  session[:request_dsp_rem] %><%=session[:request_dsp_rem]%><% end %></textarea></div>
+         
+           
+         
+         
+      </div>
+          
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn">Save</button>
+          <a href="<%=root_url%>discipline"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+        </div>
+          
+        
+      </div>
+                <% end %>
+    </div>
+  </div>
+  <!-- /Page Content -->

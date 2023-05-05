@@ -1,0 +1,428 @@
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+            <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+      <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+      <!-- BEGIN STYLE CUSTOMIZER -->
+     <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Daily Dashboard</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+        
+    </div>
+      
+        
+          <!-- Page Header -->
+		    <div class = "portlet">
+                 <div class = "portlet-body">
+				      <div class="row">
+						<div class="col-md-3 col-sm-3 col-lg-3 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">	<img src="<%=root_url%>images/willpower.png" class="icon_sta2t"/></span>
+									<div class="dash-widget-info">
+										<h3>112</h3>
+										<span>	<%
+							ftstrength = 0
+							if @LocWiseSummary && @LocWiseSummary.length >0	
+							  @LocWiseSummary.each do |newds|
+									ftstrength += newds.totalstrengthm
+							  end
+							end
+							%>
+							
+							<%=ftstrength%>
+							    </span>
+									</div>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-3 col-sm-3 col-lg-3 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><img src="<%=root_url%>images/raise-hand.png" class="icon_sta2t"/>
+							</span>
+									<div class="dash-widget-info">
+										<h3>	<%=@TotalPresent%></h3>
+										<span>On Duty</span>
+									</div>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-2 col-sm-2 col-lg-2 col-xl-2">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><img src="<%=root_url%>images/fired.png" class="icon_sta2t"/>
+							</span>
+									<div class="dash-widget-info">
+										<h3>	<%=@TotalAbsent%></h3>
+										<span>Off Duty</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-2 col-lg-2 col-xl-2">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">		<img src="<%=root_url%>images/leave.png" class="icon_sta3t"/>
+							</span>
+									<div class="dash-widget-info">
+										<h3>	<%=@TotalOnLeave%></h3>
+										<span>On leave</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2 col-sm-2 col-lg-2 col-xl-2">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3>		<%=@TotalLTCount%></h3>
+										<span>Late In</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+					  <%# ATTENDANCE BARS START %>
+				
+
+					  <%# ATTENDANCE BARS END %>
+
+
+					  <%# GRID TABLE START %>
+
+					  <div class="row">
+                          <div class="col-md-12">
+                            <div class="row ">
+
+                                                  <div class="col-md-12">
+                                                    <div><h4>Department Summary</h4></div>
+                                                    <div class="table-responsive">
+								<table class="table table-hover">
+								<thead>
+                            <tr class="head_table" >
+                                    <th class="dash_line">Department</th>
+                                    <th class="dash_line" width="18%">Total Strength</th>
+									<th class="dash_line" width="18%">Present</th>
+                                    <th class="dash_line" width="18%">On Leave</th>
+                                    <th class="dash_line" width="18%">Absent</th>
+									<th class="dash_line" width="18%">Present(%)</th>
+								</tr>
+								</thead>
+								<tbody>
+									<%
+									  if @LocWiseSummary && @LocWiseSummary.length >0
+									   @LocWiseSummary.each do |newds|
+										newpercentage = newds.presents.to_f >0 ? (newds.presents.to_f/newds.totalstrengthm.to_f).to_f*100 : 0
+									%>
+								<tr>
+									
+                                <td><%=newds.mydepartment.to_s.upcase%></td>
+                                <td id="center"><%=newds.totalstrengthm%></td>
+                                <td id="center"><%=newds.presents%></td>
+                                <td id="center"><%=newds.onleave%></td>
+                                <td id="center"><%=newds.absents%></td>
+                                <td id="center"><%=currency_formatted(newpercentage)%></td>
+								</tr>
+
+								<%
+								    end
+
+								  else
+
+								
+								%>
+								<tr>
+								  <td colspan="5">No record(s) found.
+								</tr>
+								<%
+								  end
+								%>
+
+
+
+								</tbody>
+								</table>
+							</div>
+
+                                                  </div>
+                                                  
+                                                    </div>
+                                                </div>
+                          </div>
+                        </div>
+
+
+
+					  <%# GRID TABLE END %>
+					  <hr>
+
+
+					  <%# DATE AND LOCATION DROPDOWN START %>
+					   <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>'myForms') do  %>
+					   <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+					  <div class = "row form-group">
+					     <div class = "col-md-12 d-flex">
+					        <div class = "col-md-2">
+					        </div>
+
+					        <div class = "col-md-2">
+					          <label class="cust_info3">Previous Details</label>
+					        </div>
+					         <div class = "col-md-2">
+					            <input class = "form-control" autocomplete="off" type = "text" name="search_dated" id="search_dated" value="<% if @search_dated %><%=@search_dated%><% end %>"/>
+					        </div>
+							<div class = "col-md-1">
+							</div>
+							<div class = "col-md-3">
+							    <select class = "form-control" name="search_loc" id="search_loc">
+                                  <option value="">-Select Department-</option>
+                                  <%
+										if @ListDepart && @ListDepart.length >0
+										@ListDepart.each do |newdpt|
+									%>
+									<option value="<%=newdpt.departCode%>" <% if  @search_loc && @search_loc.to_s == newdpt.departCode.to_s  %> selected="selected"<% end%>  ><%=newdpt.departDescription.to_s.upcase%></option>
+									<%
+										end
+									end
+									%>
+                                </select>
+						   </div>
+						   	<% end %>
+							<div class = "col-md-2">
+							<a href="javascript:;" onclick="filter_dashboard();">
+							<input class="btn btn-info float-left" type = "button" value = "Go"/>
+							
+							</div>
+							
+					    </div>
+					  </div>
+
+				
+
+
+					  <%# DATE AND LOCATION DROPDOWN END %>
+					  <div class="row">
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">	<img src="<%=root_url%>images/willpower.png" class="icon_sta4t"/>
+							</span>
+									<div class="dash-widget-info">
+										<h3><%
+							tstrength = 0
+							if @DateLocWiseList && @DateLocWiseList.length >0
+								tstrength = @DateLocWiseList.length
+							end
+
+							%>
+							
+							<%=tstrength%></h3>
+										<span>Total Strength</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+							<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">	<img src="<%=root_url%>images/fired.png" class="icon_sta4t"/></span>
+									<div class="dash-widget-info">
+										<h3><%=@LocTotalPresent%></h3>
+										<span>Present</span>
+									</div>
+							</div>
+							
+						
+						</div>
+					
+								
+								</div>
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">	<img src="<%=root_url%>images/fired.png" class="icon_sta4t"/>	</span>
+									<div class="dash-widget-info">
+										<h3>	<%=@LocTotalAbsent%>	</h3>
+										<span>Absent</span>
+									</div>
+							</div>
+							
+						
+						</div>
+				
+									
+								
+						
+						</div>
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><img src="<%=root_url%>images/leave.png" class="icon_sta4t"/></span>
+								<div class="dash-widget-info">
+										<h3><%=@LocTotalOnLeave%></h3>
+										<span>On Leave</span>
+									</div>
+							</div>
+							
+					
+						</div>
+					
+									
+								</div>
+						
+
+							<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3>	<%=@LocTotalLTCount%></h3>
+										<span>Late In</span>
+									</div>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3><%=@LocTotalErlOutCount%></h3>
+										<span>Early Out</span>
+									</div>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3>							<%=@LocOverTimeCount%>
+</h3>
+										<span>Overtime</span>
+									</div>
+								</div>
+							</div>
+						</div>
+							<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3 wd20">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon">	<img src="<%=root_url%>images/question-mark.png" class="icon_sta4t"/>
+							</span>
+									<div class="dash-widget-info">
+										<h3><%=@LocMisPunch%></h3>
+										<span>Mispunch</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					   <%# ATTENDANCE BARS START %>
+				
+
+					  <%# ATTENDANCE BARS END %>
+
+
+
+					   <%# GRID TABLE START %>
+
+					  <div class="row">
+                          <div class="col-md-12">
+                            <div class="row">
+
+                                                  <div class="col-md-12">
+                                                    <div><h4>Department Summary</h4></div>
+                                                    <div class="table-responsive">
+								<table class="table table-hover">
+								<thead>
+                            <tr class="head_table" >
+                                    <th class="dash_line">SNo.</th>
+                                    <th class="dash_line" width="18%">Sewadar Code<br>Name<br>Date of Joining</th>
+									<th class="dash_line" width="18%">Department</th>
+                                    <th class="dash_line" width="18%">Shift</th>
+                                    <th class="dash_line" width="18%">Arrival Time</th>
+									<th class="dash_line" width="18%">Departure Time</th>
+									<th class="dash_line" width="18%">Working Hours</th>
+									<th class="dash_line" width="18%">Late In Hours</th>
+									<th class="dash_line" width="18%">Early Out Hours</th>
+									<th class="dash_line" width="18%">OverTime</th>
+									<th class="dash_line" width="18%">Remark</th>
+								</tr>
+								</thead>
+								<tbody>
+								<%
+								i = 1
+								 if @DateLocWiseList && @DateLocWiseList.length >0
+								   @DateLocWiseList.each do |newsmry|		
+								%>
+								<tr>
+								<td id="center"><%=i%></td>	
+                                <td id="center"><%=newsmry.al_empcode%><br/><%=newsmry.sw_sewadar_name.to_s.upcase%><br/><%=formatted_date(newsmry.sw_joiningdate)%></td>
+                                <td id="center"><%=newsmry.mydepartment.to_s.upcase%></td>
+                                <td id="center"><%=newsmry.al_shift%></td>
+                                <td id="center"><%=newsmry.al_arrtime%></td>
+                                <td id="center"><%=newsmry.all_deptime%></td>
+                                <td id="center"><%=newsmry.al_workhrs%></td>
+                                <td id="center"><%=newsmry.al_latehrs%></td>
+                                <td id="center"><%=newsmry.al_earlhrs%></td>
+                                <td id="center"><%=newsmry.al_overtime%></td>
+                                <td id="center"><%=newsmry.al_misspunch.to_s =='Y' ? '*' : '' %><br/><%=newsmry.al_manualpunch.to_s !='' ? 'M' : '' %></td>
+                                
+								</tr>
+								<%
+								i +=1
+								    end
+
+								  else
+
+								
+								%>
+								<tr>
+								  <td colspan="7">No record(s) found.
+								</tr>
+								<%
+								  end
+								%>
+
+
+
+
+
+								</tbody>
+								</table>
+							</div>
+
+                                                  </div>
+                                                  
+                                                    </div>
+                                                </div>
+                          </div>
+                        </div>
+
+
+
+					  <%# GRID TABLE END %>
+
+
+
+
+
+
+
+
+                 </div>
+		    </div>
+    </div>
+</div>

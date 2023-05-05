@@ -1,0 +1,2 @@
+class TrnUserRight < ApplicationRecord
+end

@@ -1,0 +1,184 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Birthday List</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+               
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+		<div class="row">
+			<div class="col-md-12">
+			<div class="form-group row">
+				<label class="col-form-label col-md-2"> Select Month </label>
+					<div class="col-md-3">
+					<div class="form-group">
+					    	<div >
+									<select class="form-control" name="mymonths" id="mymonths" required>
+                    <option value="">-Select-</option>
+                    <option value="1"   <% if @mymonths && @mymonths.to_i == 1%> selected="selected"  <% end %>>Jan</option>
+                    <option value="2"   <% if @mymonths && @mymonths.to_i == 2%> selected="selected"  <% end %>>Feb</option>
+                    <option value="3"   <% if @mymonths && @mymonths.to_i == 3%> selected="selected"  <% end %>>Mar</option>
+                    <option value="4"   <% if @mymonths && @mymonths.to_i == 4%> selected="selected"  <% end %>>Apr</option>
+                    <option value="5"   <% if @mymonths && @mymonths.to_i == 5%> selected="selected"  <% end %>>May</option>
+                    <option value="6"   <% if @mymonths && @mymonths.to_i == 6%> selected="selected"  <% end %>>Jun</option>
+                    <option value="7"   <% if @mymonths && @mymonths.to_i == 7%> selected="selected"  <% end %>>Jul</option>
+                    <option value="8"   <% if @mymonths && @mymonths.to_i == 8%> selected="selected"  <% end %>>Aug</option>
+                    <option value="9"   <% if @mymonths && @mymonths.to_i == 9%> selected="selected"  <% end %>>Sep</option>
+                    <option value="10"  <% if @mymonths && @mymonths.to_i == 10%> selected="selected" <% end %>>Oct</option>
+                    <option value="11"  <% if @mymonths && @mymonths.to_i == 11%> selected="selected" <% end %>>Nov</option>
+                    <option value="12"  <% if @mymonths && @mymonths.to_i == 12%> selected="selected" <% end %>>Dec</option>
+                  </select>
+								</div>
+								
+								<!-- <label class="focus-label">From</label> -->
+							</div>
+				</div>
+			
+				<div class="col-md-3">
+					<div class="form-group">
+<div>
+								
+								</div>
+							
+								<!-- <label class="focus-label">To</label> -->
+							</div>
+				</div>
+				</div>
+				
+				
+				<div class="submit-section">
+				
+                  
+                    <a href="javascript:;"  onclick="filter_sewdar_birthday_search();"><button class="btn btn-success submit-btn m-l-5 " type="button">View</button></a>
+
+                     <a href="<%=root_url%><%=@printPath%>" target="_blank"><button class="btn btn-success submit-btn m-l-5 " type="button">Excel</button></a>
+					
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+                 <div class="row m-t-15">
+      <div class="col-md-12">
+      
+        <div class="table-responsive">
+<table class="table table-striped  mb-0 ">
+<thead class="new_tblhead">
+<tr>
+
+<th >S No.</th>                      
+<th>Image</th>
+<th>Sewadar Code</th>
+<th>Name</th>
+<th>Department</th>
+<th style="text-align: right;">Date of Birth</th>
+
+<th>Location</th>
+<th>Sub Location</th>
+</tr>
+</thead>
+<tbody>
+<%
+i = 1
+location    = ''
+sublocation = ''
+ if @listedBirthday && @listedBirthday.length >0
+  @listedBirthday.each do |brthdaylist|
+%>
+<%
+myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+if brthdaylist.sw_membtype == 'mb'
+     if brthdaylist.sw_image !=nil && brthdaylist.sw_image !=''
+        chekpath = "#{Rails.root}/public/images/ledger/profile/"+brthdaylist.sw_image.to_s
+        if File.file?(chekpath)
+          myimages = "#{root_url}images/ledger/profile/"+brthdaylist.sw_image.to_s
+        end
+     end  
+else
+    if brthdaylist.sw_image !=nil && brthdaylist.sw_image !=''
+          chekpath = "#{Rails.root}/public/images/sewadar/"+brthdaylist.sw_image.to_s
+          if File.file?(chekpath)
+            myimages = "#{root_url}images/sewadar/"+brthdaylist.sw_image.to_s
+          end
+
+      end
+
+  end
+  department =''
+  if brthdaylist.sw_membtype == 'mb'
+        deprtobj =  get_my_selected_department_code(brthdaylist.sw_sewcode)
+        if deprtobj
+      department = deprtobj.departDescription
+      end
+  else
+
+      deprtobj = get_all_department_detail(brthdaylist.sw_depcode)
+      if deprtobj
+      department = deprtobj.departDescription
+      end
+
+    end
+ 
+
+locobjs = get_ho_location(brthdaylist.sw_location)
+if locobjs
+  location = locobjs.hof_description
+end
+sublocobj = get_global_office_detail(brthdaylist.sw_sewcode)
+if sublocobj
+    slid = sublocobj.so_sublocation
+    if slid.to_i >0
+          sblocobj = get_subs_location(slid)
+          if sblocobj
+            sublocation = sblocobj.sl_description
+          end
+    end
+end
+
+%>
+<tr>
+<td><%=i%></td>
+<td><img src="<%=myimages%>" width="50"/></td>
+<td><%=brthdaylist.sw_sewcode%></td>
+<td><%=brthdaylist.sw_sewadar_name%></td>
+<td><%=department%></td>
+<td><%=formatted_date(brthdaylist.sw_date_of_birth)%></td>
+<td><%=location%></td>
+<td><%=sublocation%></td>
+</tr>
+<%
+  i +=1
+   end
+   else
+%>
+
+<tr>
+  <td colspan="6">No record(s) found.</td>
+</tr>
+<% end%>
+
+
+</tbody>
+</table>
+                                
+        </div>
+      </div>
+    </div>
+	</div>
+	<!-- /Page Content -->
+</div>

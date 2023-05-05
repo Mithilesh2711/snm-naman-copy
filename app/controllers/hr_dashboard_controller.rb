@@ -1,0 +1,2 @@
+class HrDashboardController < ApplicationController
+end

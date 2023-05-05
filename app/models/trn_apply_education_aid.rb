@@ -1,0 +1,2 @@
+class TrnApplyEducationAid < ApplicationRecord
+end

@@ -1,0 +1,104 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Branch</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="cur_description" id="cur_description" value="<% if @ListDepart %><%=@ListDepart.bch_branchname%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDepart %><%=@ListDepart.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+                          <div class="form-group row">
+
+
+						<label class="col-form-label col-md-2"> Branch Code</label>
+					<div class="col-md-3">
+					<input type="text" required class="form-control" name="bch_branchcode" id="bch_branchcode" readonly  value="<% if @ListDepart %><%=@ListDepart.bch_branchcode%><% elsif @lastNumber %><%=@lastNumber%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Branch No <span class="mandatory">*</span></label>
+					<div class="col-md-3"><input type="text"  required class="form-control" name="bch_branchnumber" id="bch_branchnumber" value="<% if @ListDepart %><%=@ListDepart.bch_branchnumber%><% end %>" />
+                                        </div>
+
+				</div>
+				<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2"> Select Zone <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<select class="form-control" required name="bch_zonecode" id="bch_zonecode" onchange="get_district_zone();">
+						<option value="">-Select-</option>
+                                                <%
+                                                 if @ListZone && @ListZone.length >0
+                                                  @ListZone.each do |newzone|
+                                                %>
+                                                <option value="<%=newzone.zn_zonecode%>" <% if @ListDepart && @ListDepart.bch_zonecode.to_s.downcase == newzone.zn_zonecode.to_s.downcase %>selected="selected"<% end %>><%=newzone.zn_name%></option>
+                                                <%
+                                                 end
+                                               end
+                                               %>
+					</select>
+					</div>
+						<label class="col-form-label col-md-2">Select District  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                            <select class="form-control" required name="bch_districtcode" id="bch_districtcode">
+                                              <option value="">-Select-</option>
+                                                <%
+                                                 if @DistZone && @DistZone.length >0
+                                                  @DistZone.each do |distzone|
+                                                %>
+                                                <option value="<%=distzone.zd_distcode%>" <% if @ListDepart && @ListDepart.bch_districtcode.to_s.downcase == distzone.zd_distcode.to_s.downcase %>selected="selected"<% end %>><%=distzone.zd_name%></option>
+                                                <%
+                                                 end
+                                               end
+                                               %>
+					      </select>
+                                        </div>
+				</div>
+					
+					<div class="form-group row">
+					
+						<label class="col-form-label col-md-2">Branch Name <span class="mandatory">*</span></label>
+					<div class="col-md-3"><input type="text"  required class="form-control" name="bch_branchname" id="bch_branchname" value="<% if @ListDepart %><%=@ListDepart.bch_branchname%><% end %>" />
+                                        </div>
+						<label class="col-form-label col-md-2"> Branch Address <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<textarea class="form-control" required tabindex="4" cols="4" name="bch_address" id="bch_address"><% if @ListDepart %><%=@ListDepart.bch_address%><% end %></textarea>
+					</div>
+						
+				</div>
+				<div class="form-group row nmt-40">
+					<label class="col-form-label col-md-2">Bhawan <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                              <select class="form-control" required name="bch_bhawan" id="bch_bhawan">
+                                                 <option value="Y" <% if @ListDepart && @ListDepart.bch_bhawan.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+                                                 <option value="N" <% if @ListDepart && @ListDepart.bch_bhawan.to_s == 'N'  %>selected="selected"<% end %>>N</option>
+                                              
+					      </select>
+                                        </div>
+				</div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>branch"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

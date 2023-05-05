@@ -1,0 +1,276 @@
+<div>
+   <%=form_for @selecMstLeave, url:{ :action=>:edit } do |f| %>
+      <div class="page-content-wrapper">
+	<div class="page-content">
+       <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Dashboard
+			</h3-->
+                        <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled]!=nil %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                        <% end %>
+			<%= render "layouts/breadcrumbs" %>
+			<!-- END PAGE HEADER-->
+			<!-- BEGIN OVERVIEW STATISTIC BARS-->
+		 <div class="row">
+		<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+			<div class="portlet">
+			<div class="portlet-body">
+
+			<div class="row">
+		          <div class="col-md-12">
+		 		<div class="col-md-2">
+                                <label>Leave Code <span class="hrms_flag">[*]</span></label>
+                                </div>
+                               <div class="col-md-3">
+				 <input type="text" placeholder="" required readonly class="form-control hrmsfont_uppercase" name="attend_leaveCode" value="<%=@selecMstLeave.attend_leaveCode%>"/>
+				</div>
+        <div class="col-md-2">
+          <label>Type Leave <span class="hrms_flag">[*]</span></label>
+        </div>
+         <div class="col-md-3">
+          <input type="text" placeholder="" required class="form-control hrmsfont_uppercase" name="attend_leavetype" value="<%=@selecMstLeave.attend_leavetype%>"/>
+        </div>
+         </div>
+        </div>
+                         
+                          <div class="row">
+		          <div class="col-md-12">
+        <div class="col-md-2">
+          <label>Paid Leave <span class="hrms_flag">[*]</span></label>
+        </div>
+                             <div class="col-md-3">
+           <select class="form-control" name="attend_paidleave">
+                <option value="">-Select-</option>
+                <option value="Y" <% if @selecMstLeave.attend_paidleave == 'Y' %> selected<% end %> >Y</option>
+                <option value="N" <% if @selecMstLeave.attend_paidleave == 'N' %> selected="selected"<% end %> >N</option>
+              </select>
+        </div>
+        <div class="col-md-2">
+          <label>Bal. Leave <span class="hrms_flag">[*]</span></label>
+        </div>
+                             <div class="col-md-3">
+         <select class="form-control" name="attend_balancesleave">
+                <option value="">-Select-</option>
+                <option value="Y" <% if @selecMstLeave.attend_balancesleave == 'Y' %> selected="selected"<% end %> >Y</option>
+                <option value="N" <% if @selecMstLeave.attend_balancesleave == 'N' %> selected="selected"<% end %> >N</option>
+              </select>
+        </div>
+        </div>
+        </div>
+                       
+        <div class="row">
+	<div class="col-md-12">
+        <div class="col-md-2">
+          <label>Running/Working</label>
+        </div>
+          <div class="col-md-3">
+           <select class="form-control" name="attend_runworking">
+               <option value="">-Select-</option>
+                <option value="R" <% if @selecMstLeave.attend_runworking == 'R' %> selected="selected"<% end %> >R</option>
+                <option value="W" <% if @selecMstLeave.attend_runworking == 'W' %> selected="selected"<% end %>>W</option>
+              </select>
+        </div>
+        <div class="col-md-2">
+          <label>Enchash. Avail.</label>
+        </div>
+          <div <div class="col-md-3">
+          <select class="form-control" name="attend_enchash">
+                <option value="">-Select-</option>
+                <option value="Y" <% if @selecMstLeave.attend_enchash == 'Y' %> selected="selected"<% end %>>Y</option>
+                <option value="N" <% if @selecMstLeave.attend_enchash == 'N' %> selected="selected"<% end %>>N</option>
+              </select>
+        </div>
+        </div>
+        
+        </div>
+
+
+          <div>&nbsp;</div>
+
+    <div class="row">
+	<div class="col-md-12">
+        <div class="col-md-4 mrg-t-7"><label>Is the Bal. of previous year will be C/F ? (Y/N)</label></div>
+        <div class="col-md-2">
+         <select class="form-control" name="attend_balanceforprevious">
+                 <option value="">-Select-</option>
+                  <option value="Y" <% if @selecMstLeave.attend_balanceforprevious == 'Y' %> selected="selected"<% end %>>Y</option>
+                  <option value="N" <% if @selecMstLeave.attend_balanceforprevious == 'N' %> selected="selected"<% end %>>N</option>
+                </select>
+        </div>
+      </div>
+    </div>
+        
+    <div class="row">
+	<div class="col-md-12">
+      <div class="col-md-4 mrg-t-7"><label>Enter annual quota of leave</label></div>
+      <div class="col-md-2">
+       <select class="form-control" name="attend_annualquota">
+                 <option value="">-Select-</option>
+                  <option value="7" <% if @selecMstLeave.attend_annualquota == 7 %> selected="selected"<% end %>>7</option>
+                  <option value="12" <% if @selecMstLeave.attend_annualquota == 12 %> selected="selected"<% end %>>12</option>
+                  <option value="15" <% if @selecMstLeave.attend_annualquota == 15 %> selected="selected"<% end %>>15</option>
+                  <option value="24" <% if @selecMstLeave.attend_annualquota == 24 %> selected="selected"<% end %>>24</option>
+                </select>
+      </div>
+    </div>
+    </div>
+       
+      <div class="row">
+	<div class="col-md-12">
+       <div class="col-md-4 mrg-t-7"><label>Max. accumulation of the leave allowed</label></div>
+       <div class="col-md-2">
+        <select class="form-control" name="attend_accumulationleave">
+                  <option value="">-Select-</option>
+                  <option value="1" <% if @selecMstLeave.attend_accumulationleave == 1 %> selected="selected"<% end %>>1</option>
+                  <option value="2" <% if @selecMstLeave.attend_accumulationleave == 2 %> selected="selected"<% end %>>2</option>
+                  <option value="3" <% if @selecMstLeave.attend_accumulationleave == 3 %> selected="selected"<% end %>>3</option>
+                  <option value="4" <% if @selecMstLeave.attend_accumulationleave == 4 %> selected="selected"<% end %>>4</option>
+                  <option value="5" <% if @selecMstLeave.attend_accumulationleave == 5 %> selected="selected"<% end %>>6</option>
+                  <option value="6" <% if @selecMstLeave.attend_accumulationleave == 6 %> selected="selected"<% end %>>7</option>
+                  <option value="7" <% if @selecMstLeave.attend_accumulationleave == 7 %> selected="selected"<% end %>>8</option>
+                  <option value="8" <% if @selecMstLeave.attend_accumulationleave == 8 %> selected="selected"<% end %>>9</option>
+                  <option value="9" <% if @selecMstLeave.attend_accumulationleave == 9 %> selected="selected"<% end %>>10</option>
+                  <option value="10" <% if @selecMstLeave.attend_accumulationleave == 10%> selected="selected"<% end %>>10</option>
+                </select>
+       </div>
+     </div>
+      </div>
+     
+      <input type="hidden"  class="form-control" name="compCode" value="<%=@compCodes%>"/>
+      <input type="hidden"  class="form-control" id="rootPath" value="<%=root_url%>"/>
+       <div>&nbsp;</div>
+       <div>&nbsp;</div>
+	<div class="row">
+	<div class="col-md-12">
+                                
+              <div class="col-md-2 col-xs-6">
+              <input type="image" src="<%=root_url%>images/save.png"/>
+              </div>
+              <div class="col-md-2 col-xs-6">
+              <a href="<% if @paths!='' %> <%=@paths %><% else %>javascript:;<% end %> " <% if @paths!='' %>target="_blank"<% end %>>
+              <img src="<%=root_url%>images/print.png"/>
+              </a>
+              </div>
+              <div class="col-md-2 col-xs-6">
+                <a href="<%=root_url%>attendance/leave"><img src="<%=root_url%>images/newbutt.png"/></a>
+               </div>
+              <div class="col-md-2 col-xs-6">
+                <a href="<%=root_url%>dashboard">
+                  <img src="<%=root_url%>images/quit.png"/>
+                </a>
+               </div>
+                                 
+          </div>
+          </div>
+      <div>&nbsp;</div>
+      <div class="row">
+	<div class="col-md-12">
+            ?: Enter a no. of leaves type in company
+      </div>
+      </div>
+       <div class="row">
+	<div class="col-md-12">
+        <div class="col-md-3"><label><span class="hrms_flag"><br/>* Mandatory Fields</span></label></div>
+      </div>
+       </div>
+
+        </div>
+        </div>
+
+
+           <!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet">
+							<div class="portlet-body">
+							<div class="table-responsive">
+								<table class="table table-hover">
+								<thead>
+								<tr class="head_table">
+									<th>
+										Leave Code
+									</th>
+									<th>
+										Leave Type
+									</th>
+									<th>
+									        Paid Leave
+									</th>
+									<th>
+									        Balance Leave
+									</th>
+									<th>
+									         Action
+									</th>
+
+								</tr>
+								</thead>
+								<tbody>
+								 <%
+                  if @MstLeave.count >0
+                    @MstLeave.each  do | leavs |
+                %>
+								<tr>
+                                                                 <td><%=leavs.attend_leaveCode%>
+									</td>
+									<td>
+								<%=leavs.attend_leavetype%>
+									</td>
+									<td>
+								<%=leavs.attend_paidleave%>
+									</td>
+									<td>
+								<%=leavs.attend_balancesleave%>
+									</td>
+
+									<td id="center">
+			<a href="<%=root_url%>attendance/leave/<%=leavs.id%>"><i class="fa fa-pencil-square-o hrmsfonts_size" aria-hidden="true"></i></a>
+                            <a href="<%=root_url%>attendance/leave/<%=leavs.id%>/deletes"><i class="fa fa-trash-o hrmsfonts_size" aria-hidden="true"></i></a>
+									</td>
+								</tr>
+								<% end else %>
+	                i =i+1
+	                end
+	                else
+	                %>
+									<tr>
+									<td><div>No Records Found</div></td>
+									</tr>
+									<% end %>
+								</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+
+					<!-- END SAMPLE TABLE PORTLET-->
+
+
+				</div>
+
+			</div>
+</div>
+                       </div>
+                       </div>
+
+			<!-- END PAGE CONTENT-->
+
+	</div>
+        </div>
+          
+  <% end  %>
+        </div>
+        <!-- /. PAGE WRAPPER  -->

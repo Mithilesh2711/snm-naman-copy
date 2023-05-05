@@ -1,0 +1,530 @@
+    <!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-inner slimscroll">
+          <div id="sidebar-menu" class="sidebar-menu">
+            <ul>
+              <%
+              if session[:autherizedUserType] && session[:autherizedUserType].to_s != 'adm'
+                 if  @listModule && @listModule.include?('SSS')
+             %>
+              <li class="menu-title"> 
+                <span>Sewadar Self Services</span>
+              </li>
+                  <li> 
+                <a  href="<%=root_url%>s_dashboard"><i class="la la-dashboard"></i> <span >Sewadar Dashboard 
+</span></a>
+              </li>
+                  <li> 
+                <a  href="<%=root_url%>sewadar_dashboard"><i class="la la-dashboard"></i> <span >Sewadar Profile 
+</span></a>
+              </li>
+             
+              <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>leave');"><i class="la la-rocket"></i> <span>Apply Leave</span> </a>
+                
+              </li>
+               <li class="">
+                <a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>request_co_od');"><i class="la la-rocket"></i> <span>Request CO</span> </a>
+              </li>
+                  <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>leave_details');"><i class="la la-rocket"></i> <span>Leave Details</span> </a>
+                
+              </li>
+              
+              <li style="dipslay:none;"><a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>loans_advance/loans_advance_list');"><i class="la la-rocket"></i> <span>
+                    Apply Advance
+                  </span></a></li>
+                <li  style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>advance_detail');"><i class="la la-rocket"></i><span> Advance Ledger<span/></a></li>  
+             <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>apply_educationaid/educationaid_list');"><i class="la la-share-alt"></i> <span>Apply Education Aid</span> </a>
+                
+              </li>
+              <li><a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>apply_marriageaid/marriageaid_list');"><i class="la la-share-alt"></i> <span>Apply Marriage Aid</span> </a></li>
+               
+               <li class="hidden"><a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>loans_advance/loans_advance_list');"><i class="la la-money"></i><span>
+                    Apply Advance
+                  </span></a></li>
+               <li  class="hidden" style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>advance_detail');"><i class="la la-edit"></i>&nbsp;&nbsp;&nbsp;Advance Ledger</a></li>
+              <li>
+               
+                <a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk </span></a>
+              </li>
+              <li>
+               
+                <a href="javascript:;" onclick="get_selected_tds_listed('asd','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk Support</span></a>
+              </li>
+              <li class="hidden">
+               
+                <a href="<%=root_url%>calendar"><i class="la la-user"></i> <span>Calendar</span></a>
+              </li>
+              <li class="submenu hidden">
+                <a href="#"><i class="la la-share-alt"></i> <span>Aid/Facilities </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="<%=root_url%>apply_marriageaid/marriageaid_list">Apply Marriage Aid</a></li>
+                  <li><a href="<%=root_url%>apply_educationaid/educationaid_list">Apply Education Aid</a></li>
+                </ul>
+              </li>
+              <%           
+                 end
+               end
+             %>
+              <%
+               if  @listModule && @listModule.include?('HR') 
+             %>
+             <li class="menu-title"> 
+                <span>HRD</span>
+              </li>
+              <li class="submenu">
+                <a href="#"><i class="la la-users"></i> <span>Sewadar Information</span> <span class="menu-arrow"></span></a>
+                <ul style="">
+                    <li style="dipslay:none;"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>sewadar_information');"> Sewadar Profile</a></li>
+                 
+                  <li style="dipslay:none;"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>sewadar_reports');">Views & Reports</a></li>
+                     <li style="dipslay:none"><a href="<%=root_url%>views/birthday_list">Sewadar Birthdays</a></li>
+                  <li style="dipslay:none"><a href="<%=root_url%>views/sewadar_cards">ID-Cards List</a></li>
+                  <li style="dipslay:none"><a href="<%=root_url%>super_annuation">Superannuation List</a></li>
+                  <li><a href="<%=root_url%>transactions"><span>Transactions </span></a></li>
+                  <li><a href="<%=root_url%>discipline"><span>Discipline </span></a></li>
+                </ul>
+              </li>
+              <li class="submenu">
+                <a href="#"><i class="la la-share-alt"></i> <span>Aid & Facilities</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>apply_educationaid/educationaid_list');">Education Aid</a></li>
+            
+                  <li><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>apply_marriageaid/marriageaid_list');">Marriage Aid</a></li>
+                        <li><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>medical_aid');">Medical Aid</a></li>
+                  <li><a href="<%=root_url%>education_report" >Education Report</a></li>
+                  <li><a href="javascript:;" onclick="get_selected_tds_listed('eds','<%=root_url%>vouchers');">Generate Sanction Note</a></li>
+                  <li class="hidden"><a href="#">Life Insurance (LIC)</a></li>
+                  <li class="hidden"><a href="#">Health Insurance (LIC)</a></li>
+                   <li style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>marriageaid_approval');">Marriage Aid (Status)</a></li>
+                  <li  style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>educationaid_approval');">Education Aid (Status)</a></li>
+                </ul>
+              </li>
+              
+              <li class="submenu">
+                <a href="#"><i class="la la-briefcase"></i> <span>Sewadar Leaves</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                    <li> 
+                <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>leave');"><span>Apply Leaves</span></a>
+              </li>
+              <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>leave_details');"> <span>Leave Details</span> </a>
+             </li>
+             <li> 
+                <a href="<%=root_url%>ledger_report"><span>Leave Ledger Report</span></a>
+              </li>
+              <li class="">
+                <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>request_co_od');"><span>Request CO</span> </a>
+              </li>
+                    <li class="hidden"> 
+                <a href="<%=root_url%>monthly_import">Leave Import</a>
+              </li>
+                <li style="dipslay:none;"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>leaves');">Leave - Approval</a></li>
+              
+               
+                
+                </ul>
+              </li>
+              <li class="submenu">
+                <a href="#"><i class="la la-briefcase"></i> <span>Sewadar Attendance</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                    <li> 
+                 <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>raw_punch');"> <span>Biomatric Raw Punches</span></a>
+              </li>
+              <li style="dipslay:none;"><a href="<%=root_url%>manualpunch" >Manual Punch</a></li>
+              <li> 
+                <a href="<%=root_url%>process_machine_data">Biomatric Data Import</a>
+              </li>
+               <li> 
+                <a href="<%=root_url%>daily_dashboard">Daily Attendance</a>
+              </li>
+               <li> 
+                <a href="<%=root_url%>monthly_performance">Monthly Performance</a>
+              </li>
+               <li> 
+                <a href="<%=root_url%>daily_calculation">Daily Calculation</a>
+              </li>
+               <li> 
+                <a href="<%=root_url%>reports/daily_report">Daily report</a>
+              </li>
+              <li class="hidden" style="dipslay:none;"><a href="<%=root_url%>co_od">CO Request Status</a></li>
+                
+              
+               
+                
+                </ul>
+              </li>
+              
+              <li class="submenu">
+                <a href="#"><i class="la la-edit"></i> <span>Advances</span> <span class="menu-arrow"></span></a>
+                <ul style="">
+                    
+                    <li style="dipslay:none;"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>loans_advance/loans_advance_list');"><span>
+                    Apply Advance
+                  </span></a></li>
+                     <li  style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>advance_detail');">Advance Ledger</a></li>
+                     <li style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>loans_approval');">Advance Request Status</a></li>
+                     <li style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('advs','<%=root_url%>vouchers');">Generate Sanction Note</a></li>
+                     <li><a href="<%=root_url%>process_update_installment"><span>Update Installment </span></a></li>   
+                </ul>
+              </li>
+              
+              
+            
+             
+              <%
+               if @ManageActionList !=nil && @ManageActionList.to_s=='MA'
+              %>
+               <li class="submenu">
+                <a href="#"><i class="la la-columns"></i> <span >Monthly Process  </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  
+                  <li> 
+                <a href="<%=root_url%>monthly_advice">Monthly Advice</a>
+              </li>
+                <li> 
+                <a href="<%=root_url%>calculate_salary">MA Calculation</a>
+              </li>
+               <li>
+                <a href="<%=root_url%>month_end_process">Month End Process</a>
+              </li>
+               <li><a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>vouchers');">Generate Sanction Note</a></li>
+              <li>
+               
+                <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>full_final');"><span>Full and Final </span></a>
+              </li>   
+             
+              <li class="submenu">
+                <a href="#"> <span >Reports  </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+              <li style="dipslay:none"><a href="<%=root_url%>reports/salary_register">MA Register</a></li>
+              <li style="dipslay:none"><a href="<%=root_url%>reports/salary_slip">MA Slip</a></li>
+              <li style="dipslay:none"><a href="<%=root_url%>reports/monthly_deduction">Monthly Deduction</a></li>
+              <li style="dipslay:none"><a href="<%=root_url%>reports/personal_details">Personal Profile</a></li>
+              <li style="dipslay:none"><a href="<%=root_url%>ledger_report">Leave Ledger</a></li>
+              
+              
+                </ul>
+              </li>
+              <li class="submenu">
+                <a href="#"> <span >Views  </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+              <li style="dipslay:none"><a href="<%=root_url%>views/monthly_deduction">Monthly Deduction</a></li>
+              <li style="dipslay:none"><a href="<%=root_url%>views/deductions_list">Deductions List</a></li>
+              </ul>
+              </li>
+                </ul>
+              </li>
+                  <li>
+    
+                    <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>all_formats');"><i class="la la-user"></i> <span>All Formats </span></a>
+                  </li>
+              <% end %>
+               
+               <li class="submenu">
+                <a href="#"><i class="la la-object-group"></i> <span>Postal </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                      <li><a href="<%=root_url%>postal">Postal Dispatched</a></li>
+                  <li><a href="<%=root_url%>postal_receive"> Postal Recieved</a></li>
+                
+                 
+                
+                </ul>
+              </li>
+               <li class="submenu">
+                <a href="#"><i class="la la-list"></i> <span>Stationary  <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                    <li><a href="<%=root_url%>products"> Products</a></li>
+                  <li><a href="<%=root_url%>generate_requisition/requisition_list"> Generate Requisition</a></li>
+                  <li><a href="<%=root_url%>stationary_approval">Stationary Approval</a></li>
+                  <li><a href="<%=root_url%>stationary_vouchers">Stationary Vouchers</a></li>
+
+                  
+                               </ul>
+              </li>
+               <li class="submenu">
+                <a href="#"><i class="la la-edit"></i> <span>Attendance Master</span> <span class="menu-arrow"></span></a>
+                <ul style="">
+                    
+                  <li style="dipslay:none;"><a href="<%=root_url%>attendance/shift_list">Shift</a></li>
+                  <li style="dipslay:none;"><a href="<%=root_url%>attendance/leave_list">Leave Master</a></li>
+                   <li><a href="<%=root_url%>holiday">Holidays</a></li>
+                
+
+
+                  
+                </ul>
+              </li>
+              <li class="submenu">
+                <a href="#"><i class="la la-graduation-cap"></i> <span>HR Masters</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                 
+                  <li><a href="<%=root_url%>designation"> Designation</a></li>
+                  <li><a href="<%=root_url%>qualification"> Qualification</a></li>
+                  <li style="dipslay:none;"><a href="<%=root_url%>responsibility"> Responsibilty</a></li>
+                  <li><a href="<%=root_url%>bank">Bank</a></li>
+                  <li><a href="<%=root_url%>medical_history">Medical History</a></li>
+                  <li><a href="<%=root_url%>university">University</a></li>
+                  <li><a href="<%=root_url%>head_office">HO Location</a></li>
+                  <!-- <li><a href="<%=root_url%>sub_location">HO Sub Location</a></li> -->
+                </ul>
+              </li>
+              
+              <li>
+
+                <a href="javascript:;" onclick="get_selected_tds_listed('hr','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk </span></a>
+              </li>
+               
+              
+      
+               
+              <% end %>
+               <%
+               if  @listModule && @listModule.include?('EM')
+             %>
+               <li class="menu-title"> 
+                <span>Estate Management</span>
+              </li>
+              <li>
+
+                <a href="#"><i class="la la-user"></i> <span>Sewadar Accomodation</span></a>
+              </li>
+               <li class="submenu">
+                <a href="#"><i class="la la-home"></i> <span>Property Details</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="<%=root_url%>accomodation">Manage Accomodation</a></li>
+                  <li><a href="<%=root_url%>accomodation_allotment">Accomodation Allotment</a></li>
+                 
+                </ul>
+              </li>
+                <li class="submenu">
+                <a href="#"><i class="la la-times-circle"></i> <span>Electrical Section</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                    <li> 
+                <a href="<%=root_url%>electric_consumption/consumption_list">Electric Consumption </a>
+              </li>
+              <li> 
+                <a href="<%=root_url%>electric_report">View report </a>
+              </li>
+              
+                 </ul>
+                 <li> 
+                <a href="javascript:;" onclick="get_selected_tds_listed('em','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i>&nbsp;&nbsp;&nbsp;Helpdesk</a>
+              </li>
+              </li>
+              
+              <% end %>
+              <%
+               if @listModule && @listModule.include?('SHQ')
+             %>
+               <li class="menu-title"> 
+                <span>Secretary (HQ)</span>
+              </li>
+                 <li class="submenu">
+                <a href="#"><i class="la la-map-o"></i> <span> Organization</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="<%=root_url%>member_list?member=<%=set_ent('CPAB')%>">CPAB Members</a></li>
+                  <li><a href="<%=root_url%>member_list?member=<%=set_ent('EC')%>"> EC Members </a></li>
+                  <li><a href="<%=root_url%>member_list?member=<%=set_ent('Cordinators')%>">Cordinators</a></li>
+                  <li><a href="<%=root_url%>member_list?member=<%=set_ent('Active')%>"> Active Members</a></li>
+                  <li><a href="<%=root_url%>member_list?member=<%=set_ent('ADK')%>"> Sewadal Adhikaris</a></li>
+                   <li><a href="<%=root_url%>member_list?member=<%=set_ent('SNCF')%>"> SNCF Members</a></li>
+                  <li><a href="<%=root_url%>department">Departments</a></li>
+                </ul>
+              </li>
+                 <li class="submenu">
+                <a href="#"><i class="la la-table"></i> <span> Meeting Records <i class="fa fa-dot-circle-o under_process" aria-hidden="true"></i></span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="javascript:;">Schedule Meetings  </a></li>
+                  <li><a href="javascript:;">Meeting Records </a></li>
+                  <li><a href="javascript:;"> Resolutions</a></li>
+                  
+                </ul>
+              </li>
+              <% end %>
+              <%
+               if @listModule && @listModule.include?('BA')
+             %>
+             <li class="menu-title"> 
+                <span>Branch Administration</span>
+              </li>
+                 <li class="submenu">
+                <a href="#"><i class="la la-info"></i> <span> Directory</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="<%=root_url%>state"> State</a></li>
+                  <li><a href="<%=root_url%>district"> District</a></li>
+                 <li><a href="<%=root_url%>city"> City</a></li>
+                
+                 <li><a href="<%=root_url%>zone"> Zone</a></li>
+                 <li><a href="<%=root_url%>zone_district"> Zone District</a></li>
+                  <li><a href="<%=root_url%>branch"> Branch</a></li>
+                </ul>
+              </li>
+              <% end  %>
+               <%
+               if @listModule && @listModule.include?('AT')
+              %>
+               <li class="menu-title"> 
+                <span class="">Admin Tools</span>
+              </li>
+                
+                <li class="submenu">
+
+                <a href="#"><i class="la la-user-plus"></i> <span>Users</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                 
+                
+                  <li><a href="<%=root_url%>create_user/user_list">Manage User</a></li>
+                     <li class="hidden"><a href="<%=root_url%>user_log">User Log</a></li>
+                
+                </ul>
+              </li>
+                  <li class="submenu">
+                <a href="#"><i class="la la-users"></i> <span>Database Master </span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                 
+                
+                
+                  <li><a href="<%=root_url%>manage_serial_numbers">Manage Serial Numbers</a></li>
+
+                </ul>
+              </li>
+              <li >
+                <a href="<%=root_url%>ec_announcement"><i class="la la-rocket"></i> <span>EC Announcement</span> </a>
+
+              </li>
+              <li class="submenu">
+                <a href="#"><i class="la la-users"></i> <span>Manage Parameters</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                    <li>
+                    <a href="<%=root_url%>hr_parameters"><i class="la la-user"></i> <span>HR  </span></a>
+                  </li>
+                     <li><a href="<%=root_url%>education_parameter"><i class="la la-graduation-cap"></i> <span>Education Aid </span></a></li>
+                     <li><a href="<%=root_url%>marriage_parameter"><i class="la la-share-alt"></i>  <span>Marriage Aid </span></a></li>
+
+                </ul>
+              </li>
+
+               
+              <% end %>
+              <%
+              if session[:autherizedUserType] && session[:autherizedUserType].to_s != 'adm'
+                if @listModule && @listModule.include?('STF')
+             %>
+               <li class="menu-title"> 
+                <span>Support Staff</span>
+              </li>
+              <li >
+                <a href="javascript:;" onclick="get_selected_tds_listed('stf','<%=root_url%>leave');"><i class="la la-rocket"></i> <span>Apply Leave</span> </a>
+                
+              </li>
+               <li class="hidden"><a href="<%=root_url%>loans_advance/loans_advance_list"><i class="la la-money"></i><span>
+                    Apply Advance
+                  </span></a></li>
+                  <li  style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('stf','<%=root_url%>advance_detail');"><i class="la la-edit"></i>&nbsp;&nbsp;&nbsp;Advance Ledger</a></li>
+                 <li class="hidden">
+                <a href="<%=root_url%>request_co_od"><i class="la la-rocket"></i> <span>Request CO</span> </a>
+
+              </li>
+                  <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('stf','<%=root_url%>leave_details');"><i class="la la-rocket"></i> <span>Leave Details</span> </a>
+
+              </li>
+              <li> 
+                <a href="javascript:;" onclick="get_selected_tds_listed('stf','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk </span></a>
+              </li>
+              <li>
+               
+                <a href="javascript:;" onclick="get_selected_tds_listed('asd','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk Support</span></a>
+              </li>
+                
+               
+              <% 
+                end
+               end 
+              
+              %>
+
+              <%
+              if session[:autherizedUserType] && session[:autherizedUserType].to_s != 'adm'
+               if @listModule && @listModule.include?('APV') ### FOR EC AND COD MEMBER
+             %>
+             
+               <li class="menu-title">
+                <span>EC</span>
+              </li>
+               <li> 
+                <a  href="<%=root_url%>o_dashboard"><i class="la la-dashboard"></i> <span >Dashboard 
+              </span></a>
+              </li>
+              <li >
+                <a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>leaves');"><i class="la la-rocket"></i> <span>Leave Approval</span> </a>
+
+              </li>
+              <%
+                if session[:sec_ec_approved] !=nil
+              %>
+               <li style="dipslay:none"><a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>loans_approval');"><i class="la la-rocket"></i>&nbsp;&nbsp;&nbsp;&nbsp;Advance Requests</a></li>
+
+                
+                <%
+                  end
+                %>  
+              <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>marriageaid_approval');"><i class="la la-rocket"></i> <span>Marriage Aid Approval</span> </a>
+              </li>
+              <li>
+                <a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>educationaid_approval');"><i class="la la-rocket"></i> <span>Education Aid Approval</span> </a>
+
+              </li>
+              <li>
+                <a href="javascript:;"><i class="la la-rocket"></i> <span>Stationary  Approval</span> </a>
+
+              </li>
+                <li  style="dipslay:none;"><a href="<%=root_url%>co_od"><i class="la la-rocket"></i> <span>CO Request Status</a></span></li>
+
+
+               
+              <% 
+                 end
+               end
+              
+               %>
+              <%
+               if  @listModule && @listModule.include?('ACT')
+             %>
+              <li class="menu-title">
+                <span>Accounts</span>
+              </li>
+              
+              <li class="submenu">
+                <a href="javascript:;"><i class="la la-share-alt"></i> <span>TDS</span> <span class="menu-arrow"></span></a>
+                <ul style="display: none;">
+                  <li><a href="<%=root_url%>accounts/tds_entry">TDS Entry</a></li>
+                  <li><a href="<%=root_url%>accounts/tds_reports">TDS Reports</a></li>
+                </ul>
+              </li>
+              <%
+              end
+             %>
+               <%
+               if @listModule && @listModule.include?('ICT')
+             %>
+              <li class="menu-title">
+                <span>ICT</span>
+              </li>
+              
+              <li>
+
+                <a href="javascript:;" onclick="get_selected_tds_listed('ict','<%=root_url%>generate_ticket/ticket_list');"><i class="la la-user"></i> <span>Helpdesk </span></a>
+              </li>
+              <%
+              end
+             %>
+            </ul>
+          </div>
+                </div>
+            </div>
+      <!-- /Sidebar -->

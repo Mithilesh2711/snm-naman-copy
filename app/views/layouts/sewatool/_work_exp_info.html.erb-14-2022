@@ -1,0 +1,131 @@
+
+<div id="emp_work" class="tab-pane fade">
+   <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:emp_work ) do  %>
+							<div class="row">
+
+
+
+									<div class="col-md-12 d-flex">
+									<div class="card profile-box flex-fill">
+									<div class="card-body">
+
+											<div class="table-responsive">
+										<table class="table_input table-bordered mb-0">
+											<thead class="new_tblhead">
+												<tr>
+													<th>Name of <br/> Employer</th>
+													<th>Designation</th>
+													<th>Responsiblities</th>
+													<th>From</th>
+													<th>To</th>
+													<th>Reason for <br/> Leaving</th>
+													<th>Retirement <br/> Benefit</th>
+													<th>Getting <br/>Pension</th>
+													<th>Medical<br/> Facilities</th>
+												</tr>
+											</thead>
+											<tbody>
+                                                                                           <%
+                                                                                          i = 1;
+                                                                                            if @EmpWorkExp && @EmpWorkExp.length >0
+                                                                                              @EmpWorkExp.each do |expwrk|
+                                                                                          %>
+												<tr class="new_workexperience">
+                                                                                                       <input type="hidden" class="form-control-sm" name="workexpfooterid[]" id="workexpfooterid<%=i%>" value="<%=expwrk.id%>"/>
+                                                                                                       <td><input type="text" class="form-control-sm" maxlength="50" name="swe_employer[]" id="swe_employer<%=i%>" value="<%=expwrk.swe_employer%>"/></td>
+													<td><input type="text" class="form-control-sm" maxlength="50" name="swe_designation[]" id="swe_designation<%=i%>" value="<%=expwrk.swe_designation%>"/></td>
+													<td><input type="text" class="form-control-sm" maxlength="200" name="swe_responsiblity[]" id="swe_responsiblity<%=i%>" value="<%=expwrk.swe_responsiblity%>"/></td>
+													<td><input type="text" class="form-control-sm wd100" maxlength="15" name="swe_from[]" id="swe_from<%=i%>" value="<%=expwrk.swe_from%>"/></td>
+													<td><input type="text" class="form-control-sm wd100" maxlength="15" name="swe_to[]" id="swe_to<%=i%>" value="<%=expwrk.swe_to%>"/></td>
+													<td><input type="text" class="form-control-sm"  maxlength="200" name="swe_reasonleaving[]" id="swe_reasonleaving<%=i%>" value="<%=expwrk.swe_reasonleaving%>"/></td>
+													<td><select class="form-control" name="swe_retirebenfit[]" id="swe_retirebenfit<%=i%>">
+														<option value="Y" <% if expwrk && expwrk.swe_retirebenfit =='Y'%>selected="selected"<% end %>>Y</option>
+														<option value="N" <% if expwrk && expwrk.swe_retirebenfit =='N'%>selected="selected"<% end %>>N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_gettingpension[]" id="swe_gettingpension<%=i%>">
+														<option value="Y" <% if expwrk && expwrk.swe_gettingpension =='Y'%>selected="selected"<% end %>>Y</option>
+														<option value="N" <% if expwrk && expwrk.swe_gettingpension =='N'%>selected="selected"<% end %>>N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_medicalfacilities[]" id="swe_medicalfacilities<%=i%>">
+														<option value="Y" <% if expwrk && expwrk.swe_medicalfacilities =='Y'%>selected="selected"<% end %>>Y</option>
+														<option value="N" <% if expwrk && expwrk.swe_medicalfacilities =='N'%>selected="selected"<% end %>>N</option>
+													</select></td>
+
+												</tr>
+                                                                                                <%
+                                                                                                  i +=1
+                                                                                                end
+                                                                                                 m = i
+                                                                                                 j = i
+                                                                                                 for i in j..m
+                                                                                                %>
+                                                                                                <tr class="new_workexperience">
+                                                                                                        <input type="hidden" class="form-control-sm" name="workexpfooterid[]" id="workexpfooterid<%=i%>" value=""/>
+													<td><input type="text" class="form-control-sm" maxlength="50" name="swe_employer[]" id="swe_employer<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm" maxlength="50" name="swe_designation[]" id="swe_designation<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm" maxlength="200" name="swe_responsiblity[]" id="swe_responsiblity<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm wd100" maxlength="15" name="swe_from[]" id="swe_from<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm wd100" maxlength="15" name="swe_to[]" id="swe_to<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm"  maxlength="200" name="swe_reasonleaving[]" id="swe_reasonleaving<%=i%>" value=""/></td>
+													<td><select class="form-control" name="swe_retirebenfit[]" id="swe_retirebenfit<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_gettingpension[]" id="swe_gettingpension<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_medicalfacilities[]" id="swe_medicalfacilities<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+
+												</tr>
+                                                                                                <%
+                                                                                                  end
+                                                                                                 else
+                                                                                                for i in 1..1
+                                                                                              %>
+                                                                                                <tr class="new_workexperience">
+                                                                                                         <input type="hidden" class="form-control-sm" name="workexpfooterid[]" id="workexpfooterid<%=i%>" value=""/>
+													<td><input type="text" class="form-control-sm" maxlength="50" name="swe_employer[]" id="swe_employer<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm" maxlength="50" name="swe_designation[]" id="swe_designation<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm" maxlength="200" name="swe_responsiblity[]" id="swe_responsiblity<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm wd100 " maxlength="15" name="swe_from[]" id="swe_from<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm wd100 " maxlength="15" name="swe_to[]" id="swe_to<%=i%>" value=""/></td>
+													<td><input type="text" class="form-control-sm" name="swe_reasonleaving[]" maxlength="200" id="swe_reasonleaving<%=i%>" value=""/></td>
+													<td><select class="form-control" name="swe_retirebenfit[]" id="swe_retirebenfit<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_gettingpension[]" id="swe_gettingpension<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+													<td><select class="form-control" name="swe_medicalfacilities[]" id="swe_medicalfacilities<%=i%>">
+														<option value="Y">Y</option>
+														<option value="N">N</option>
+													</select></td>
+
+												</tr>
+                                                                                                <%
+                                                                                                  end
+                                                                                                end
+
+                                                                                               %>
+
+											</tbody>
+										</table>
+									</div>
+							                <div class="submit-section process_save">
+                                                                                <button onclick="process_work_experience();"  class="btn btn-primary submit-btn" type="button">Save & Quit</button>
+                                                                                <button onclick="prvious_back_action('maintain');" class="btn btn-danger submit-btn m-l-5 " type="button">Previous</button>
+
+				                                         </div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+                                                      <% end %>
+						</div>

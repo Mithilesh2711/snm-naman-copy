@@ -1,0 +1,46 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Month End Process</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+		<!-- /Page Header -->
+		<div class="row">
+			
+				<div class="col-md-12">
+
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Month End Process for <%=get_month_listed_data(@HrMonths)%>,<%=@Hryears%></label>
+					
+						
+					
+						
+			
+						
+				<div class="submit-section processed">
+					<button class="btn btn-primary submit-btn" type="button" onclick="get_districtcode_by_states_222();">Process</button>
+					
+				</div>
+                                  <div class="submit-section noprocessed hidden">
+                                    <img src="<%=root_url%>images/spining_loader.gif" />
+                                  </div>
+				</div>
+			
+			
+				
+			
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>
+</div>

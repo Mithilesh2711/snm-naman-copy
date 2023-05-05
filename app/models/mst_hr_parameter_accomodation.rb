@@ -1,0 +1,2 @@
+class MstHrParameterAccomodation < ApplicationRecord
+end

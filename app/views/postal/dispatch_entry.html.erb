@@ -1,0 +1,220 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Dispatch Entry</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDispFirst %><%=@ListDispFirst.id%><% end %>"/>
+				<input type="hidden" name="rootXPath" id="rootXPath" value="<%=root_url%>"/>
+               <input type="hidden" name="dps_type" id="dps_type" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_type%><% end %>"/>
+			   <input type="hidden" name="dps_entrydate" id="dps_entrydate" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_entrydate%><% else %><%=formatted_date(Date.today)%><% end %>"/>
+                
+               
+		<div class="row">
+			<div class="col-md-9">
+			        <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Post By</label>
+					<div class="col-md-4">
+							<select required class="form-control"  name="dps_postedby" id="dps_postedby" >
+							<option value="">-Select-</option>
+							<option value="Registry Letter" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Registry Letter' %>selected<% end %>>Registry Letter</option>
+							<option value="Speed Post Letter" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Speed Post Letter' %>selected<% end %>>Speed Post Letter</option>
+							<option value="Ordinary Letter" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Ordinary Letter' %>selected<% end %>>Ordinary Letter</option>
+							<option value="Registered Parcel" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Registered Parcel' %>selected<% end %>>Registered Parcel</option>
+							<option value="Speed Post Parcel" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Speed Post Parcel' %>selected<% end %>>Speed Post Parcel</option>
+							<option value="Courier Letter" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Courier Letter' %>selected<% end %>>Courier Letter</option>
+							<option value="Courier Parcel" <% if @ListDispFirst && @ListDispFirst.dps_postedby.to_s == 'Courier Parcel' %>selected<% end %>>Courier Parcel</option>
+                            </select> 
+					</div>
+					<label class="col-form-label col-md-2">Department</label>
+					<div class="col-md-4">
+										<select class="form-control" name="dps_department" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                        <option value="">-Select -</option>
+                                        <%
+                                          mydepartlist = get_sewa_all_department()
+                                          if mydepartlist.length >0
+                                           mydepartlist.each do |nedpts|
+                                        %>
+                                        <option value="<%=nedpts.departCode%>" <% if @ListDispFirst && @ListDispFirst.dps_department.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+                                        <%
+                                           end
+                                         end
+
+                                         %>
+
+                                        </select>
+					</div>
+    				</div>
+    				<div class="form-group row">
+    				<label class="col-form-label col-md-2">Name</label>
+					<div class="col-md-4">
+					 <input type="text" required maxlength = "250" autocomplete="off" class="form-control" name="dps_name" id="dps_name" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_name%><% end %>"/>
+					 </div>
+					 <label class="col-form-label col-md-2">Subject</label>
+					<div class="col-md-4">
+					 <input type="text" required maxlength = "250" autocomplete="off" class="form-control" name="dps_subject" id="dps_subject" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_subject%><% end %>"/>
+					 </div>
+					 </div>
+					 <div class="form-group row">
+    				
+					 </div>
+                    <div class="form-group row">
+                            <div class="col-md-6">
+                                <div class="row">
+                            
+					  <label class="col-form-label col-md-4">Address</label>
+					<div class="col-md-8">
+                    <div class="col-md-12 emp_radio">
+					
+                             <input type="radio" onclick="process_branch_headoffices(this.value);" <% if @ListDispFirst && @ListDispFirst.dps_type.to_s == 'Branch' %>checked<% elsif !@ListDispFirst %>checked <% end %> name="sw_branchtype" id="sw_branchtype_2" value="Branch" class="m-l-5">&nbsp; Branch
+                             <input type="radio" onclick="process_branch_headoffices(this.value);" <% if @ListDispFirst && @ListDispFirst.dps_type.to_s == 'Other' %>checked<% end %> name="sw_branchtype" id="sw_branchtype_1" value="Other">&nbsp; Other&nbsp;
+                              </div>
+                           
+						</select>
+					</div>
+					<% 
+					othersallow = ""
+					if @ListDispFirst && @ListDispFirst.dps_type.to_s == 'Other'
+					othersallow = "hidden"
+					end
+					%>
+					<label class="col-form-label col-md-4 branchclass <%=othersallow%>">Zone</label>
+					<div class="col-md-8 branchclass <%=othersallow%>">
+                    <select class="form-control" name="dps_zone" id="so_zone" onchange="get_zone_branches();">
+								<option value="">-Select-</option>
+								<%
+									if @ListZone && @ListZone.length >0
+									@ListZone.each do |zones|
+								%>
+									<option value="<%=zones.zn_zonecode%>" <% if @ListDispFirst && @ListDispFirst.dps_zone.to_s.downcase == zones.zn_zonecode.to_s.downcase %>selected="selected"<% end %>><%=zones.zn_name%></option>
+								<%
+									end
+								end
+								%>
+								</select>
+					</div>
+					<label class="col-form-label col-md-4 branchclass <%=othersallow%>">Branch</label>
+					<div class="col-md-8 branchclass <%=othersallow%>">
+                          <select class="form-control" name="dps_branch" id="so_branch" onchange="get_branchdarress_listed();">
+							<option value="" >-Select-</option>
+							<%
+								if @ZonalBranch && @ZonalBranch.length >0
+								@ZonalBranch.each do |newbrch|
+							%>
+							<option value="<%=newbrch.bch_branchcode%>" <% if @ListDispFirst && @ListDispFirst.dps_branch.to_s.downcase == newbrch.bch_branchcode.to_s.downcase %>selected="selected"<% end %>><%=newbrch.bch_branchname%></option>
+							<%
+								end
+							end
+							%>
+							</select>
+					</div>
+					<div class="col-md-4">
+					    </div>
+					<div class="col-md-8">
+                    
+					<textarea rows="3" cols="5" required maxlength="250" class="form-control" placeholder="Other/Branch Address" name="dps_branchaddress" id="dps_branchaddress"><% if @ListDispFirst %><%=@ListDispFirst.dps_branchaddress%><% end %></textarea>
+					</div>
+					
+					 </div>
+					 </div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            
+						     <label class="col-form-label col-md-4">Charges</label>
+					<div class="col-md-8">
+					 <input type="text"  maxlength="20" onkeypress="return isNumberFloatKey(event);" autocomplete="off" class="form-control" name="dps_charges" id="dps_charges" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_charges%><% end %>"/>
+					 </div>
+					 <label class="col-form-label col-md-4 hidden">Stamp Balance</label>
+					<div class="col-md-8 hidden">
+					 <input type="text" maxlength="20" autocomplete="off" class="form-control" name="dps_stampbalance" id="dps_stampbalance" value="<% if @ListDispFirst %><%=@ListDispFirst.dps_stampbalance%><% end %>"/>
+					 </div>   
+						 <label class="col-form-label col-md-4">Remarks</label>
+					<div class="col-md-8">
+						<textarea rows="3" cols="5" required maxlength="250" class="form-control" placeholder="Enter text here" name="dps_reamark" id="dps_reamark"><% if @ListDispFirst %><%=@ListDispFirst.dps_reamark%><% end %></textarea>
+                               
+						
+						        </div>      
+								<div class="col-md-6 mt-2">
+					<label>
+					Doc No./ Invoice
+					</label>
+					</div>
+					<div class="col-md-6 mt-2">
+                    <input rows="3" cols="5"  maxlength="50" class="form-control" placeholder="Doc No./ Invoice" name="dps_docno" id="dps_docno"></input>
+					</div>
+					<div class="col-md-6 mt-2">
+					<label>
+					Tracking Number
+					</label>
+					</div>
+					<div class="col-md-6 mt-2">
+                    <input rows="3" cols="5"  maxlength="50" class="form-control" placeholder="Tracking Number" name="dps_trackingno" id="trackingno"></input>
+					</div>
+					 
+						        
+                        </div></div>
+					</div>
+					
+					
+					<div class="form-group row">
+                	
+                        </div>
+					</div>
+					<div class="col-md-3">
+         <div class="card flex-fill">
+                  
+                  <div class="card-body" style="background:azure;height: 130px;">
+                      <div class="row m-b-5">
+                      <div class="col-md-5 lbl_name">Entry No* : 
+</div>
+<div class="col-md-7">
+   <% if @ListDispFirst %><%=@ListDispFirst.dps_entryno%><% else %><%=@lastEntryNo%> <% end %>
+</div>
+
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-5 lbl_name ">Entry Date* : 
+</div>
+<div class="col-md-7">
+   <% if @ListDispFirst %><%=formatted_date(@ListDispFirst.dps_entrydate)%><% else %><%=formatted_date(Date.today)%><% end %>
+</div>
+                    </div>
+                    
+                    
+                
+
+                    </div>
+                  </div>
+                  </div>
+                  <div class="col-md-12">
+                      <div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>postal"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+                  </div>
+				
+			</div>
+		</div>
+                <%
+                 end
+               %>
+	</div>
+	<!-- /Page Content -->
+</div>

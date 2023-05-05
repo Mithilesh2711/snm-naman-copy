@@ -1,0 +1,2 @@
+class TrnAdvanceAdjustment < ApplicationRecord
+end

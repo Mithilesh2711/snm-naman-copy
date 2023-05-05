@@ -1,0 +1,254 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title"> Accomodation Allotment</h3>
+					 <%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="aa_addtype" id="aa_addtype" value="<% if @AllotmentAdd %><%=@AllotmentAdd.aa_addtype%><% else %>H<% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @AllotmentAdd %><%=@AllotmentAdd.id%><% end %>"/>
+                <input type="hidden" name="currenyimage" id="currenyimage" value="<% if  @AllotmentAdd %><%=@AllotmentAdd.aa_attachment%><% end %>"/>
+                <input type="hidden" name="prevaccomod" id="prevaccomod" value="<% if  @AllotmentAdd %><%=@AllotmentAdd.aa_sewadarcode%><% end %>"/>
+                <% if @AllotmentAdd && @AllotmentAdd.aa_status =='C' %>
+                <div style="background-color:yellow">This Allotment has been cancelled.</div>
+                <% end %>
+                <br/>
+		<div class="row">
+			
+				<div class="col-md-9">
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Allotment No <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" name="aa_alotmentno" required id="aa_alotmentno" readonly autocomplete="off" class="form-control" value="<% if @AllotmentAdd %><%=@AllotmentAdd.aa_alotmentno%><% elsif @lastAllotno %><%=@lastAllotno%><% end %>"/>
+					</div>
+						<label class="col-form-label col-md-3">Allotment Date <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required autocomplete="off" name="aa_alotmentdate" id="aa_alotmentdate" autocomplete="off" class="form-control" value="<% if @AllotmentAdd %><%=format_oblig_date(@AllotmentAdd.aa_alotmentdate)%><% elsif @cdate %><%=format_oblig_date(@cdate)%><% end %>"/> </div>
+					</div>
+					<div class="form-group row">
+							<label class="col-form-label col-md-3">Belongs <span class="mandatory">*</span></label>
+					<div class="col-md-3" style="display:inline-flex;">
+					<div class="radio">
+													<label>
+                                                                                                          <input <% if @AllotmentAdd && @AllotmentAdd.aa_addtype == 'H' %>checked<% elsif @AllotmentAdd ==nil%>checked<% end %> type="radio" onclick="get_accomodation_address();"  name="aa_addtype_1" id="aa_addtype_1" value="H"/> Headquater
+													</label>
+												</div>
+												<div class="radio" style="margin-left: 10px;">
+													<label>
+														<input type="radio" <% if @AllotmentAdd && @AllotmentAdd.aa_addtype == 'B' %>checked<% end %> onclick="get_accomodation_address();"  name="aa_addtype_1" id="aa_addtype_2" value="B"/> Branch
+													</label>
+												</div>
+					</div>
+					</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">List of House Address <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                           <%
+                                             newdarress = ""
+                                             if @AllotmentAdd
+                                                allotaddresobj = get_address_item_listed(@AllotmentAdd.aa_address)
+                                                if allotaddresobj.length >0
+                                                  newdarress = allotaddresobj[0].ad_address
+                                                end
+                                            %>
+                                          <%=newdarress%>
+                                          <% else %>
+						<select class="form-control" name="aa_address" id="aa_address" required onchange="get_detail_accomodation_address();">
+							<option value="">-Select-</option>
+                                                        <%
+                                                        if @HeadBranch && @HeadBranch.length >0
+                                                          @HeadBranch.each do |newaddress|
+                                                        %>
+                                                        <option value="<%=newaddress.id%>" <% if @AllotmentAdd && @AllotmentAdd.aa_address.to_i == newaddress.id.to_i %>selected="selected"<% end %>><%=newaddress.ad_address%></option>
+                                                        <%
+                                                        end
+                                                      end
+                                                       %>
+						</select>
+                                            <%
+                                             end
+                                           %>
+					</div>
+					<label class="col-form-label col-md-3">Sewadar Department <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required name="aa_depcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+              <option value="">-Select</option>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @AllotmentAdd && @AllotmentAdd.aa_depcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+                     </div>
+						
+				</div>
+				<div class="form-group row">
+          <label class="col-form-label col-md-3">Sewadar Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required name="aa_sewadarcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+              <option value="">select</option>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @AllotmentAdd && @AllotmentAdd.aa_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+                     </div>
+          <label class="col-form-label col-md-3">Sewadar Name <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                           <select required class="form-control" name="sewdarname" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+              <option value="">select</option>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @AllotmentAdd && @AllotmentAdd.aa_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+            </select> </div>
+
+        </div>
+				<div class="form-group row">
+					
+			
+						<label class="col-form-label col-md-4">Whether Declaration-cum-Undertaking is signed
+</label>
+					<div class="col-md-2">
+						<select class="form-control" name="aa_declaretaking" id="aa_declaretaking">
+							<option value="Y" <% if @AllotmentAdd && @AllotmentAdd.aa_addtype.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+							<option value="N" <% if @AllotmentAdd && @AllotmentAdd.aa_addtype.to_s == 'N' %>selected="selected"<% end %>>N</option>
+						</select></div>
+						<label class="col-md-3">If Yes Attach Undertaking
+</label>
+<div class="col-md-3">
+	<input type="file" name="aa_attachment" id="aa_attachment"/>
+        <% 
+          if @AllotmentAdd
+         %>
+        <a href="<%=root_url%>images/allotment/<%=@AllotmentAdd.aa_attachment%>" target="_blank">
+          <img src="<%=root_url%>images/allotment/<%=@AllotmentAdd.aa_attachment%>" width="50"/>
+        </a>
+        <%
+         end
+       %>
+</div>
+				</div>
+						
+				<div class="submit-section process_save">
+                                        <% if @AllotmentAdd  == nil %>
+					<button class="btn btn-primary submit-btn " onclick="check_validities();">Save</button>
+                                        <% end %>
+                                        <% if @AllotmentAdd && @AllotmentAdd.aa_status !='C' %><a href="javascript:;" onclick="alertChecked('<%=root_url%>accomodation_allotment/<%=@AllotmentAdd.id%>/cancel')"><button class="btn btn-outline-dark submit-btn m-l-5 " type="button" >Cancel</button></a><%  end %>
+					 <a href="<%=root_url%>accomodation_allotment/allotment_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+				</div>
+                 <%
+                  accomotypes   = ""
+                  citydistrict  = ""
+                  mystates      = ""
+                  noofrooms     = ""
+                  kitchentype   = ""
+                  washroomstype = ""
+                  myaddflags    = "hidden"
+                 if @AllotmentAdd
+                      addobjs = get_address_item_listed(@AllotmentAdd.aa_address)
+                      if addobjs.length >0
+                        myaddflags    =""
+                        accomotypes   = addobjs[0].accomotype
+                        citydistrict  = addobjs[0].districts
+                        mystates      = addobjs[0].states
+                        noofrooms     = addobjs[0].ad_noofrooms
+                        kitchentype   = addobjs[0].ad_typeofkitechen
+                        washroomstype = addobjs[0].ad_typeofwashroom
+                       
+                      end
+                 end
+               %>
+				<div class="col-md-3 process_show_address <%=myaddflags%>">
+					<div class="card flex-fill">
+									
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-7 lbl_name">Accomodation Type
+</div>
+ <div class="col-md-5 lbl_value lb_accomtype">
+   <%=accomotypes%>
+</div>
+										</div>
+										<div class="row">
+											<div class="col-md-7 lbl_name">City/District
+</div>
+<div class="col-md-5 lbl_value lb_city">
+  <%=citydistrict%>
+</div>
+
+										</div>
+										<div class="row">
+											<div class="col-md-7 lbl_name">State
+</div>
+<div class="col-md-5 lbl_value lb_state">
+  <%=mystates%>
+</div>
+										</div>
+										<div class="row">
+											<div class="col-md-7 lbl_name">No of Rooms
+</div>
+<div class="col-md-5 lbl_value lb_noofrooms">
+  <%=noofrooms%>
+</div>
+										</div>
+										<div class="row">
+											<div class="col-md-7 lbl_name">Kitchen Type
+</div>
+<div class="col-md-5 lbl_value lb_kitchentype">
+  <%=kitchentype%>
+</div>
+										</div>
+										<div class="row">
+											<div class="col-md-7 lbl_name">Washroom Type
+</div>
+<div class="col-md-5 lbl_value lb_washeroomtype">
+  <%=washroomstype%>
+</div>
+										</div>
+									</div>
+									
+								</div>
+				</div>
+			
+				
+			
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

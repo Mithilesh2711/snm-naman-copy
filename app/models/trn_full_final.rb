@@ -1,0 +1,2 @@
+class TrnFullFinal < ApplicationRecord
+end

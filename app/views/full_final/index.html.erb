@@ -1,0 +1,230 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Manage Full and Final</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+       
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                         <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments" >
+           <option value="">-Select-</option>        
+          <%            
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+           <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+           %>
+          </select>
+          <label class="focus-label">Department</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="hph_months" id="hph_months" required>
+                <option value="">-Select-</option>
+                <option value="1"   <% if @hph_months.to_i == 1%> selected="selected" <% end %> >Jan</option>
+                <option value="2"   <% if @hph_months.to_i == 2%> selected="selected" <% end %>>Feb</option>
+                <option value="3"   <% if @hph_months.to_i == 3%> selected="selected" <% end %>>Mar</option>
+                <option value="4"   <% if @hph_months.to_i == 4%> selected="selected" <% end %>>Apr</option>
+                <option value="5"   <% if @hph_months.to_i == 5%> selected="selected" <% end %>>May</option>
+                <option value="6"   <% if @hph_months.to_i == 6%> selected="selected" <% end %>>Jun</option>
+                <option value="7"   <% if @hph_months.to_i == 7%> selected="selected" <% end %>>Jul</option>
+                <option value="8"   <% if @hph_months.to_i == 8%> selected="selected" <% end %>>Aug</option>
+                <option value="9"   <% if @hph_months.to_i == 9%> selected="selected" <% end %>>Sep</option>
+                <option value="10"  <% if @hph_months.to_i == 10%> selected="selected" <% end %>>Oct</option>
+                <option value="11"  <% if @hph_months.to_i == 11%> selected="selected" <% end %>>Nov</option>
+                <option value="12"  <% if @hph_months.to_i == 12%> selected="selected" <% end %>>Dec</option>
+          
+          </select> 
+          <label class="focus-label">Month</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" id="hph_years" name="hph_years" required>
+              <option value="">-Select-</option>
+               <%
+               prevdate = @nbegindate
+               newprvs  = @nbegindate.to_i+2
+               while prevdate.to_i <=newprvs.to_i do
+              %>
+               <option value="<%=prevdate.to_i%>" <% if @hph_years.to_i == prevdate.to_i  %>selected="selected" <% elsif @HeadHrp && @HeadHrp.hph_years.to_i == prevdate.to_i %>selected="selected" <% end %>><%=prevdate.to_i%></option>
+               <%
+               prevdate= prevdate.to_i+1
+               end
+               %>
+               
+          </select>
+          <label class="focus-label">Year</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_codetype" id="sewadar_codetype" >
+            <option value="">-Select-</option>
+          <option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+          <option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+          <option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+          <option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+          <option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+          </select>
+          <label class="focus-label">Search According</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-3" >
+          <div class="form-group form-focus">
+          <input type="text" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+          <label class="focus-label" style="font-size:11px">Code,Name,Mobile,Email</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-1 m-t-5" style="padding-left: 10px">
+          <a href="javascript:;" style="padding: 14px;" onclick="filter_full_final();" class="btn btn-success btn-sm"  > Search </a>
+          </div>
+
+          
+          </div>
+<% end %>
+         
+          <!-- /Leave Statistics -->
+          
+          <div class="row">
+            <div class="col-md-12">
+                <div >
+                                    <a href="<%=root_url%>full_final/add_fullfinal" class="btn add-btn float-left">Add Full Final</a>
+
+                                  </div>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable">
+                  <thead>
+                    <tr>
+                      <th>Sewadar</th>
+                      <th>Leaving Date</th>
+                      <th>Full and Final Date</th>
+                      <th>Reason</th>
+                      <th>Action</th> 
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                  pagestart = params[:page] ? params[:page] : 1
+                   
+                  if pagestart.to_i <=1
+                  i = 1
+                  else
+                  i = ((pagestart.to_i-1)*20)+1
+                  i = i.to_i
+                  end
+                    
+                    if @fullfinallisted && @fullfinallisted.length >0
+                    @fullfinallisted.each do |newsw|
+                      oldcode = ""
+                      sewadarname = ""
+                      genders = ""
+                      myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                      newsewa   = get_mysewdar_list_details(newsw.ff_sewacode)                      
+                     if newsewa
+                        if newsewa.sw_image !=nil && newsewa.sw_image !=''
+                            chekpath = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+                            if File.file?(chekpath)
+                              myimages = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+                            end
+                        end
+                            mycatgpars  = newsewa.sw_catgeory
+                            oldcode     = newsewa.sw_oldsewdarcode
+                            sewadarname = newsewa.sw_sewadar_name
+                            if newsewa.sw_gender == 'M'
+                                 genders     = 'Male'
+                            elsif newsewa.sw_gender == 'F'
+                               genders     = 'Female'
+                            end
+                           
+                       end
+                 
+                  %>
+                    <tr>
+                      <td>
+                        
+                        <h2 class="table-avatar">
+
+                        <a href="javascript:;" class="avatar"><img alt="<%=sewadarname%>" src="<%=myimages%>"></a>
+                        <div>
+                        <span>  <%=newsw.ff_sewacode%>  <% if oldcode !=nil && oldcode !='' %>(<%=oldcode%>) <% end %></span>
+                        <a href="javascript:;"><%=sewadarname%></a>
+                        <span><%=genders%>, <%=mycatgpars%></span>
+                        </div>
+                        </h2>
+                        <br>
+                    
+                    
+                      </td>
+                      <td><%=formatted_date(newsw.ff_leavingdate)%></td>
+                        <td><%=formatted_date(newsw.ff_fullandfinaldate)%></td>
+                      
+                      <td><%=newsw.ff_leavingreason%></td>
+                     <td class="text-right">
+                      <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                    <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>full_final/add_fullfinal/<%=newsw.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" href="<%=root_url%>full_final/1_prt_<%=newsw.id%>_full_final_report.pdf" target="_blank"><i class="fa fa-print" aria-hidden="true"></i>
+ Print</a></div>
+                                  </div>
+                      </td>
+
+                      
+                    </tr>
+                  <%
+                    end
+                    else
+                  %>
+                   <tr>
+                      <td colspan="8">No record(s) found.</td>
+                    </tr>
+                  <% end %>
+                    
+                    
+                    
+                  </tbody>
+                </table>
+                <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8"> </div>
+
+                                  </div>
+              </div>
+            </div>
+          </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

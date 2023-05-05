@@ -1,0 +1,189 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+	 <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Manage Electric Consumption</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>electric_consumption/consumption_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>        
+
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      </div>
+    </div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                                <input type="hidden" name="mid" id="mid" value="<% if @ElectricList %><%=@ElectricList.id%><% end %>"/>
+				<input type="hidden" name="ec_department" id="al_depcode"  value="<% if @ElectricList %><%=@ElectricList.ec_department%><% end %>"/>
+				<input type="hidden" name="ec_entryno" id="ec_entryno" value="<% if @ElectricList %><%=@ElectricList.ec_entryno%><% elsif @lastEntryNo %><%=@lastEntryNo%><% end %>"/>
+				<input type="hidden" name="ec_readingdate" id="ec_readingdate" value="<% if @ElectricList %><%=format_oblig_date(@ElectricList.ec_readingdate)%><% elsif @cdate %><%=format_oblig_date(@cdate)%><% end %>"/>
+                                <input type="hidden" name="ec_readingyear" id="ec_readingyear" value="<% if @ElectricList %><%=@ElectricList.ec_readingyear%><% elsif @CurrentYear %><%=@CurrentYear%><% end %>"/>
+				<input type="hidden" name="ec_readingmonth" id="ec_readingmonth" value="<% if @ElectricList %><%=@ElectricList.ec_readingmonth%><% elsif @CurrentMonth %><%=@CurrentMonth%><% end %>"/>
+                                
+                                <input type="hidden" name="hrmonths" id="hrmonths" value="<% if @CurrentMonth %><%=@CurrentMonth%><% end %>"/>
+                                <input type="hidden" name="hryears" id="hryears"  value="<% if @CurrentYear %><%=@CurrentYear%><% end %>"/>
+
+                                <div class="row">
+			
+				<div class="col-md-9">
+						<div class="form-group row">
+						    
+							<label class="col-form-label col-md-3">Sewadar Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" required name="ec_sewdarcode" id="alsewdarname" onchange="get_last_reading();">
+							<option value="">-Select-</option>
+                                                        <%
+                                                         if @Allsewobj && @Allsewobj.length >0
+                                                          @Allsewobj.each do |sewdnm|
+                                                        %>
+                                                        <option value="<%=sewdnm.sw_sewcode%>" <% if @ElectricList && @ElectricList.ec_sewdarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%> (<%=sewdnm.sw_sewcode%>)</option>
+                                                        <%
+                                                          end
+                                                        end
+                                                       %>
+						</select>
+						<label class="col-form-label"><span id="branch_administrator"><% if @myadminstrator %><%=@myadminstrator%><% end %></span></label>
+						</div>
+						<label class="col-form-label col-md-3">Current Reading <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+							<input type="text" onchange="check_current_reading('CR');" onkeypress="return isNumberKeys(event);" required  autocomplete="off" class="form-control right " name="ec_currentreading" id="ec_currentreading" value="<% if @ElectricList %><%=@ElectricList.ec_currentreading.to_i%><% end %>"/> 
+							<label class="col-form-label">Last Reading: <span id="basedselctedlastreading"><% if @ElectricList && @ElectricList.ec_lastreading.to_i >0 %><%=@ElectricList.ec_lastreading.to_i%><% end %></span></label>
+							</div>
+					</div>
+					<div class="form-group row">
+					<label class="col-form-label col-md-3">Total Unit <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+							<input type="text" readonly required  autocomplete="off" class="form-control right" name="ec_totalunit" id="ec_totalunit" value="<% if @ElectricList %><%=@ElectricList.ec_totalunit.to_i%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-3">Total Amount <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+							<input type="text" readonly required  autocomplete="off" class="form-control right" name="ec_totalamount" id="ec_totalamount" value="<% if @ElectricList %><%=currency_formatted(@ElectricList.ec_totalamount)%><% end %>"/>
+					</div>
+					
+					</div>
+					<div class="form-group row">
+					<label class="col-form-label col-md-3">Remarks</label>
+					<div class="col-md-3">
+					<input class="form-control"  autocomplete="off" name="ec_reamrk" id="ec_reamrk" value="<% if @ElectricList %><%=@ElectricList.ec_reamrk%><% end %>"/>
+					 </div>
+						<label class="col-form-label col-md-3">Last Reading <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+							<input type="text" onchange="check_current_reading('LR');" onkeypress="return isNumberKeys(event);"  required <% if @ElectricList && @ElectricList.ec_lastreading.to_i >0 %>readonly<% end %> autocomplete="off" class="form-control right" name="ec_lastreading" id="ec_lastreading" value="<% if @ElectricList %><%=@ElectricList.ec_lastreading.to_i%><% end %>"/>
+					</div>
+				</div>
+<%
+  myelectrichidden = "hidden"
+  process_headmeter = "hidden"
+  if @ElectricList !=nil
+       process_headmeter = ""
+      if @ElectricList.ec_newmeter.to_s == 'Y'
+        myelectrichidden = ""
+      end
+  end
+
+%>
+
+        <div class="form-group row process_headmeter">
+					<label class="col-form-label col-md-3">New Meter</label>
+					<div class="col-md-1">
+					<input type="checkbox" onclick="ge_enable_lastreading();" autocomplete="off" name="ec_newmeter" id="ec_newmeter" <% if @ElectricList !=nil && @ElectricList.ec_newmeter.to_s == 'Y' %>checked<% end %> value="Y"/>
+					 </div>
+					<label class="col-form-label col-md-3 process_newmeter <%=myelectrichidden%>">Old Reading <span class="mandatory">*</span></label>
+					<div class="col-md-3 process_newmeter <%=myelectrichidden%>">
+							<input type="text" readonly autocomplete="off" class="form-control right" name="ec_oldreading" id="ec_oldreading" value="<% if @ElectricList && @ElectricList.ec_oldreading.to_i>0 %><%=@ElectricList.ec_oldreading.to_i%><% elsif @ElectricList && @ElectricList.ec_lastreading.to_i >0 %><%=@ElectricList.ec_lastreading.to_i%><% end %>"/>
+					</div>
+				</div>
+					
+          <%
+           allowedbttn = ""
+            if @AllowedRequested 
+              allowedbttn = "hidden"
+            end
+          %>
+									
+					
+					<div class="submit-section process_save ">
+					<button class="btn btn-primary submit-btn <%=allowedbttn%>" onclick="return process_save_return();">Save</button>
+          <a href="<%=root_url%>electric_consumption/refresh_electric_consumption"><button class="btn btn-success submit-btn m-l-5 " type="button">Reset</button></a>
+					<a href="<%=root_url%>electric_consumption/consumption_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				   </div>
+				
+				
+			<div class="form-group row">
+					
+					
+							
+				</div>
+						
+				<div class="form-group row">
+				
+       </div> 
+       
+       
+       </div>
+       <div class="col-md-3">
+         <div class="card flex-fill">
+                  
+                  <div class="card-body" style="background:azure;">
+                      <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">Entry No* :
+</div>
+<div class="col-md-5">
+    <% if @ElectricList %><%=@ElectricList.ec_entryno%><% elsif @lastEntryNo %><%=@lastEntryNo%><% end %>
+</div>
+
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Reading Date* :
+</div>
+<div class="col-md-5">
+    <% if @ElectricList %><%=format_oblig_date(@ElectricList.ec_readingdate)%><% elsif @cdate %><%=format_oblig_date(@cdate)%><% end %>
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Reading for Month* :
+</div>
+<div class="col-md-5">
+    <% if @ElectricList %><%=@ElectricList.ec_readingmonth%><% elsif @CurrentMonth %><%=@CurrentMonth%><% end %> 
+</div>
+                    </div>
+                   <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Reading for Year* :
+</div>
+<div class="col-md-5">
+    <% if @ElectricList %><%=@ElectricList.ec_readingyear%><% elsif @CurrentYear %><%=@CurrentYear%><% end %>
+</div>
+                    </div>
+                    
+                
+
+                    </div>
+                  </div>
+                  
+                </div>
+				</div>
+				
+			
+				
+			
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

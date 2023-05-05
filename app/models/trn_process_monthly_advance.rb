@@ -1,0 +1,2 @@
+class TrnProcessMonthlyAdvance < ApplicationRecord
+end

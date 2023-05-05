@@ -1,0 +1,2 @@
+class MstSerialNumber < ApplicationRecord
+end

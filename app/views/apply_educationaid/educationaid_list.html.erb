@@ -1,0 +1,443 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Apply for Education Aid</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" id="filteroption" name="filteroption" value="<% if @filteroption %><%=@filteroption%><% else %>A<% end %>"/>
+                <input type="hidden" id="server_request" name="server_request" value="Y"/>
+                <input type="hidden" id="requestaccording" name="requestaccording" value="<% if @requestaccording %><%=@requestaccording%><% end %>"/>
+                
+    <div class="row">
+            <div class="col-md-12 ">
+            <div class = "row">
+             <div class = "col-md-12 d-flex">
+            
+                     
+                      <a href="<%=root_url%>apply_educationaid" class="btn add-btn ">Apply</a> 
+                    
+            </div>
+            </div>
+             
+                   <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+                 <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department">
+                                                                <%
+                                    if @sewDepart && @sewDepart.length >1
+                                  %>
+                                    <option value=""> -- Select -- </option>
+                                    <% end %>
+                                      <%
+                                        if @sewDepart && @sewDepart.length >0
+                                        @sewDepart.each do |depts|
+                                    %>
+                                      <option value="<%=depts.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == depts.departCode.to_s.downcase%>selected="selected"<% end %>><%=depts.departDescription%></option>
+                                    <%
+                                      end
+                                    end
+                                    %>
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_category" id="voucher_category">
+                   <%
+                        if @sewadarCategory && @sewadarCategory.length >1                      
+                    %>
+                     <option value="">--Select--</option>
+                     <% end %>
+                         <%
+                             if @sewadarCategory && @sewadarCategory.length >0
+                             @sewadarCategory.each do |secats|
+                          %>
+                            <option value="<%=secats.sc_name%>" <% if @voucher_category && @voucher_category.to_s.downcase == secats.sc_name.to_s.downcase%>selected="selected"<% end %> ><%=secats.sc_name%></option>
+                          <%
+                           end
+                         end
+                         %>
+                </select>
+                <label class="focus-label">Sewadar Type</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" name="sewadar_status" id="sewadar_status">
+                  <option value="">-Select-</option>
+                  <option value="N" <% if @sewadar_status && @sewadar_status.to_s == 'N' %>selected="selected"<% end %> >Pending </option>
+                  <option value="A" <% if @sewadar_status && @sewadar_status.to_s == 'A'%>selected="selected"<% end %> >Approve</option>
+                  <option value="F" <% if @sewadar_status && @sewadar_status.to_s == 'F'%>selected="selected"<% end %> >Forward To HR</option>
+                  <option value="R" <% if @sewadar_status && @sewadar_status.to_s == 'R'%>selected="selected"<% end %> >Reject</option>
+
+                                                                           
+                </select>
+                <label class="focus-label">Status</label>
+              </div>
+             </div>
+             
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_requesttype" id="sewadar_requesttype">
+                  <option value="">-Select-</option>                     
+                  <option value="self" <% if @sewadar_requesttype && @sewadar_requesttype.to_s == 'self'%>selected="selected"<% end %> >Self</option>
+                  <option value="dependent" <% if @sewadar_requesttype && @sewadar_requesttype.to_s == 'dependent'%>selected="selected"<% end %>>Dependent</option>
+
+                </select>
+                <label class="focus-label">Request Type</label>
+              </div>
+             </div>
+             
+                  
+                    </div>
+                         <%
+              if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+            %>
+                     <div class="row filter-row">
+                         <div class="col-md-5">
+                 
+                <input type="radio" onclick="check_apply_educations();" id="fordate" <% if @requestaccording && @requestaccording.to_s == 'AP' %>checked<% end %> name="foraccordingdate" value="AP">
+  <label for="date">According Approve Date</label>
+  <input type="radio" onclick="check_apply_educations();"  id="forvoucher" <% if @requestaccording && @requestaccording.to_s == 'VH' %>checked<% end %> name="foraccordingdate" value="VH">
+  <label for="voucher">According Voucher Date</label><br>
+             </div>
+                          <div class="col-md-2"> 
+              
+                <input type="text" class="form-control" placeholder="from date" name="search_from_date" id="search_from_date" value="<% if @search_from_date %><%=@search_from_date%><% end %>"/>
+                </div>
+      
+              <div class="col-md-2"> 
+                 
+                    <input type="text" class="form-control" placeholder="upto  date" name="search_upto_date" id="search_upto_date" value="<% if @search_upto_date %><%=@search_upto_date%><% end %>"/>
+                    
+                
+             </div>
+             <div class="col-md-2">  
+              <a href="javascript:;" onclick="filter_approval();" class="btn btn-success btn-block" ><i class="fa fa-search"></i> Search </a>
+             </div>
+              
+                     </div> 
+
+
+           <% end %>
+                    </div>
+               
+                  
+                     <div>&nbsp;</div>
+           <div class = "row">
+             <div class = "col-md-12 d-flex">
+             <%
+             if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'
+             %>
+             <div class = "col-md-8 mt10">
+              
+                 <input type="radio" name="education_listed" <% if @filteroption && @filteroption.to_s =='all'%>checked="checked"<% elsif !@filteroption%>checked="checked"<% end %> onclick="selected_education_option();"  value="all"/>&nbsp;All&nbsp;&nbsp;&nbsp;<input type="radio" <% if @filteroption && @filteroption.to_s =='A'%>checked="checked"<% end %> onclick="selected_education_option();" name="education_listed" value="A">&nbsp;Approved&nbsp;&nbsp;<input type="radio" <% if @filteroption && @filteroption.to_s =='N'%>checked="checked"<% end %> onclick="selected_education_option();" name="education_listed" value="N">&nbsp;Unapproved
+             </div>
+             
+                  <%
+                  if @MarriageListing && @MarriageListing.length >0
+                  %>
+                    <div class = "col-md-2">                     
+                      <a href="<%=root_url%><%=@printPdf%>" target="_blank" class="btn add-btn "  >Download</a> 
+                    
+                    </div>
+                  
+                    
+                    <div class="col-md-2"> 
+                 
+                      <a href="<%=root_url%><%=@printXPdf%>" target="_blank"  class="btn btn-success add-btn" > View Vouchers </a>
+                    
+                
+                       </div>
+                         <% end %>
+                    <% end %>
+                    
+            </div>
+                                  
+              <div class="table-responsive" style="white-space:unset">
+                <table class="table table-striped custom-table mb-0 " id="apply_education_listed">
+                  <thead>
+                    <tr>
+                      <th>Request No<br/>Request Date<br/>Apply For</th> 
+                      <th>Sewadar Details</th>  
+                       <th>Aadhaar No.<br/>Date of Birth<br/>Sanction No.<br/>Sanction Date</th>                     
+                      <th>Dependent<br/>For Class <br/> Amount</th>
+                      <th>School/University Name</th>   
+                      <%
+                        if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'          
+                      %>                    
+                      <th>Remark</th>
+                      <% end %>
+                      <th>Attachment 1<br>Attachment 2<br>Attachment 3</th>
+                      <th class="text-center">Status</th>
+                      <th>Forwarded By (Sh./Smt.)</th> 
+                      <th>Action</th>                    
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                     if @MarriageListing && @MarriageListing.length >0
+                      @MarriageListing.each do |newmarriage|
+                      relatoinname    = ""
+                      aadhaarno       = ""
+                      doblist         = ""
+                      selfdob         = ""
+                      selfadhar       = ""
+                      skunvname       = ""
+                      relaobj = get_family_relation_detail(newmarriage.aea_dependent);
+                      if relaobj
+                          relatoinname = relaobj.skf_dependent
+                          aadhaarno    = relaobj.skf_pannumber
+                          doblist      = relaobj.skf_datebirth
+                          skunvobj     = get_common_unversity_firstrecord(relaobj.skf_university)
+                          if skunvobj
+                            skunvname = skunvobj.un_description
+                          end
+                          
+                      end
+                      approvedby = ""
+                      lds_profile = ""
+                      deprtobj = get_all_department_detail(newmarriage.aea_departcode)
+                      if deprtobj
+                           department = deprtobj.departDescription
+                          #  aprvobj     = get_first_my_sewadar(deprtobj.departHod)
+                          #  if aprvobj
+                          #   approvedby  = aprvobj.lds_name
+                          #   lds_profile = aprvobj.lds_profile
+                          #  end
+                      end
+                      seapprovedobj = get_global_users(newmarriage.aea_approvedby)
+                      if seapprovedobj
+                           membercode  = seapprovedobj.ecmember
+                           ldsobj      = get_member_listed(membercode)
+                           if ldsobj
+                               approvedby  = ldsobj.lds_name
+                               lds_profile = ldsobj.lds_profile
+                           end
+                            
+                      end
+                      voucherno   = ""
+                      voucherdate = ""
+                      vouchobj = get_voucher_detail(newmarriage.aea_requestno)
+                      if vouchobj
+                           voucherno   = vouchobj.vd_voucherno
+                           voucherdate = vouchobj.vd_voucherdate
+                      end
+                       
+                   %>
+                   <%
+                        myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"                    
+                        if lds_profile !=nil && lds_profile !=''
+                            chekpath = "#{Rails.root}/public/images/profile/"+lds_profile.to_s
+                              if File.file?(chekpath)
+                                myimages = "#{root_url}images/profile/"+lds_profile.to_s
+                              end
+                         end 
+                        kycobj    =  global_sewadar_kyc_information(newmarriage.aea_sewadarcode)  
+                        if kycobj
+                          selfadhar = kycobj.sk_adharno
+                        end
+                        classname = get_class_series(newmarriage.aea_forclass)                       
+                        newsewa   = get_mysewdar_list_details(newmarriage.aea_sewadarcode)
+                        myimagex  = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                        if newsewa
+                            selfdob = newsewa.sw_date_of_birth
+                            if newsewa.sw_image !=nil && newsewa.sw_image !=''
+                                chekpaths = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+                                if File.file?(chekpaths)
+                                  myimagex = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+                                end
+
+                            end
+                        end 
+
+                    %>
+                    <tr>
+                    
+                     <td style="width:10%">
+                      <%=newmarriage.aea_requestno%><br/>
+                      <%=formatted_date(newmarriage.aea_requestdate)%>
+                      <br/>
+                      <%=newmarriage.aea_applyfor.to_s.capitalize%>
+                     </td>
+                    
+                    <td>
+
+                    <h2 class="table-avatar">
+
+                    <a href="javascript:;" class="avatar"><img alt="<%=newsewa.sw_sewadar_name%>" src="<%=myimagex%>"/></a>
+                    <div>
+                    <span>	<%=newsewa.sw_sewcode%> <% if newsewa.sw_oldsewdarcode !=nil && newsewa.sw_oldsewdarcode!='' %> (<%=newsewa.sw_oldsewdarcode%>)<% end %> </span>
+                    <a href="javascript:;"><%=newsewa.sw_sewadar_name%></a>
+                    <span><% if newsewa.sw_gender =='M'%>MALE<% elsif newsewa.sw_gender =='F'%>FEMALE<% end %><br/><%=department%></span>
+                    </div>
+                    </h2>
+                    <br/> 
+                    </td>
+                    <td>
+                        <%
+                         if newmarriage.aea_applyfor.to_s =='self'                         
+                        %>
+                         <%=selfadhar%><br/>
+                              <%=formatted_date(selfdob)%> 
+                        <% else %>
+                              <%=aadhaarno%><br/>
+                              <%=formatted_date(doblist)%>                         
+                        <% end %>
+                        <%
+                          if voucherno !=nil && voucherno !=''
+                        %>
+                             <br/>
+                              <%=voucherno%><br/>
+                              <%=formatted_date(voucherdate)%> 
+                        <% end %>  
+                        
+                    </td> 
+                                      
+                    <td><%=relatoinname%><br/><%=classname%><br/><%=currency_formatted(newmarriage.aea_amount)%></td>  
+                    <td>
+                      <%=skunvname%>
+                    </td> 
+                    <%
+                      if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'          
+                    %>                  
+                    <td>
+
+                     <%=newmarriage.aea_remark%>
+                    
+                     </td>
+                     <% end %>
+                      <td>
+                      <% if newmarriage.ama_attachfirst != nil && newmarriage.ama_attachfirst != '' %>
+                        <a href="<%=root_url%>images/education/a1/<%=newmarriage.ama_attachfirst%>" target="_blank">
+                        <%=newmarriage.aea_titlefirst!=nil && newmarriage.aea_titlefirst!= '' ? newmarriage.aea_titlefirst : newmarriage.ama_attachfirst%>
+                        </a>
+                      <% end %>
+                      <% if newmarriage.aea_attachsecond != nil && newmarriage.aea_attachsecond != '' %>
+                        <br/>
+                        <a href="<%=root_url%>images/education/a2/<%=newmarriage.aea_attachsecond%>" target="_blank">
+                        <%=newmarriage.aea_tiitlesec!=nil && newmarriage.aea_tiitlesec!= '' ? newmarriage.aea_tiitlesec : newmarriage.aea_attachsecond%>
+                        </a>
+                        <% end %>
+                        <% if newmarriage.aea_attachthird != nil && newmarriage.aea_attachthird != '' %>
+                        <br/>
+                        <a href="<%=root_url%>images/education/a3/<%=newmarriage.aea_attachthird%>" target="_blank">
+                        <%=newmarriage.aea_titlethird!=nil && newmarriage.aea_titlethird!= '' ? newmarriage.aea_titlethird : newmarriage.aea_attachthird%>
+                        </a>
+                      <% end %>
+                      </td>
+                      <td class="text-center">
+                      <%
+                      if newmarriage.aea_status=='C'
+                      %>
+                      Cancelled
+                      <% else %>
+                        <div class="action-label">
+                          <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
+                            <i class="fa fa-dot-circle-o text-success"></i>
+                              <%
+                               if newmarriage.aea_status == 'N'
+                              %>
+                                Pending
+                            <%
+                               elsif newmarriage.aea_status == 'A'
+                              %>
+                              Approved
+                            <%
+                               elsif newmarriage.aea_status == 'F'
+                              %>
+                              Forwarded To HR  
+                             <%
+                               elsif newmarriage.aea_status == 'R'
+                              %>
+                              Rejected  
+                              <% end %>
+                          </a>
+                        </div>
+                        <% end %>
+                      </td>
+
+                      <td> 
+                       <%
+                               if newmarriage.aea_status != 'N' && newmarriage.aea_status != ''
+                              %>
+                       <h2 class="table-avatar">
+                          <a href="javascript:;" class="avatar avatar-xs"><img src="<%=myimages%>" width="30pix;"/></a>
+                          <a href="javascript:;"><%=approvedby%></a>
+                        </h2>
+                        <% else %>
+                     
+                        <% end %>
+                        
+                        </td>
+                        <td class="text-center hidden">
+                           <a href ="javascipt:;" rel="<%=@printPath%>" id ="printexceled<%=newmarriage.id%>" onclick="print_salary_excel_register('<%=newmarriage.id%>');">Download </a>
+                        </td>
+                        <td class="text-right">
+                          <%
+                            if newmarriage.aea_status == 'A' || newmarriage.aea_status == 'R' || newmarriage.aea_status == 'C' || newmarriage.aea_status == 'F'
+                               if newmarriage.aea_status != 'C'
+                          %>
+                         
+                        <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="<%=root_url%>apply_educationaid/<%=newmarriage.id%>"><i class="fa fa-pencil m-r-5"></i> View</a> 
+                      
+                          </div>
+                        </div>
+                        <% end %>
+                  <% else %>
+                      <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="<%=root_url%>apply_educationaid/<%=newmarriage.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>apply_educationaid/<%=newmarriage.id%>/cancel');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Cancel</a>
+                          
+                          </div>
+                      </div>
+                  <% end%>
+</td>
+                    </tr>
+                   <%
+                    end
+                    else
+                   
+                   %>
+                  <tr>
+                    <td colspan="4">No record(s) found.</td>
+                  </tr>
+                   <%
+                    end
+                   %>                    
+                  </tbody>
+                </table>
+             
+              </div>
+            </div>
+          </div>
+      </div>
+                 <% end %>  
+    </div>
+  </div>
+  <!-- /Page Content -->

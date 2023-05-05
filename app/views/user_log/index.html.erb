@@ -1,0 +1,97 @@
+<div class="page-wrapper">
+
+				<!-- Page Content -->
+                <div class="content container-fluid">
+
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<h3 class="page-title">Users</h3>
+								<ul class="breadcrumb">
+									<%=render'layouts/breadcrumbs'%>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+					<!-- /Page Header -->
+
+					<!-- Search Filter -->
+                                         <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                            <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                            <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                            <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+					<div class="row filter-row">
+						
+
+						<div class="col-sm-6 col-md-3">
+						<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_tpes" id="sewadar_tpes">
+<option value="">Select</option>
+
+
+</select>
+<label class="focus-label">User</label>
+</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="form-group form-focus">
+								<input type="text" class="form-control floating" name="" id="" value=""/>
+								<label class="focus-label">From Date</label>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+							<div class="form-group form-focus">
+								<input type="text" class="form-control floating" name="" id="" value=""/>
+								<label class="focus-label">Upto Date</label>
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-3">
+								<a href="javascript:;" style="padding:14px" class="btn btn-success btn-sm" onclick="filter_users();" ><i class="la la-search"></i> Search </a>
+						</div>
+						
+                    </div>
+                            <% end %>
+					<!-- /Search Filter -->
+
+					<div class="row">
+						<div class="col-md-12">
+
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead class="new_tblhead">
+										<tr>
+											<th id="center">Screen Name</th>
+											<th id="center">User Name</th>											
+											<th id="center">Transaction Code</th>
+                      <th id="center">Event</th>
+											<th  id="center">Date Time</th>
+										</tr>
+									</thead>
+									<tbody>
+										<td id="center">Sewadar Screen</td>
+										<td id="center">Admin</td>
+										<td id="center">SD4587</td>
+										<td id="center">Add</td>
+										<td id="center">01-11-2021 16:00</td>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+                </div>
+				<!-- /Page Content -->
+
+
+
+
+
+
+            </div>
+			<!-- /Page Wrapper -->

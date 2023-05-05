@@ -1,0 +1,83 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<div class="row">
+						<h3 class="page-title col-md-10">Add Magazine</h3>
+					 	<div class="col-md-2 m-b-5 ">
+						 		<a href="<%=root_url%>magazine" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+						 	</div>
+				
+				</div>
+					<%=render'layouts/breadcrumbs'%>
+			</div>
+		</div>
+	</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_mag_code" id="cur_mag_code" value="<% if @ListMagazine %><%=@ListMagazine.mag_code%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListMagazine %><%=@ListMagazine.id%><% end %>"/>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Code <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<input type="text" autocomplete="off" class="form-control  " required maxlength="3" name="mag_code" id="mag_code" value="<% if @ListMagazine %><%=@ListMagazine.mag_code%><% end %>"/><a href="#"  data-container="body" data-toggle="popover" data-placement="right" data-content="Magazine code allowed 3 Character" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </div>
+
+					<label class="col-form-label col-md-2">Name  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" autocomplete="off" class="form-control" required maxlength="50" name="mag_name" id="mag_name" value="<% if @ListMagazine %><%=@ListMagazine.mag_name%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Language <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select class="form-control" name="mag_language" id="mag_language" tabindex="
+                    1" required>
+                        <option value="">--Select--</option>
+                                                    <%
+                                                     if @ListLang.length >0
+                                                      @ListLang.each do |newlang|
+                                                    %>
+                                                    <option value="<%=newlang.lang_code%>" <% if @ListMagazine && @ListMagazine.mag_language.to_s.downcase == newlang.lang_code.to_s.downcase %>selected="selected"<% end %>><%=newlang.lang_name%></option>
+                                                    <%
+                                                     end
+                                                     end
+                                                   %>
+                    </select>
+                </div>
+                <label class="col-form-label col-md-2"> No. of Magazines/year <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="number" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mag_frequency" id="mag_frequency" value="<% if @ListMagazine %><%=@ListMagazine.mag_frequency%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="status" id="status">
+                                              <option value="">-Select</option>
+                                              <option value="Y" <% if @ListMagazine && @ListMagazine.status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                              <option value="N" <% if @ListMagazine && @ListMagazine.status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                                            </select>
+                                    </div>
+                </div>
+
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn" type="submit">Save</button>
+					<a href="<%=root_url%>magazine"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

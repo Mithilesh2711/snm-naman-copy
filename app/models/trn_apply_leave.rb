@@ -1,0 +1,2 @@
+class TrnApplyLeave < ApplicationRecord
+end

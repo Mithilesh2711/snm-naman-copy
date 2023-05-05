@@ -1,0 +1,2 @@
+class MstSewadarWorkExperience < ApplicationRecord
+end

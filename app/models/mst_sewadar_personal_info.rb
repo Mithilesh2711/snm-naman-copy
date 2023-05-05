@@ -1,0 +1,2 @@
+class MstSewadarPersonalInfo < ApplicationRecord
+end

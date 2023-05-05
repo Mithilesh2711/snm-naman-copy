@@ -1,0 +1,2 @@
+class TrnDispatchPostal < ApplicationRecord
+end

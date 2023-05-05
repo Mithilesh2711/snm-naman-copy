@@ -1,0 +1,115 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Generate Sanction Note</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="mid" name="mid" value="<% if @HeadVouers %><%=@HeadVouers.id%><%  end %>"/>
+                <input type="hidden" id="reqid" name="reqid" value="<% if @HeadVouers %><%=set_ent(@HeadVouers.vd_voucherno)%><%  end %>"/>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Sanction No </label>
+					<div class="col-md-3">
+						<input type="text" maxlength="10" placeholder="" readonly="readonly" required class="form-control" name="vd_voucherno"  id="vd_voucherno" value="<% if @HeadVouers %><%=@HeadVouers.vd_voucherno%><% elsif @lastVoucherNo %><%=@lastVoucherNo%><% end %>"/></div>
+						<label class="col-form-label col-md-2"> Sanction Date</label>
+					<div class="col-md-3">
+							<input type="text" maxlength="10" placeholder="" readonly="readonly" required class="form-control" name="vd_voucherdate"  id="vd_voucherdate" value="<% if @HeadVouers %><%=formatted_date(@HeadVouers.vd_voucherdate)%><% elsif @cDated %><%=formatted_date(@cDated)%><% end %>"/>
+                                        </div>
+				</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Sewadar Code</label>
+					<div class="col-md-3">
+						<input type="text" maxlength="10" placeholder="" readonly="readonly" required class="form-control" name="vd_sewadarcode"  id="vd_sewadarcode" value="<% if @HeadVouers %><%=@HeadVouers.vd_sewadarcode%><% else %><%=(@ListReqst ? @ListReqst.al_sewadarcode : '') %><% end %>"/></div>
+						<label class="col-form-label col-md-2"> Sewadar Name</label>
+					<div class="col-md-3">
+							<input type="text" maxlength="10" placeholder="" readonly="readonly" required class="form-control" name="sewdarname"  id="sewdarname" value="<% if @HeadVouers %><%=@HeadVouers.vd_sewadarcode%><% else %><%=(@ListReqst ? @sewadarname : '') %><% end %>"/>
+                                        </div>
+				</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Request No </label>
+					<div class="col-md-3">
+						<input type="text" maxlength="25" placeholder="" readonly="readonly" required class="form-control" name="vd_requestno"  id="vd_requestno" value="<% if @HeadVouers %><%=@HeadVouers.vd_requestno%><% else %><%=(@ListReqst ? @ListReqst.al_requestno : '') %><% end %>"/></div>
+						<label class="col-form-label col-md-2"> Request Date </label>
+					<div class="col-md-3">
+							<input type="text" maxlength="20" placeholder="" readonly="readonly" required class="form-control" name="vd_requestdate"  id="vd_requestdate" value="<% if @HeadVouers %><%=formatted_date(@HeadVouers.vd_requestdate)%><% else %><%=(@ListReqst ? formatted_date(@ListReqst.al_requestdate) : '') %><% end %>"/>
+                                        </div>
+				</div>
+                          <%
+                          requestamts =  0
+						  requestfor  = ""
+                          if @ListReqst !=nil && @ListReqst != ''
+						    requestamts = @ListReqst.al_loanamount.to_f+@ListReqst.al_advanceamt.to_f                          
+                        end						    
+							if @HeadVouers !=nil
+							        requestfor = @HeadVouers.vd_requestfor
+						     else
+									if @ListReqst && @ListReqst.al_requesttype.to_s == 'Loan'
+										requestfor = "Advance"
+									elsif @ListReqst && @ListReqst.al_requesttype.to_s == 'Advance'
+										requestfor = "MA Advance"
+									else
+										requestfor = 	@ListReqst ? @ListReqst.al_requesttype : ''
+									end
+							end
+                         %>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Request For</label>
+					<div class="col-md-3">
+						<input type="text" maxlength="25" placeholder="" readonly="readonly" required class="form-control" name="vd_requestfor"  id="vd_requestfor" value="<%=requestfor%>"/></div>
+						<label class="col-form-label col-md-2"> Request Amount </label>
+					<div class="col-md-3">
+							<input type="text" maxlength="25" placeholder="" readonly="readonly" required class="form-control right" name="vd_reqamount"  id="vd_reqamount" value="<% if @HeadVouers %><%=currency_formatted(@HeadVouers.vd_reqamount)%><% else %><%=(@ListReqst ? currency_formatted(requestamts) : 0) %><% end %>"/>
+                                        </div>
+				</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Remarks <span class="mandatory"></span></label>
+					<div class="col-md-5">
+						<textarea class="form-control" maxlength="60" rows="2" cols="2" autofocus name="vd_remark" id="vd_remark"><% if @HeadVouers %><%=@HeadVouers.vd_remark%><% end %></textarea>
+							
+						</div>
+					
+				</div>
+                  
+				
+				<div class="submit-section">
+                                  <% if @HeadVouers == nil%>
+					<button onclick="return check_hide_show();" class="btn btn-primary submit-btn process_saves">Save</button>
+                                        <% end %>
+					<% if @HeadVouers && @HeadVouers.vd_status !='C' %>	
+					<%
+					  if @printVourcher
+					%>				
+					<a href="<%=root_url%><%=@printPath%>" target="_blank"><button class="btn btn-success submit-btn m-l-5 " type="button">Print Sanction Note</button></a>
+					<% end %>
+					<% end %>
+					<% if @HeadVouers && @HeadVouers.vd_status !='C' %><a href="javascript:;" onclick="alertcancelled('<%=root_url%>vouchers/<%=@HeadVouers.id%>/cancel')"><button class="btn btn-outline-dark submit-btn m-l-5 hidden" type="button" >Cancel</button></a><%  end %>
+					<a href="<%=root_url%>vouchers"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

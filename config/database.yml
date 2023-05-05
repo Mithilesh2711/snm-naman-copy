@@ -1,0 +1,29 @@
+# MySQL.  Versions 4.1 and 5.0 are recommended.
+#
+#
+# Be sure to use new-style password hashing:
+#   http://dev.mysql.com/doc/refman/5.0/en/old-client.html
+default: &default
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: namanadmin
+  password: redketchup
+  host: 20.204.76.31
+  port: 3306
+ 
+
+development:
+  <<: *default
+  database: snmnaman_snmnaman
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: snmnaman_snmnaman_development
+
+production:
+  <<: *default
+  database: snmnaman_snmnaman_production
+

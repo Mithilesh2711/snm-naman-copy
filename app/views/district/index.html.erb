@@ -1,0 +1,129 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Manage District</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+        
+    </div>
+    <!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                <input type="hidden" id="requestserver" name="requestserver" value="<%=root_url%>"/>
+                <div class="row filter-row">
+                        
+                          <div class="col-md-2">
+                             Search 
+                          </div>
+                          <div class="col-md-2">
+                            <input type="text" required name="filter_search" class="form-control" id="filter_search" placeholder="Enter District" value="<% if @filter_search %><%=@filter_search%><% end %>"/>
+                          </div>
+                  <div class="col-md-2">
+                            <input type="text" required name="filter_state" class="form-control" id="filter_search" placeholder="Enter state" value="<% if @filter_state %><%=@filter_state%><% end %>"/>
+                          </div>
+                          <div class="col-md-2 m-t-5">
+                           
+              <a href="javascript:;" class="btn btn-success btn-sm"  onclick="filter_district();"><i class="la la-search"></i> Search </a>  
+             
+                 
+                          </div>
+                        
+                 </div>
+                <% end %>
+    <div class="row">
+      <div class="col-md-12">
+            <div >
+                                    <a href="<%=root_url%>district/add_district" class="btn add-btn float-left"><i class="fa fa-plus"></i> Add District</a>
+                                      <%
+                                           if @Listdistrict.length >0
+                                         %>
+                                        
+                                                           <div class="col-auto float-right ml-auto">
+                                              <div class="btn-group btn-group-sm">
+                  <a  class="btn btn-white"href="<%=@printpath%>" class="btn btn-white">CSV</a>
+                  
+                   <a href="<%=@printpdfpath%>" target="_blank" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</a>
+                </div>
+              </div>
+                                          <% end %>
+                                  </div>
+        <div class="table-responsive">
+          <table class="table table-striped  mb-0">
+                                        
+            <thead class="new_tblhead">
+
+              <tr>
+                <th>S.NO</th>
+                <th>State Name </th>
+                <th>District Code</th>
+                                                                <th>District Name</th>
+                <th class="text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                                                  <%
+
+                                                   pagestart = params[:page] ? params[:page] : 1
+                                                    if pagestart.to_i <=1
+                                                      i = 1
+                                                    else
+                                                      i = ((pagestart.to_i-1)*10)+1
+                                                      i = i.to_i
+                                                    end
+                                                   if @Listdistrict.length >0
+                                                     @Listdistrict.each do |newdist|
+                                                      statesname = ""
+                                                      stsobj = get_state_detail(newdist.dts_statecode)
+                                                     if stsobj
+                                                       statesname = stsobj.sts_description
+                                                     end
+                                                    %>
+              <tr class="">
+                <td><%=i%></td>
+                <td><%=statesname%></td>
+                <td><%=newdist.dts_districtcode%></td>
+                                                                <td><%=newdist.dts_description%></td>
+                <td class="text-right">
+                  <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                    <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>district/add_district/<%=newdist.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item"  onclick="alertChecked('<%=root_url%>district/<%=newdist.id%>/deletes')" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                  </div>
+                </td>
+              </tr>
+                                                        <%
+                                                          i +=1
+                                                         end
+                                                       else
+                                                       %>
+                                                        <tr>
+                                                          <td colspan="4">No record(s) found.</td>
+                                                        </tr>
+                                                        <%
+                                                        end
+                                                       %>
+              
+            </tbody>
+          </table>
+           <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@Listdistrict)%></div>
+                              
+                                  </div>
+                               
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+</div>

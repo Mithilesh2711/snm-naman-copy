@@ -1,0 +1,2 @@
+module PostalReceiveHelper
+end

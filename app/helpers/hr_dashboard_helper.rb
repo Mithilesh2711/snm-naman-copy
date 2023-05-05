@@ -1,0 +1,2 @@
+module HrDashboardHelper
+end

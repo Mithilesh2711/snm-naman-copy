@@ -1,0 +1,2 @@
+class MstSewadarKyc < ApplicationRecord
+end

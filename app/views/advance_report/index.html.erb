@@ -1,0 +1,156 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Advances Reports</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			
+		</div>
+    </div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+          <div class="row">
+          <div class="col-md-12">
+
+          <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> From Date</label>
+          <div class="col-md-3">
+          <input type="text" placeholder="" class="form-control floating" name="search_fromdated" id="search_fromdated" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+</div>
+<label class="col-form-label col-md-2"> Upto Date</label>
+					<div class="col-md-3">
+							<input type="text" placeholder="" class="form-control floating" name="search_uptodated" id="search_uptodated" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+    </div>
+				
+                         
+				  
+				</div>
+
+          <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Select Department </label>
+					<div class="col-md-3">
+					<select class="form-control" name="sewadar_departments" id="sewadar_departments">
+                                        <option value="">-Select -</option>
+                                        <%
+                                          mydepartlist = get_sewa_all_department()
+                                          if mydepartlist.length >0
+                                           mydepartlist.each do |nedpts|
+                                        %>
+                                        <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+                                        <%
+                                           end
+                                         end
+
+                                         %>
+
+                                        </select>
+				</div>
+				<label class="col-form-label col-md-2"> Select Category </label>
+					<div class="col-md-3">
+						<select class="form-control" name="sewadar_categories" id="sewadar_categories">
+                                                <option value="">-Select-</option>
+                                                <%
+                                                if @sewadarCategory.length >0
+                                                @sewadarCategory.each do |newcats|
+                                                %>
+                                                <option value="<%=newcats.sc_name%>" <% if @sewadar_categories && @sewadar_categories.to_s.strip == newcats.sc_name.to_s.strip %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+                                                <%
+                                                end
+                                                end
+                                                %>
+
+</select></div>
+				</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Search according</label>
+					<div class="col-md-3">
+						<select class="form-control" name="sewadar_codetype" id="sewadar_codetype">
+                                              <option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+                                              <option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+                                              <option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+                                              <option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+                                              <option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+                                              </select>
+</div>
+						
+					<div class="col-md-3">
+							<input type="text" placeholder="Code,Old Code,Name,Email" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+    </div>
+				
+                         
+				  
+				</div>
+        <div class="form-group row">
+					
+        <label class="col-form-label col-md-2"> Request Type</label>
+        <div class="col-md-3">
+           
+        <select class="form-control" name="sewdar_requesttype" id="sewdar_requesttype">
+        <option value="">-Select-</option>
+        <option value="Loan" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Loan'%>selected="selected"<% end %>>Advance upto 60k </option>
+        <option value="Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Advance'%>selected="selected"<% end %>>MA Advance</option>
+        <%
+          if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+        %>
+        <option value="Advance Above 60k" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Advance Above 60k'%>selected="selected"<% end %>>Advance Above 60k</option>
+        <option value="Ex-gratia" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Ex-gratia'%>selected="selected"<% end %>>Ex-gratia</option>
+        <option value="Special Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Special Advance'%>selected="selected"<% end %>>Special Advance</option>
+        <option value="Wheat Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Wheat Advance'%>selected="selected"<% end %>>Wheat Advance</option>
+        
+        <% end %>          
+      
+      </select>
+</div>
+      </div>    
+        
+<% end %>
+<div class="form-group row m-t-20" style="text-align: center">
+
+<div class="col-md-12">
+  <label for="mylic" class="rad-btn"> <input type="radio" checked="" name="advance_detail" id="mylic" value="AD">&nbsp;
+  Advance Detail</label>
+  <label for="mylic1" class="rad-btn">
+  &nbsp;<input type="radio" name="advance_detail" id="mylic1" value="FHR">&nbsp;
+    Forward To HR</label>
+    <label for="mylic2" class="rad-btn">
+  &nbsp;<input type="radio" name="advance_detail" id="mylic2" value="PR">&nbsp;
+      Pending Requests</label>
+        <label for="mylic4" class="rad-btn">
+  &nbsp;<input type="radio" name="advance_detail" id="mylic4" value="SA">&nbsp;
+          Sanctioned Advances</label>
+          <label for="mylic4" class="rad-btn">
+  &nbsp;<input type="radio" name="advance_detail" id="mylic5" value="OAA">&nbsp;
+         Outstanding Advance Amount</label>
+</div>
+</div>
+<div class="submit-section">
+				
+                  
+                    <a href="javascript:;" rel="advance_report/1_advance_common_report.pdf" id="printexceled" onclick="print_others_register();"><button class="btn btn-success submit-btn m-l-5 " type="button">Print</button></a>
+					
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+
+		</div>
+    </div>
+</div>
+	</div>
+	<!-- /Page Content -->
+</div>
+</div>

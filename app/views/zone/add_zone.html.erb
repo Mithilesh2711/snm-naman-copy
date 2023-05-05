@@ -1,0 +1,144 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Zone</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_description" id="cur_description" value="<% if @ListDepart %><%=@ListDepart.zn_number%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDepart %><%=@ListDepart.id%><% end %>"/>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+		<div class="row">
+			<div class="col-md-12">
+					<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Zone Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                          <input type="text" class="form-control" maxlength="20" readonly name="zn_zonecode" id="zn_zonecode"   value="<% if @ListDepart %><%=@ListDepart.zn_zonecode%><% elsif @lastnumber %><%=@lastnumber%><% end %>"/>
+					</div>
+					
+				</div>
+				<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Zone No <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<input type="text" required maxlength="25" class="form-control" name="zn_number" id="zn_number"   value="<% if @ListDepart %><%=@ListDepart.zn_number%><% elsif session[:req_zn_number] %><%=session[:req_zn_number]%><% end %>"  />
+					</div>
+						<label class="col-form-label col-md-2">Zone Name<span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                          <input type="text" maxlength="20" required class="form-control" autocomplete="off" name="zn_name" id="zn_name"   value="<% if @ListDepart %><%=@ListDepart.zn_name%><% elsif session[:req_zn_name] %><%=session[:req_zn_name]%><% end %>"   />
+                                        </div>
+				</div>
+					<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2"> Zonal Incharge</label>
+					<div class="col-md-3">
+                                          <input type="text" maxlength="95"  class="form-control" name="zn_incharge" id="zn_incharge"   value="<% if @ListDepart %><%=@ListDepart.zn_incharge%><% end %>"  />
+				
+					</div>
+						<label class="col-form-label col-md-2">Incharge Mob No <span class="mandatory">*</span></label>
+					<div class="col-md-3"><input type="text" onkeypress="return isNumberKeys(event);" maxlength="10" required tabindex="3" class="form-control" name="zn_inchmobile" id="zn_inchmobile"   value="<% if @ListDepart %><%=@ListDepart.zn_inchmobile%><% elsif session[:req_zn_inchmobile] %><%=session[:req_zn_inchmobile]%><% end %>" />
+                                        </div>
+				</div>
+					<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Additional Contact</label>
+					<div class="col-md-3">
+				<input type="text" tabindex="3" maxlength="80" class="form-control" name="zn_addcontact" id="zn_addcontact"   value="<% if @ListDepart %><%=@ListDepart.zn_addcontact%><% end %>"  />
+					</div>
+						<label class="col-form-label col-md-2">Landline No </label>
+					<div class="col-md-3">
+                                          <input type="text" onkeypress="return isNumberKeys(event);" maxlength="15" tabindex="3" class="form-control" name="zn_landlineno" id="zn_landlineno"   value="<% if @ListDepart %><%=@ListDepart.zn_landlineno%><% end %>"  />
+                                        </div>
+				</div>
+				<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Personal Email</label>
+					<div class="col-md-3">
+				<input type="email" maxlength="70" tabindex="3" class="form-control" name="zn_zone_email" id="zn_zone_email"   value="<% if @ListDepart %><%=@ListDepart.zn_zone_email%><% end %>"  />
+                              	</div>
+						<label class="col-form-label col-md-2">SNM Email </label>
+					<div class="col-md-3">
+                                   							<input type="email" maxlength="70" tabindex="3" class="form-control" name="zn_inchargesnm_email" id="zn_inchargesnm_email"   value="<% if @ListDepart %><%=@ListDepart.zn_inchargesnm_email%><% end %>" />
+                                            </div>
+				</div>
+				
+					<div class="form-group row">
+					
+						<label class="col-form-label col-md-2">Incharge Address</label>
+					<div class="col-md-3">
+				<textarea class="form-control" maxlength="250" cols="4" name="zn_inchargaddress" id="zn_inchargaddress"><% if @ListDepart %><%=@ListDepart.zn_inchargaddress%><% end %></textarea>
+					
+				
+					</div>
+						<label class="col-form-label col-md-2">Zone Office</label>
+					<div class="col-md-3">
+                                                <select class="form-control" name="zn_zoneoffice" id="zn_zoneoffice" onchange="get_zonal_address();">
+                                                        <option value="">-Select-</option>
+                                                        <%
+                                                         if @ZonalBranch && @ZonalBranch.length >0
+                                                           @ZonalBranch.each do |newbrch|
+                                                        %>
+                                                        <option value="<%=newbrch.bch_branchcode%>" <% if @ListDepart && @ListDepart.zn_zoneoffice.to_s.downcase == newbrch.bch_branchcode.to_s.downcase %>selected="selected"<% end %> ><%=newbrch.bch_branchname%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+                                                </select>
+					</div>
+                                                <%
+                                                nezonalclass = "hidden"
+                                                address      = ""
+                                                 if @ZonalAddress
+                                                   nezonalclass = ""
+                                                   address = @ZonalAddress.bch_address
+                                                 end
+
+                                               %>
+						<div class="col-md-3 ">
+							<div class="card flex-fill <%=nezonalclass%> zonal_address">
+									
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md-12 lbl_name" id="zonal_address">
+                                                                                        <%=address%>
+                                                                                      </div>
+
+										</div>
+									
+									
+								</div>
+						</div>
+					</div>
+				
+			</div>
+			<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>zone"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>
+
+</div>

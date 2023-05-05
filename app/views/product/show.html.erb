@@ -1,0 +1,200 @@
+<!-- BEGIN CONTAINER -->
+<div>
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Setting
+			</h3-->
+			<% if flash[:error] %>
+                             <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" id="successXMessage">
+                               <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                               <%= flash[:error] %>
+                             </div>
+                            <% end %>
+			<%= render "layouts/breadcrumbs" %>
+			<%=form_for @productXBrand, url:{ :action=>:edit,:id=>'myForms' } do |f| %>
+                        <input type="hidden" name="prductsearchId" id="prductsearchId" value=""/>
+		        <input type="hidden" id="prductparamId" value="<%=@prductparamId%>"/>
+			<!------------------text Being-------------->
+			  <div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet">
+							<div class="portlet-body">
+				     <div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-3">
+					Brand  Name <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="60" required class="form-control" name="pb_brandname" id="pb_brandname" value="<%=@productXBrand.pb_brandname%>"/>
+					</div>
+                                      <div class="col-md-2">
+					<a href="<%=root_url%>product/product_brand_refresh"><img src="<%=root_url%>images/newbutt.png"/></a>
+					</div>
+
+					</div>
+				</div>
+				
+				<div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-3">
+					Brand Description <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="80" required class="form-control" name="pb_description" id="pb_description" value="<%=@productXBrand.pb_description%>"/>
+					</div>
+					</div>
+				</div>
+                                  <div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-3">
+					Prime Product
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="100" required class="form-control text_input_new" name="pb_prime_product" id="pb_prime_product" value="<% if @productXBrand.pb_prime_product !=nil %><%=@productXBrand.pb_prime_product%><% elsif session[:postedpamams]!=nil%><%=session[:postedpamams]['pb_prime_product']%><% end %>"/>
+					</div>
+					</div>
+				</div>
+                                <div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-3">
+					Sale Incentive(%)
+					</div>
+					<div class="col-md-3">
+					<input type="text" onkeypress="return isNumberFloatKey(this);"  maxlength="7" required class="form-control text_input_new" name="pb_sale_incentive" id="pb_sale_incentive" value="<% if @productXBrand.pb_sale_incentive !=nil %><%=currency_formatted(@productXBrand.pb_sale_incentive)%><% elsif session[:postedpamams]!=nil%><%=session[:postedpamams]['pb_sale_incentive']%><% end %>"/>
+					</div>
+					</div>
+				</div>
+
+                                  <%
+                                   if session[:LOCKED_EXPIRY] && session[:LOCKED_EXPIRY]=='Y'
+                                  %>
+				<div class="row">
+					<div class="col-md-12">
+					<div class="col-md-2">
+					&nbsp;
+					</div>
+					<div class="col-md-2 col-xs-5">
+						<a href="javascript:void(0);" onclick="product_free();">
+				  <img src="<%=root_url%>images/save.png"/>
+				</a>
+					</div>
+					<div class="col-md-3 col-xs-5">
+					<a href="<%=root_url%>dashboard">
+                                          &nbsp;&nbsp;<img src="<%=root_url%>images/quit.png"/>
+				</a>
+					</div>
+					</div>
+				</div>
+                                <% end %>
+			</div>
+			</div>
+			   </div>
+			   </div>
+				<% end %>
+
+
+			<!------------------text End-------------->
+
+
+
+<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet">
+							<div class="portlet-body">
+
+							<div class="table-responsive">
+							<div class="row">
+							<div class="col-md-12">
+								<table class="table table-hover">
+								<thead>
+								<tr class="head_table">
+									<th>
+										SL. NO.
+									</th>
+									<th>
+										Brand Code
+									</th>
+									<th>
+										Brand Name
+									</th>
+
+                                    <th>
+									  Action
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<%
+                                                                  pagestart = params[:page] ? params[:page] : 1
+                                                                  if pagestart.to_i <=1
+                                                                    i = 1
+                                                                  else
+                                                                    i = ((pagestart.to_i-1)*10)+1
+                                                                    i = i.to_i
+                                                                  end
+                                                                  if @producBrand.count >0
+                                                                  @producBrand.each do |pbd|
+                                                                  %>
+									<tr>
+									<td id="center">
+									<%=i%>
+									</td>
+									<td>
+									<%=pbd.pb_brandname%>
+									</td>
+									<td>
+									<%=pbd.pb_description%>
+									</td>
+
+									<td id="center">
+									<a href="<%=root_url%>product/product_brand/<%=pbd.id%>"><i class="fa fa-pencil-square-o hrmsfonts_size" aria-hidden="true"></i></a>
+                        <a href="javascript:void(0);" rel="<%=root_url%>product/<%=pbd.id%>/deletes_brand" onclick="confirmDeletion(this);"><i class="fa fa-trash-o hrmsfonts_size" aria-hidden="true"></i></a>
+									</td>
+
+								</tr>
+								<%
+					                        i +=1
+					                          end
+					                       else
+					                       %>
+                                                                <tr><td>No Records Found</td>
+									</tr>
+									<% end %>
+								</tbody>
+								</table>
+
+							<div align="center"><%= will_paginate(@producBrand)%></div>
+					<!-- END SAMPLE TABLE PORTLET-->
+					</div>
+					</div>
+							</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+
+
+
+
+
+

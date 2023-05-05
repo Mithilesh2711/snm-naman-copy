@@ -1,0 +1,2 @@
+class MstBranchList < ApplicationRecord
+end

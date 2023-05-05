@@ -1,0 +1,48 @@
+<%
+  mcontroller = ''
+  mactions    = ''
+ if controller.controller_name!=nil
+  mcontroller = (controller.controller_name).gsub('_',' ')
+ end
+ if controller.action_name
+   mactions    = (controller.action_name).gsub('_',' ')
+ end
+ if controller.controller_name.to_s == 'attendance'
+   
+     if controller.action_name.to_s == 'leave' || controller.action_name.to_s == 'index' || controller.action_name.to_s == ''
+         mactions = 'leave master'
+     end
+ elsif controller.controller_name.to_s == 'loans_advance'
+
+     if controller.action_name.to_s == 'index' || controller.action_name.to_s == ''
+         mactions = ''
+     elsif controller.action_name.to_s == 'loans_advance_list'
+         mactions = 'MA advance list'
+     end
+     mcontroller = "Advance"
+ elsif controller.controller_name.to_s == 'loans_approval'
+
+     if controller.action_name.to_s == 'index' || controller.action_name.to_s == ''
+         mactions = ''
+     elsif controller.action_name.to_s == 'loans_approval'
+         mactions = ''
+     end
+     mcontroller = "Advance Approval"
+ elsif controller.controller_name.to_s == 'calculate_salary'
+
+     if controller.action_name.to_s == 'index' || controller.action_name.to_s == ''
+         mactions = ''     
+     end
+     mcontroller = "Calculate MA"
+ end
+%>
+<!--ul class="breadcrumb">
+<% if controller.controller_name.to_s == 'calculate_salary'%>
+<li class="breadcrumb-item"><a href="jvascript:;"><%=mcontroller%></a></li>
+<% else %>
+<li class="breadcrumb-item"><a href="jvascript:;"><%=mcontroller.to_s.capitalize%></a></li>
+<% end%>
+      <% if mactions !=nil && mactions !='' %>  <li class="breadcrumb-item active"><%=mactions%></li><% end %>
+</ul-->
+
+                          

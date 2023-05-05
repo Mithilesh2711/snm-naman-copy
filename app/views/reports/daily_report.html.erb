@@ -1,0 +1,663 @@
+<!-- BEGIN CONTAINER -->
+<div>
+  <div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Setting
+			</h3-->
+			<% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+			<%= render "layouts/breadcrumbs" %>
+			<div>&nbsp;</div>
+			
+			
+			<!------------------text Being-------------->
+			<div class="row">
+				<div class="col-md-12 report_lbl">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+				<div class="portlet">
+				<div class="portlet-body">
+                                   <div class="row">
+                                      <div class="col-md-4">
+                                        <label class="cust_info">Daily Attendance Report</label>
+                                      </div>
+                                     
+                                    </div>
+				<div class="row">
+				    <div class="col-md-12">
+					 <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>'myForms' ) do  %>
+                                        <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                                        <input type="hidden"  id="processdetail" name="processdetail" value="<% if @processdetail %><%=@processdetail%><% end %>"/>
+					
+					 
+                                       
+                                        
+                                         
+
+					</div>
+                                        
+                                           
+                                        
+
+					</div>
+         <div class="col-md-9">
+					<div class="row">
+					    
+				    <div class="col-md-12 d-flex col-xs-12">
+ <div class="col-lg-3">Select Date </div>
+                                      <div class="col-lg-3">
+                                        <input type="text" class="form-control" id="from_date" name="from_date"  value="<% if @from_date %><%=@from_date%><% else %><%=@nbegindates%><% end %>" style="color:black;"/>
+                                      </div></div></div>
+                                      <div class="row">
+				    <div class="col-md-12 col-xs-12 d-flex">
+                                       <div class="col-lg-3">
+          Department
+          </div> 
+          <div class="col-lg-3">
+           
+                                                        <select   class="form-control " name="emp_department" id="emp_department">
+                                                          <option value="">-Select-</option>
+                                                          <%
+                                                          if @Department && @Department.length >0
+                                                           @Department.each do |dp|
+                                                          %>
+                                                          <option value="<%=dp.departCode%>" <% if @emp_department && @emp_department.to_i==dp.id.to_i%>selected="selected"<% end %>><%=dp.dp_name%></option>
+                                                          <% end end %>
+                                                        </select>
+          
+            
+                  </div>
+                   <div class="col-lg-3">
+          Location/Store
+          </div>
+          <div class="col-lg-3">
+           
+                                                        <select   class="form-control " name="emp_location" id="emp_location">
+                                                          <option value="">-Select-</option>
+                                                          <%
+                                                          if @Locations && @Locations.length >0
+                                                           @Locations.each do |locs|
+                                                          %>
+                                                          <option value="<%=locs.id%>" ><%=locs.hof_description%></option>
+                                                          <% end end %>
+                                                        </select>
+          
+            
+                  </div>
+					
+                                     
+                                      
+
+					</div>
+                                         
+       </div>
+				
+              <div class="row">
+                                              <div class="col-md-12 d-flex col-xs-12">
+                                               
+                  <div class="col-lg-3">
+                    Employee Code
+                  </div>
+                  <div class="col-lg-3">
+                    
+                      <select class="form-control" name="empcodes" id="empcodes" onchange="get_employee_punchdt(this.value,'code');" >
+            <option value="">-Select-</option>
+           <%
+           if @empDetail && @empDetail.length >0
+             @empDetail.each do |emp|
+           %>
+           <option value="<%=emp.emp_code%>"><%=emp.emp_code%></option>
+           <% end end %>
+        
+                    </select>
+                  </div>
+                  <div class="col-lg-3">
+                                         Employee Name
+
+					</div>
+          <div class="col-lg-3">
+            <select class="form-control" name="manual_empname" id="manual_empname" onchange="get_employee_punchdt(this.value,'emp');" >
+           <option value="">-Select-</option>
+           <%
+           if  @empDetail && @empDetail.length >0
+             @empDetail.each do |emp|
+           %>
+           <option value="<%=emp.emp_code%>"><%=emp.emp_name.split(/ |\_|\-/).map(&:capitalize).join(" ") %></option>
+           <% end end %>
+         </select>
+          </div>
+         
+                                              </div>
+                                          </div>                         		
+                                    </div>  
+  <div class="col-md-3">
+       <div class="col-md-4 col-xs-3">
+                                        <!--<a href="javascript:;" title="Press for search" onclick="search_employee_attendance();">-->
+                                        <!--    <img src="<%=root_url%>images/search.png" class="search_new_new"/>-->
+                                        <!--   </a>-->
+                                      </div>
+                                      <div class="col-md-8 col-xs-3">
+                                   <!--        <a href="<%=root_url%>employee_attendance/employee_attendance_refresh" title="Press for reset data">
+                                            <img src="<%=root_url%>images/newbutt.png" class="search_new_new"/>
+                                           </a> -->
+                                      </div>
+  </div>
+
+			<!-- BEGIN PAGE CONTENT-->
+                        
+                        <div class="form-group row" >
+
+                              <div class="col-md-12" style="text-align: center; margin:20px auto">
+						
+								<label for="mylic1" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type1" value="ARV"></span>
+																	Arrival Details </label>
+																	<label for="mylic4" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type2" value="ARSD"></span>&nbsp;
+																				Arrival Summary(Dept. Wise) </label>
+																				<label for="mylic4" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type3" value="ARS"></span>&nbsp;
+																				Arrival Summary (Loc. Wise)</label>
+																				<label for="mylic4" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type4" value="MSP"></span>&nbsp;
+																				Mispunches </label>
+																				<label for="mylic3" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type5" value="ABS"></span>&nbsp;
+																			Absent</label>
+																			<label for="mylic4" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type6" value="OVT"></span>&nbsp;
+																				Overtime</label>
+																				<label for="mylic2" class="rad-btn hidden">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type7" value="OVTS"></span>&nbsp;
+																		Ovetime Summary</label>
+																				<label for="mylic4" class="rad-btn">
+                                &nbsp;<span><input type="radio" name="process_type" id="process_type8" value="PRFS"></span>&nbsp;
+													Performance </label>
+                              </div>
+                              <div class="col-md-10">
+                                 <div class="submit-section" style="padding:0px">
+				 <a href="javascript:;"  class="btn btn-success submit-btn m-l-5 " rel="reports/1_prt_daily_attendance_report.pdf" id="printexceled" onclick="print_daily_reports();">Print</a>
+					
+					<a href="/sewadar_information" class="btn btn-danger submit-btn m-l-5 ">Quit</a>
+				</div>
+                              </div>
+                              <div class="col-md-2" style="text-align:right">
+                                  <a href="javascript:;" id="printmyexceled" rel="reports/1_salary_excel_register.pdf" onclick="print_salary_excel_register();" class="btn btn-white" >
+                                  <img src="/images/excelicon.png" width="40px">
+                                </a>
+                              </div>
+                          </div>
+                          
+			<!--<div class="row">-->
+			<!--	<div class="col-md-12">-->
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					
+                                              
+			<!--				<div class="table-responsive col-md-12 mt10">-->
+   <!--                                                      <label class="cust_info">Performance</label>         -->
+			<!--					<table class="table" id="myattendancelisted">-->
+			<!--					<thead>-->
+   <!--                                                               <tr class="head_table" >-->
+			<!--						<th>-->
+			<!--						 SL No. -->
+			<!--						</th>-->
+   <!--                    <th style="width: 100px;">-->
+   <!--                                                                       Date-->
+   <!--               </th>-->
+   <!--                                                                    <th style="width: 160px;">-->
+			<!--						 Emp.Code<br/>Name <br/> Department-->
+			<!--						</th>-->
+							
+                                                                   
+			<!--						<th>-->
+			<!--						 Shift -->
+			<!--						</th>-->
+   <!--                                                                     <th>-->
+			<!--						 Arrival Time-->
+			<!--						</th>-->
+   <!--                                                                     <th>-->
+			<!--						 Departure Time-->
+			<!--						</th>-->
+   <!--                                                                     <th>-->
+			<!--						 Working Hrs-->
+			<!--						</th>-->
+   <!--                                                                     <th>-->
+			<!--						 Late Hrs-->
+			<!--						</th>-->
+   <!--                                                                      <th>-->
+			<!--						 Early Hrs-->
+			<!--						</th>-->
+   <!--                                                                     <th style="width:60px">-->
+			<!--						 OT-->
+			<!--						</th>-->
+   <!--                                                                     <th>-->
+			<!--						 Miss punch-->
+			<!--						</th>-->
+                                                                       
+   <!--                                                                    <th>-->
+			<!--						Late Penalty-->
+			<!--						</th>-->
+   <!--                                                                      <th>-->
+			<!--						Remark-->
+			<!--						</th>-->
+                                                                        
+                                                                         
+			<!--					</tr>-->
+			<!--					</thead>-->
+			<!--					<tbody>-->
+								
+			<!--					<tr>-->
+			<!--						<td id="center">-->
+									
+			<!--						</td>-->
+   <!--                 <td id="center">-->
+                  
+   <!--               </td>-->
+   <!--                                                                     <td align="left">-->
+								
+			<!--						</td>-->
+								
+								
+			<!--						<td id="center">-->
+                                                                         
+			<!--						</td>-->
+                                                                        
+			<!--						<td id="center">-->
+									 
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                        
+   <!--                                                                     </td>-->
+   <!--                                                                      <td id="center">-->
+                                                                        
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                        
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                       
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                       
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                        
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                       
+   <!--                                                                     </td>-->
+   <!--                                                                     <td id="center">-->
+                                                                          
+   <!--                                                                     </td>-->
+			<!--					</tr>-->
+			<!--				<tr class="">-->
+   <!--                                                               <td colspan="4">-->
+   <!--                                                                 Total-->
+   <!--                                                               </td>-->
+                                                                  
+                                                                  
+   <!--                                                               <td id="center">-->
+   <!--                                                               Present <br/><span style="font-weight:bold"></span>-->
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+   <!--                                                               Absent <br/> <span style="font-weight:bold"></span>-->
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+                                                                    
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+   <!--                                                               Late <br/><span style="font-weight:bold"> </span>-->
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+   <!--                                                               Early <br/><span style="font-weight:bold"> </span>-->
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+                                                                    
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+                                                                  
+   <!--                                                               </td>-->
+   <!--                                                               <td id="center">-->
+   <!--                                                               LPT <br/> <span style="font-weight:bold"></span>-->
+   <!--                                                               </td>-->
+   <!--                                                               <td>-->
+
+   <!--                                                               </td>-->
+   <!--                                                             </tr>-->
+                                                              
+								<!--<tr>-->
+								<!--<td>No Records Found</td>-->
+								<!--</tr>-->
+													
+			<!--					</tbody>-->
+			<!--					</table>-->
+   <!--           </div>-->
+   <!--         </div>-->
+   <!--       </div>-->
+                                                               
+                                                          <!---- SUMMARY-------->
+                                                          <%
+                                                           if @SummListed && @SummListed.length >0
+                                                         %>
+                                                          <table class="table table-hover" id="myattendancesummary">
+								<thead>
+                                                                  <tr class="head_table" >
+									<th>
+                                                                          SL No.
+									</th>
+                                                                        <th>
+                                                                          Emp.Code <br/> Name <br/> Department
+									</th>
+								
+                                                                        
+									<th>
+									 Shift
+									</th>
+                                                                        
+                                                                          <th>
+									 Total <br/> Present
+                                                                          </th>
+									<th>
+									  Total <br/> Absent
+									</th>
+                                                                        
+                                                                        <th>
+									 Total <br/>  Working Hrs
+									</th>
+                                                                        <th>
+									  Total <br/> Late Count
+									</th>
+                                                                         <th>
+									  Total <br/>  Early Count
+									</th>
+                                                                        <th>
+									 Total <br/>  OT Hrs
+									</th>
+                                                                        <th>
+									 Total <br/>  Late Penalty
+									</th>
+
+
+								</tr>
+								</thead>
+								<tbody>
+								<%
+                                                                @myEditAld = true
+                                                                @myDeletAld = true
+                                                                myxpresents   = 0
+                                                                myxabsent     = 0
+                                                                myxlatect     = 0
+                                                                myxearlyct    = 0
+                                                                
+                                                                mytotalwkhrs  = 0
+                                                                mytotalwkmns  = 0
+                                                                mytotalovthrs = 0
+                                                                mytotalovtmns = 0
+                                                                mytotalplhrs  = 0
+                                                                mytotalplmns  = 0
+                                                                myfinalpmetys = 0
+                                                                pagestart = params[:page] ? params[:page] : 1
+                                                                if pagestart.to_i <=1
+                                                                  i = 1
+                                                                else
+                                                                  i = ((pagestart.to_i-1)*25)+1
+                                                                  i = i.to_i
+                                                                end
+                                                              if @SummListed && @SummListed.length >0
+                                                                 @SummListed.each do |gps|
+                                                              %>
+                                                                <%
+                                                                          departname = ""
+                                                                          desnation  = ""
+                                                                          empname    = ""
+                                                                          empobj     = get_employee_detail(gps.al_compcode,gps.al_empcode)
+                                                                           if empobj
+                                                                              empname = empobj.emp_name
+                                                                               dpobj =  get_department_detail(empobj.emp_compcode,empobj.emp_department)
+                                                                               if dpobj
+                                                                                 departname = dpobj.dp_name
+                                                                               end
+
+                                                                               desobj =  get_designation_detail(empobj.emp_compcode,empobj.emp_designation)
+                                                                               if desobj
+                                                                                 desnation = desobj.mydescript
+                                                                               end
+                                                                           end
+
+                                                                                sumpresents = get_all_counts(gps.al_empcode,'P')
+                                                                                sumabsent   = get_all_counts(gps.al_empcode,'A')
+                                                                                sumlatect   = get_all_counts(gps.al_empcode,'L')
+                                                                                sumearlyct  = get_all_counts(gps.al_empcode,'E')
+                                                                                myxpresents += sumpresents.to_i
+                                                                                myxabsent   += sumabsent.to_i
+                                                                                myxlatect   += sumlatect.to_i
+                                                                                myxearlyct  += sumearlyct.to_i
+                                                                                myxwkhrs    = 0                                                                               
+                                                                            if gps.workinghrs !=nil && gps.workinghrs != ''
+                                                                                newwrktimes = gps.workinghrs.to_s.split(",")
+                                                                                 myfwkhrs    = 0
+                                                                                 myfwkmns    = 0
+                                                                                newwrktimes.each do |newmtimes|
+                                                                                   newkhrsx      =  get_calculated_hours_minute(newmtimes,'H')
+                                                                                   newmntsx      =  get_calculated_hours_minute(newmtimes,'M')
+                                                                                   myfwkhrs      += newkhrsx.to_i
+                                                                                   myfwkmns      += newmntsx.to_i
+                                                                                   mytotalwkhrs  += newkhrsx.to_i
+                                                                                   mytotalwkmns  += newmntsx.to_i
+
+                                                                                end
+                                                                                if myfwkmns.to_i >=60
+                                                                                  newmywkmns = myfwkmns.to_f/60
+                                                                                  myxwkhrs   = myfwkhrs.to_f+newmywkmns.to_f
+                                                                                  myxwkhrs   = myxwkhrs.to_s.gsub(".",":")
+                                                                                else
+                                                                                   if myfwkmns.to_i <10
+                                                                                     myxwkhrs   = myfwkhrs.to_s+":0"+myfwkmns.to_s
+                                                                                   else
+                                                                                     myxwkhrs   = myfwkhrs.to_s+":"+myfwkmns.to_s
+                                                                                   end
+                                                                                  
+                                                                                end
+                                                                            end
+                                                                            myfinalovtime = 0
+                                                                            if gps.ovrtimes != nil && gps.ovrtimes != ''
+                                                                                newovtimes = gps.ovrtimes.to_s.split(",")
+                                                                                myfovthrs  = 0
+                                                                                myfovtmns  = 0
+                                                                                newovtimes.each do |mynewovertm|
+                                                                                   ovthrsx       =  get_calculated_hours_minute(mynewovertm,'H')
+                                                                                   ovtmnsx       =  get_calculated_hours_minute(mynewovertm,'M')
+                                                                                   myfovthrs     += ovthrsx.to_i
+                                                                                   myfovtmns     += ovtmnsx.to_i
+                                                                                   mytotalovthrs += ovthrsx.to_i
+                                                                                   mytotalovtmns += ovtmnsx.to_i
+                                                                                end
+                                                                                if myfovtmns.to_i >=60
+                                                                                  myovnstm     = myfovtmns.to_f/60
+                                                                                  myfinalovtime = myfovthrs.to_f+myovnstm.to_f
+                                                                                  myfinalovtime = myfinalovtime.to_s.gsub(".",":")
+                                                                                else
+                                                                                   if myfovtmns.to_i <10
+                                                                                      myfinalovtime = myfovthrs.to_s+":0"+myfovtmns.to_s
+                                                                                   else
+                                                                                      myfinalovtime = myfovthrs.to_s+":"+myfovtmns.to_s
+                                                                                   end
+                                                                                 
+                                                                                end
+                                                                            end
+                                                                            myfinalpenty = 0
+                                                                            if gps.al_latepelanty != nil && gps.al_latepelanty != ''
+                                                                                 lateplhrsm     = gps.al_latepelanty.to_s.gsub(":",".")
+                                                                                 myfinalpenty   += lateplhrsm.to_f
+                                                                                 myfinalpmetys  += lateplhrsm.to_f
+                                                                            end
+
+
+                                                                         %>
+								<tr>
+									<td id="center">
+									<%=i%>
+									</td>
+                                                                        <td align="left">
+									<%=gps.al_empcode%>
+                  <br/>
+                    <%=empname%>
+                    <br/>
+                    <%=departname%>
+									</td>
+																
+									<td id="center">
+                                                                          <%=gps.al_shift%>
+									</td>
+									<td id="center">
+									 <%=sumpresents%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=sumabsent%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=(myxwkhrs.to_s.gsub(":",".").to_s == '0' ? '' : myxwkhrs) %>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=(sumlatect.to_s.gsub(":",".").to_s == '0' ? '' : sumlatect)%>
+                                                                        </td>
+                                                                         <td id="center">
+                                                                        <%=(sumearlyct.to_s.gsub(":",".").to_s == '0' ? '' : sumearlyct)%>
+                                                                        </td>
+
+                                                                        <td id="center">
+                                                                        <%=(myfinalovtime.to_s.gsub(":",".").to_s == '0' ? '' : myfinalovtime)%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=currency_formatted(myfinalpenty)%>
+                                                                        </td>
+                                                                        
+								</tr>
+								<%
+                                                              i +=1
+                                                              end
+                                                              %>
+
+
+
+                                                              
+                                                                <tr class="">
+                                                                  <td colspan="2">
+                                                                    Total
+                                                                  </td>
+
+                                                                  <td id="center">
+
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Present :<span style="font-weight:bold"><%=myxpresents%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Absent :<span style="font-weight:bold"> <%=myxabsent%> </span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                    <%
+                                                                    
+                                                                
+                                                                    mytotalwrkshrs = 0
+                                                                     if mytotalwkmns.to_i >=60
+                                                                       nwhs   = mytotalwkmns.to_f/60
+                                                                       nwhs   = currency_formatted(nwhs)
+                                                                       wrkshrs = mytotalwkhrs.to_f+nwhs.to_f
+                                                                       nwrkshrs = wrkshrs.to_s.split(".")
+                                                                       if nwrkshrs[1].to_i<10
+                                                                          mytotalwrkshrs = nwrkshrs[0].to_s+":0"+nwrkshrs[1].to_s
+                                                                       else
+                                                                          mytotalwrkshrs = wrkshrs.to_s.gsub(".",":")
+                                                                       end
+                                                                      
+                                                                     else
+                                                                        if mytotalwkmns.to_i <10
+                                                                          mytotalwrkshrs = mytotalwkhrs.to_s+":0"+mytotalwkmns.to_s
+                                                                        else
+                                                                          mytotalwrkshrs = mytotalwkhrs.to_s+":"+mytotalwkmns.to_s
+                                                                        end
+                                                                       
+                                                                     end
+
+                                                                   %>
+                                                                  Working Hrs : &nbsp;<span style="font-weight:bold"><%=mytotalwrkshrs%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Late :&nbsp;<span style="font-weight:bold"> <%=myxlatect%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Early : &nbsp;<span style="font-weight:bold"><%=myxearlyct%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                    <%
+                                                                   
+                                                                    mytotalovtiems = 0
+                                                                     if mytotalovtmns.to_i >=60
+                                                                       novtmns = mytotalovtmns.to_f/60
+                                                                       novtmns = currency_formatted(novtmns)
+                                                                       mytotalovtiems = mytotalovthrs.to_f+novtmns.to_f
+                                                                       novtsts = mytotalovtiems.to_s.split(".")
+                                                                       if novtsts[1].to_i <10
+                                                                         mytotalovtiems = novtsts[0].to_s+":0"+novtsts[1].to_s
+                                                                       else
+                                                                         mytotalovtiems = mytotalovtiems.to_s.gsub(".",":")
+                                                                       end
+                                                                       
+                                                                     else
+                                                                        if mytotalovtmns.to_i <10
+                                                                          mytotalovtiems = mytotalovthrs.to_s+":0"+mytotalovtmns.to_s
+                                                                        else
+                                                                          mytotalovtiems = mytotalovthrs.to_s+":"+mytotalovtmns.to_s
+                                                                        end
+                                                                       
+                                                                     end
+                                                                   %>
+                                                                  OT Hrs :&nbsp;<span style="font-weight:bold"><%=mytotalovtiems%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                    
+                                                                    LPT : <span style="font-weight:bold"><%=currency_formatted(myfinalpmetys)%></span>
+                                                                  </td>
+                                                                  
+                                                                 
+                                                                </tr>
+                                                              <%
+                                                              else
+                                                              %>
+								<tr>
+								<td>No Records Found</td>
+								</tr>
+									<%	end %>
+								</tbody>
+								</table>
+                                                                <% end %>
+							</div>
+						
+					
+					<!-- END SAMPLE TABLE PORTLET-->
+				</div>
+				
+			</div>
+			<% end %>
+                                                    <!-- END PAGE CONTENT-->
+                                            </div>
+                                        </div>
+                                    <!-- END CONTENT -->
+                                  </div>
+                              </div>
+                            </div>
+                      </div>
+                </div>
+           
+       
+<!-- END CONTAINER -->

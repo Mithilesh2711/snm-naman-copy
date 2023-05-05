@@ -1,0 +1,204 @@
+<!-- BEGIN CONTAINER -->
+<div>
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Setting
+			</h3-->
+			<% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+			<%= render "layouts/breadcrumbs" %>
+			<%= form_tag({:action=>'product_uom'} ,:multipart=>true,:id=>'myForms' ) do  %>
+                          <input type="hidden" name="prductparamId" id="prductparamId"/>
+			  <input type="hidden" name="productServer" id="productServer" value=""/>
+			  <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+			<!------------------text Being-------------->
+			  <div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet">
+							<div class="portlet-body">
+				     <div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-2">
+					Short Name <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="25" class="form-control text_input" name="pu_shortname" id="pu_shortname" value="<% if @isProduct.to_s!=''%><%=@isProduct.pu_shortname%><% elsif session[:postedpamams]!=nil %><%=session[:postedpamams]['pu_shortname']%><% end%>"/>
+					</div>
+                                      <div class="col-md-2">
+					<a href="<%=root_url%>product/product_uom_refresh"><img src="<%=root_url%>images/newbutt.png"/></a>
+					</div>
+
+					</div>
+				</div>
+				
+				<div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-2">
+					Long Name <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="60" class="form-control text_input_new" name="pu_longname" id="pu_longname" value="<% if @isProduct.to_s!=''%><%=@isProduct.pu_shortname%><% elsif session[:postedpamams]!=nil %><%=session[:postedpamams]['pu_longname']%><% end %>"/>
+					</div>
+					</div>
+				</div>
+				
+                                  <%
+                                   if session[:LOCKED_EXPIRY] && session[:LOCKED_EXPIRY]=='Y'
+                                  %>
+
+				<div class="row">
+					<div class="col-md-12">
+					<div class="col-md-2">
+					&nbsp;
+					</div>
+					<div class="col-md-2 col-xs-5">
+					<a href="javascript:;" onclick="product_uom_saving();">
+                                          <img src="<%=root_url%>images/save.png"/>
+                                       </a>
+					</div>
+					<div class="col-md-3 col-xs-5">
+					<a href="<%=root_url%>dashboard">
+                                          &nbsp;&nbsp;<img src="<%=root_url%>images/quit.png"/>
+				         </a>
+					</div>
+					</div>
+				</div>
+                                <% end %>
+                                <div>&nbsp;</div>
+                     
+
+
+			</div>
+			</div>
+			   </div>
+			   </div>
+				<% end %>
+
+
+			<!------------------text End-------------->
+
+
+
+<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+
+					<div class="portlet">
+							<div class="portlet-body">
+           <div class="row">
+				    <div class="col-md-12">
+					<div class="col-md-2">
+					Search Name
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="Search Short Name" class="form-control text_input" name="searchproductcat" id="searchproductcat"/>
+					</div>
+                                      <div class="col-md-3">
+					<a href="javascript:;" onclick="product_uom_searching();">
+                                        <img src="<%=root_url%>images/search.png" class="search_new"/>
+                                         </a>
+					</div>
+					</div>
+				</div>
+							<div class="table-responsive">
+							<div class="row">
+							<div class="col-md-12">
+								<table class="table table-hover">
+								<thead>
+								<tr class="head_table">
+									<th>
+										SL. NO.
+									</th>
+									<th>
+										Short Name
+									</th>
+									<th>
+										Long Name
+									</th>
+
+                                    <th colspan="2">
+									Action
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<%
+                                                                    pagestart = params[:page] ? params[:page] : 1
+                                                                    if pagestart.to_i <=1
+                                                                      i = 1
+                                                                    else
+                                                                      i = ((pagestart.to_i-1)*10)+1
+                                                                      i = i.to_i
+                                                                    end
+                                                                  if @productUom.count >0
+                                                                          @productUom.each  do | pum |
+                                                                  %>
+									<tr>
+									<td id="center">
+									<%=i%>
+									</td>
+									<td>
+									<%=pum.pu_shortname%>
+									</td>
+									<td>
+									<%=pum.pu_longname%>
+									</td>
+
+									<td id="center">
+									<a href="<%=root_url%>product/product_uom/<%=pum.id%>"><i class="fa fa-pencil-square-o hrmsfonts_size edit" aria-hidden="true"></i></a>
+                                                                         
+									</td>
+									<td id="center">
+									
+                                                                         <a href="javascript:void(0);" rel="<%=root_url%>product/product_uom/<%=pum.id%>/deletes" onclick="confirmDeletion(this);"><i class="fa fa-trash-o delete hrmsfonts_size" aria-hidden="true"></i></a>
+									</td>
+								</tr>
+								<%
+                                                                i +=1
+                                                                end
+                                                                else
+                                                                %>
+                                                                <tr><td>No Records Found</td>
+									</tr>
+									<% end %>
+								</tbody>
+								</table>
+
+							<div align="center"><%= will_paginate(@productUom)%></div>
+					<!-- END SAMPLE TABLE PORTLET-->
+					</div>
+					</div>
+							</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+	<!-- END CONTENT -->
+
+
+
+
+
+

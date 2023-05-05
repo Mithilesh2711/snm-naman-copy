@@ -1,0 +1,2 @@
+class TrnPostalReceive < ApplicationRecord
+end

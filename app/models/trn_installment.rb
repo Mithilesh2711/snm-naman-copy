@@ -1,0 +1,2 @@
+class TrnInstallment < ApplicationRecord
+end

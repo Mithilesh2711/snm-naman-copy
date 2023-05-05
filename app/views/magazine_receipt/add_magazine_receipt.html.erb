@@ -1,0 +1,122 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Magazine Receipt</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="curmrcode" id="curmrcode" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_code%><% end %>"/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.id%><% end %>"/>
+                <input type="hidden" name="subid" id="subid" value="<% if @ListSubscription %><%=@ListSubscription.sub_code%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Receipt No. <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="mr_code" id="mr_code" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> </div>
+                    <label class="col-form-label col-md-2">Member Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="mr_member" id="mr_member" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_member%><% elsif @ListMember %><%=@ListMember.mbr_code%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-md-2">Subscription <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="mr_subscription" id="mr_subscription" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_subscription%><% elsif @ListSubscription %><%=@ListSubscription.sub_code%><% end %>"/> </div>
+					<label class="col-form-label col-md-2">Magazine <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="mr_magazine" id="mr_magazine" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_magazine%><% elsif @ListMagazine %><%=@ListMagazine.mag_code%><% end %>"/> </div>
+			    </div>
+                <div class="form-group row">	
+                    <label class="col-form-label col-md-2">  Created By <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_createdby" id="mr_createdby" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_createdby%><% end %>"/> </div>
+                    <label class="col-form-label col-md-2"> Modified By <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_modifiedby" id="mr_modifiedby" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_modifiedby%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-md-2">  Document No. <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_documentnum" id="mr_documentnum" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_documentnum%><% end %>"/> </div>
+                    <label class="col-form-label col-md-2"> Receipt Date <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="date" autocomplete="off"  autocomplete="off" class="form-control" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.created_at%><% elsif @cdate %><%=@cdate%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Currency Amount <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="number" maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_currencyamount" id="mr_currencyamount" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_currencyamount%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Total Amount <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="number" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_amount" id="mr_amount" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_amount%><% end %>" onchange="handle_magazine_receipt_amount();"/> </div>
+				</div>
+            
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Payment Mode <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_paymentmode" id="mr_paymentmode" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_paymentmode%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Bank Name <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_bankname" id="mr_bankname" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_bankname%><% end %>"/> </div>
+				</div>
+
+            <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">  Manual Receipt No. <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_manualrectnum" id="mr_manualrectnum" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_manualrectnum%><% end %>"/> </div>
+                <label class="col-form-label col-md-2"> Manual Receipt Date <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="date" autocomplete="off" name="mr_manualrectdate" id="mr_manualrectdate" autocomplete="off" class="form-control" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_manualrectdate%><% end %>"/> </div>
+            </div>
+
+            <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">  Account Receipt No. <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mr_accountrectnum" id="mr_accountrectnum" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_accountrectnum%><% end %>"/> </div>
+                <label class="col-form-label col-md-2"> Account Receipt Date <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="date" autocomplete="off" name="mr_accountrectdate" id="mr_accountrectdate" autocomplete="off" class="form-control" value="<% if @ListMagazineReceipt %><%=@ListMagazineReceipt.mr_accountrectdate%><% end %>"/> </div>
+            </div>
+
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="mr_status" id="mr_status">
+                                            <option value="">-Select</option>
+                                            <option value="Y" <% if @ListMagazineReceipt && @ListMagazineReceipt.mr_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                            <option value="N" <% if @ListMagazineReceipt && @ListMagazineReceipt.mr_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                    </select>
+                </div>
+			</div>
+
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>magazine_receipt"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

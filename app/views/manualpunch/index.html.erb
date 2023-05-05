@@ -1,0 +1,327 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">View Punches</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>                
+                <input type="hidden" name="mid" id="mid" value="<% if @ListQualifc %><%=@ListQualifc.id%><% end %>"/>
+                <input type="hidden" name="rootXPath" id="rootXPath" value="<%=root_url%>"/>
+                <!-- Search Filter -->
+          <div class="row filter-row">
+           
+            
+            
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <div class="form-group form-focus">
+
+                <div class="cal-icon">
+                   <input type="text" placeholder="From Date" required class="form-control floating" name="trnFromDate" id="trnFromDate" value="<% if @nbegindates %><%=format_oblig_date(@nbegindates)%><% end %>"/>
+                </div>
+                <label class="focus-label">From</label>
+              </div>
+            </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <div class="form-group form-focus">
+                <div class="cal-icon">
+                 <input type="text" placeholder="Upto Date" required class="form-control floating" name="trnFromDate" id="trnFromDate" value="<% if @nbegindates %><%=format_oblig_date(@nbegindates)%><% end %>"/>
+                </div>
+              
+                <label class="focus-label">To</label>
+              </div>
+            </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control floating" id="my_department" onchange="get_all_sewadar_by_department();">
+           <option value="">-Select-</option>
+           <%
+            if @ListAllDepart && @ListAllDepart.length >0
+              @ListAllDepart.each do |newdpt|
+           %>
+          <option value="<%=newdpt.departCode%>"><%=newdpt.departDescription%></option>
+           <%
+           end
+         end
+          %>
+           
+          </select>
+                <label class="focus-label">Sewadar Department</label>
+              </div>
+             </div>
+              
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control floating" id="sewdar_name" >
+                    <option value="">-Select-</option>
+          
+               </select>
+                <label class="focus-label">Sewadar Name</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12 hidden processmachinedata">
+                <img src="<%=root_url%>images/spining_loader.gif">
+              </div>
+               <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12 noprocessmachinedata">  
+              <a href="javascript:;" class="btn btn-success btn-block" onclick="get_all_raw_punches();" style="min-height: 50px;
+padding: 12px;"> Show Data </a>  
+             </div>   
+             </div>
+             
+                    </div>
+          <!-- /Search Filter -->
+            
+                
+   
+ <div class="row">
+      <div class="col-md-6">
+        <div class="col-md-12">
+ <label class="card-title mt10">Machine Raw Data</label>
+              </div>
+        <div class="portlet">
+            <style>
+        .raw-data tbody {
+    display:block;
+    max-height:346px;
+    overflow:auto;
+    border: 1px solid #ddd;
+}
+.raw-data thead, .raw-data tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+							<div class="portlet-body">
+							<div class="table-responsive">
+								<table class="table table-hover table_field raw-data">
+								<thead class="new_tblhead">
+								<tr class="head_table">
+									<th>
+										Sewadar Code
+									</th>
+                                                                        <th>
+										Sewadar Name
+									</th>
+									<th>
+										Trn Date
+									</th>
+									<th>
+									       Punch Time
+									</th>
+									
+								</tr>
+								</thead>
+								<tbody id="machinepunchdetail">
+
+								<tr>
+                                                                 
+									<td>
+								       <input type="text" class="form-control" name="slnumber" id="slnumber"/>
+									</td>
+                                                                        <td>
+								       <input type="text" class="form-control" name="empnames" id="empnames"/>
+									</td>
+									<td id="center">
+                                                                         <input type="text" class="form-control" name="machineintime" id="machineintime"/>
+									</td>
+									<td id="center">
+                                                                        <input type="text" class="form-control" name="machineouttime" id="machineouttime"/>
+									</td>
+									
+								</tr>
+								</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+
+
+        
+         </div>
+<div class="col-md-6">
+        <div class="col-md-12">
+ <label class="card-title mt10">Manual Punch</label>
+              </div>
+        <div class="portlet">
+            <style>
+        .manual-punch tbody {
+    display:block;
+    max-height:146px;
+    overflow:auto;
+    border: 1px solid #ddd;
+}
+.manual-punch thead, .manual-punch tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+
+    </style>
+							<div class="portlet-body">
+							<div class="table-responsive punch-table">
+								<table class="table table-hover table_field manual-punch">
+								<thead class="new_tblhead">
+								<tr class="head_table">
+									
+									<th>
+										Sewadar Code
+									</th>
+                                       <th>
+										Sewadar  Name
+									</th>
+									<th>
+										Trn Date
+									</th>
+									<th>
+									       Punch Time
+									</th>
+									<th>
+									       Action
+									</th>
+								</tr>
+								</thead>
+								<tbody id="manuallpunchdetail">
+
+								<tr>
+
+									
+									<td>
+								   <input type="text" class="text_background  form-control" name="manualslnumber" id="manualslnumber"/>
+									</td>
+                                   <td>
+								   <input type="text" class="text_background  form-control" name="manualslname" id="manualslname"/>
+									</td>
+									<td id="center">
+                                                                  <input type="text" class="form-control" name="manualintime" id="manualintime"/>
+									</td>
+									<td id="center">
+                                                                      <input type="text" class="form-control" name="manualouttime" id="manualouttime"/>
+									</td>
+									<td class="text-right" style="vertical-align: middle;">
+                                        <div class="dropdown dropdown-action" style="text-align: center;"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                        </a>
+                                                      <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="javascript:;"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                                                    </div>
+                                        </td>
+								</tr>
+								</tbody>
+								</table>
+							</div>
+
+						</div>
+					</div>
+          <div class="row">
+		  <div class="col-md-12" style="display: flex;margin-bottom: 5px;">
+			<div class="col-lg-2">
+            Department 
+          </div>
+         <div class="col-md-5">
+           
+             <select  name="manuallocation" class="form-control" id="manuallocation" onchange="get_sewadar_manual_department();">
+				<option value="">-Select -</option>
+				 <%
+            if @ListAllDepart && @ListAllDepart.length >0
+              @ListAllDepart.each do |newdpt|
+           %>
+          <option value="<%=newdpt.departCode%>"><%=newdpt.departDescription%></option>
+           <%
+           end
+         end
+         %>
+
+		</select>
+          
+                   
+        </div>
+		  </div>
+	  
+	  </div>
+<div class="row">
+      <div class="col-md-12" style="display: flex;margin-bottom: 5px;">
+        <div class="col-lg-2">
+        Name
+         </div>
+          <div class="col-md-5">
+           <select class="form-control floating" id="mannual_sewdar_name" onchange="get_employee_code(this.value);">
+           <option value="">-Select-</option>
+           
+          </select>
+         </div>       
+          
+         
+          
+
+         </div>
+
+        </div>
+<div class="row">
+            <div class="col-md-12" style="display: flex;margin-bottom: 5px;">
+              <div class="col-lg-2">
+                Date
+              </div>
+              <div class="col-md-5">
+
+          <input type="text" placeholder=""  maxlength="10" class="form-control" name="indates" id="indates" />
+         </div>
+                <div class="col-lg-2">
+               Time
+              </div>
+              <div class="col-md-3">
+
+              <input type="text" placeholder="" onchange="common_time_formatted(this.value,'intimes');" maxlength="5" class="form-control" name="intimes" id="intimes" />
+         </div>
+            </div>
+          </div>
+          <div class="row hidden noaddmanulpunchesclass">
+           <img src="<%=root_url%>images/spining_loader.gif">
+          </div>
+          <div class="row addmanulpunchesclass" style="margin-top:20px">
+            <div class="col-md-12"style="display: flex;">
+                    <div class="col-md-4 col-xs-6">
+                    <button class="btn btn-primary submit-btn " type="button" class="delete_performance_button2" onclick="process_add_mannual_punches();">Save</button>
+                     
+                    </div>
+                   <div class="col-md-3 col-xs-6 hidden">
+                     <a href="javascript:;">
+                      <img src="<%=root_url%>images/delete.png" class="delete_performance_button2"/>
+                    </a>
+                    </div>
+                  <div class="col-md-3 col-xs-6">
+                 
+                    <a href="<%=root_url%>dashboard">
+                     <button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button>
+                    </a>
+                    </div>
+            </div>
+            </div>
+         </div>
+    
+        </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+ 
+                <% end %>
+		</div>
+	</div>
+	<!-- /Page Content -->

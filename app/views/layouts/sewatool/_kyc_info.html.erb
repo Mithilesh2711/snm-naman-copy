@@ -1,0 +1,404 @@
+<div id="emp_kyc" class="tab-pane fade">
+<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:emp_kyc ) do  %>
+  <input type="hidden" id="my_kyc_users" value=""/>
+<div class="row">
+<div class="col-md-12 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<div class="row">
+<div class="col-md-6 ">
+<h3 class="card-title">Bank Details</h3>
+<div class="form-group row">
+<label class="col-form-label col-md-5">Account No. </label>
+<div class="col-md-7">
+<input type="text" required autocomplete="off"  maxlength="30" class="form-control" name="skb_accountno" id="skb_accountno" value="<% if @EmpKycBank %><%=@EmpKycBank.skb_accountno%><% end %>"/>
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-5">IFSC </label>
+<div class="col-md-7">
+<input type="text" required autocomplete="off" maxlength="15" class="form-control" name="skb_ifccocde" id="skb_ifccocde" value="<% if @EmpKycBank %><%=@EmpKycBank.skb_ifccocde%><% end %>"/>
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-5">Bank Name</label>
+<div class="col-md-7">
+<input type="text" required autocomplete="off" maxlength="50"  class="form-control" name="skb_bank" id="skb_bank" value="<% if @EmpKycBank %><%=@EmpKycBank.skb_bank%><% end %>"/> </div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-5">Branch Name </label>
+<div class="col-md-7">
+<input type="text" required autocomplete="off" maxlength="50"  class="form-control" name="skb_branch" id="skb_branch" value="<% if @EmpKycBank %><%=@EmpKycBank.skb_branch%><% end %>"/> </div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-5">Branch Address</label>
+<div class="col-md-7">
+<input type="text" required autocomplete="off" maxlength="250" class="form-control" name="skb_address" id="skb_address" value="<% if @EmpKycBank %><%=@EmpKycBank.skb_address%><% end %>"/> </div>
+
+</div>
+
+</div>
+<div class="col-md-6">
+<h3 class="card-title">Attached Documents</h3>
+<div class="form-group row">
+<label class="col-form-label col-md-3">Aadhaar  No.</label>
+<div class="col-md-9 info">
+<input type="hidden" name="curr_adhar" id="curr_adhar" value="<% if @EmpKyc %><%=@EmpKyc.sk_adhar%><% end %>"/>
+<input type="text" onkeypress="return isNumberKeys(event);"  maxlength="12" required autocomplete="off"  class="form-control file_upload" name="sk_adharno" id="sk_adharno" value="<% if @EmpKyc %><%=@EmpKyc.sk_adharno%><% end %>"/>
+<input type="file" name="sk_adhar" id="sk_adhar"/>
+
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-3">PAN</label>
+<div class="col-md-9 info">
+<input type="hidden" name="curr_pan" id="curr_pan" value="<% if @EmpKyc %><%=@EmpKyc.sk_pan%><% end %>"/>
+<input type="text" maxlength="10"  required autocomplete="off"  class="form-control file_upload nmcapital" name="sk_panno" id="sk_panno" value="<% if @EmpKyc %><%=@EmpKyc.sk_panno%><% end %>"/>
+<input type="file" name="sk_pan" id="sk_pan"/>
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-3"> Passbook</label>
+<div class="col-md-9 info">
+<input type="hidden" name="curr_dl" id="curr_dl" value="<% if @EmpKyc %><%=@EmpKyc.sk_drivelicence%><% end %>"/>
+<input type="text" maxlength="30" required autocomplete="off"  class="form-control file_upload" name="sk_dlnos" id="sk_dlnos" value="<% if @EmpKyc %><%=@EmpKyc.sk_dlnos%><% end %>"/>
+<input type="file" name="sk_drivelicence" id="sk_drivelicence"/>
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-3">Driving License</label>
+<div class="col-md-9 info">
+<input type="hidden" name="curr_otherdoc" id="curr_otherdoc" value="<% if @EmpKyc %><%=@EmpKyc.sk_otherdoc%><% end %>"/>
+<input type="text" maxlength="30" required autocomplete="off"  class="form-control file_upload" name="sk_otherdocno" id="sk_otherdocno" value="<% if @EmpKyc %><%=@EmpKyc.sk_otherdocno%><% end %>"/>
+<input type="file" name="sk_otherdoc" id="sk_otherdoc"/>
+</div>
+
+</div>
+<div class="form-group row">
+<label class="col-form-label col-md-3">Passport/Voter ID/Other</label>
+<div class="col-md-9 info">
+<input type="hidden" name="curr_otherdoc2" id="curr_otherdoc2" value="<% if @EmpKyc %><%=@EmpKyc.sk_otherdoc2%><% end %>"/>
+<input type="text" maxlength="30" required autocomplete="off"  class="form-control file_upload" name="sk_otherdocno2" id="sk_otherdocno2" value="<% if @EmpKyc %><%=@EmpKyc.sk_otherdocno2%><% end %>"/>
+<input type="file" name="sk_otherdoc2" id="sk_otherdoc2"/>
+</div>
+
+</div>
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+</div>
+</div>
+</div>
+ <div class="col-md-12 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Family/Dependent 
+                                           </h3>
+                                           <%
+ for i in 1..1
+%>
+                                           <div class="form-group row d-flex grid_bg"  style="margin-bottom: 0px !important;">
+                                            <input type="hidden"  id="familyfooterid<%=i%>" value=""/>
+<input type="hidden"  id="oldestpercentage<%=i%>" value=""/>
+<input type="hidden"  id="oldestnomineebank<%=i%>" value=""/>
+<input type="hidden" class="form-control-sm " maxlength="250"  id="skf_address<%=i%>" value=""/>
+<input type="hidden" name="currattachment[]" id="currattachment<%=i%>" value=""/>
+          <div class="col-md-2 process_visibility  ">
+            <label>Name of  Dependent</label>
+            <br>
+       
+<input type="text" class="form-control" maxlength="50"  id="skf_dependent<%=i%>" value=""/>
+          </div>
+        
+          <div class="col-md-2  process_visibility ">
+              <label class="">Relationship</label>
+<br/>
+      <select class="form-control "  id="skf_relation<%=i%>" onchange="get_change_selected_spouse(<%=i%>);">
+     <option value="" >-Select-</option>
+    <option value="Spouse">SPOUSE</option>
+    <option value="Son">SON</option>
+    <option value="Daughter">DAUGHTER</option>
+    
+    <option value="Mother">MOTHER</option>
+    <option value="Father">FATHER</option>
+    <option value="Mother in Law">MOTHER-IN-LAW</option>
+    <option value="Father in Law">FATHER-IN-LAW</option>
+    <option value="Other">OTHER</option>
+</select>
+</div>
+            
+  <input type="hidden" class="form-control"  id="skf_sewadar_code_prev" value=""/>  
+  <div class="col-md-2 relatioship_others hidden">
+    <label>Other Relation</label><br/><input type="text" class="form-control"  maxlength="50"  id="skf_others<%=i%>" value=""/>
+</div>    
+<div class="col-md-2">
+    <label>Gender</label><br/><input type="text" class="form-control " readonly maxlength="10"  id="skf_gender<%=i%>" value=""/>
+</div>
+             <div class="col-md-2   process_visibility ">
+                 <label class="">Date of birth</label><br/>
+  <input type="text" class="form-control" autocomplete="off"  id="skf_datebirth<%=i%>" value=""/>
+          </div>
+           <div class="col-md-2  process_visibility ">
+            <label class="">Occupation</label>
+          <br/>
+         <select class="form-control" id="skf_occupation<%=i%>" onchange="check_student_unversity();">
+        <option value="">-Select-</option>
+        <option value="INFANT">INFANT</option>
+        <option value="STUDENT">STUDENT</option>
+        <option value="HOUSE WIFE">HOUSE WIFE</option>
+        <option value="NON-EARNING">NON-EARNING</option>
+        <option value="PENSIONER">PENSIONER</option>
+        <option value="EARNING">EARNING</option>
+        
+
+    </select></div>
+                    <div class="col-md-2  process_visibility selecteduniversity hidden">
+            <label>School/University Name</label><br/>
+      <select class="form-control"  id="skf_university<%=i%>" >
+        <option value="">Select</option>
+         <%
+           if @ListUniversity && @ListUniversity.length >0
+           @ListUniversity.each do |univs|
+         %>
+        <option value="<%=univs.id%>"><%=univs.un_description%></option>
+         <%
+           end
+          end 
+         %>
+</select></div>      
+
+<div class="col-md-2  process_visibility ">
+            <label>Health Insurance</label><br/>
+      <select class="form-control"  id="skf_optedpolicy<%=i%>">
+        <option value="">Select</option>
+   <option value="N">N</option>
+   <option value="Y">Y</option>
+</select></div>
+
+
+        </div>
+
+
+<div class="form-group row d-flex">
+    <div class="col-md-2  process_visibility ">
+            <label>Married Status</label><br/>
+      <select class="form-control"  id="skf_married_status<%=i%>">
+          <option value="">Select</option>
+          <option value="Y" >Married</option>
+          <option value="N" >UnMarried</option>
+          <option value="W" >Widow</option>
+          <option value="D" >Widower</option>
+          <option value="S" >Single Parent</option>
+        </select>
+
+      </div>      
+     <div class="col-md-2  process_visibility ">
+            <label>Working With SNM</label><br/>
+      <select class="form-control"  id="skf_working_with_snm<%=i%>" onchange="check_isfamily_related_sewadar(this.value);">
+          <option value="">Select</option>
+          <option value="Y" >Yes</option>
+          <option value="N" >No</option>
+          
+        </select>
+
+      </div>
+      
+      <div class="col-md-2 my_selected_sewadar hidden"> 
+       <label>Sewadar Code</label><br/>         
+        <select  class="form-control"  id="skf_sewadar_code<%=i%>" > 
+        <option value="">-Select-</option>
+            <%
+               if @Allsewobjx && @Allsewobjx.length >0
+                @Allsewobjx.each do |newsew|
+           %>
+            <option value="<%=newsew.sw_sewcode%>"><%=newsew.sw_sewadar_name%> (<%=newsew.sw_sewcode%>)</option>
+            <%
+            end
+             end
+            %>
+        </select>       
+  
+      </div>
+    <div class="col-md-2"> 
+       <label>Family Dependent</label><br/>         
+        <select  class="form-control"  id="skf_family_dependent<%=i%>" > 
+        <option value="">-Select-</option>
+        <option value="Y">Yes</option>
+        <option value="N">No</option>
+          
+        </select>       
+  
+      </div>
+
+  <div class="col-md-2 ">
+         <label>Aadhaar No.</label><br/>
+<input type="text" onchange="check_numbers_myset(this.value,'A','skf_pannumber<%=i%>')" onkeypress="return isNumberKeys(event);" maxlength="12" class="form-control" id="skf_pannumber<%=i%>" value=""/>
+       </div>
+          <div class="col-md-2" id="center">
+        <label>Attach Aadhaar</label><br/>
+               <div class="fileupload1 btn" style="position:relative;">
+<i class="fa fa-paperclip" style="color:#007bff"></i>
+<input type="file" class="upload" name="skq_attach" id="skf_attachment<%=i%>" title="Attach Documents">
+</div>
+       </div>
+
+</div>
+ <div class="form-group row grid_bg" style="margin-bottom: 0px !important;">
+           
+        <div class="col-md-2" > 
+         <label>Nominee</label><br/>
+<select class="form-control" id="skf_nominee<%=i%>" onchange="change_nominee_user(<%=i%>);">
+    <option value="">Select</option>
+<option value="N">N</option>
+<option value="Y">Y</option>
+
+</select>
+       </div>
+       <div class="col-md-2">
+         <label>%</label><br/>
+<input type="text" readonly class="form-control right-action" onkeypress="return isNumberFloatKey(event);" maxlength="3"  id="skf_percentage<%=i%>"/>
+       </div>
+            <div class="col-md-2">
+         <label>Nominee Bank Details</label><br/>
+<input type="text" readonly class="form-control" maxlength="140" id="skf_nomineebank<%=i%>"/>
+       </div> 
+          <div class="col-md-1  process_workexp_save" id="center" >
+           <label>Action</label> <br/><a href="javascript:;" onclick="process_save_family_detail_rowise();" data-placement="bottom" data-toggle="tooltip" title="" data-original-title="Save Family Details"><i class="fa fa-floppy-o"></i></a> 
+          </div>
+        </div>
+        </div>
+
+       
+<%
+ end
+%>
+<div class="row m-t-10">
+<div class="col-md-12">
+<div class="table-responsive">
+<table class="table_input table-bordered mb-0" style="width:100%">
+<thead class="new_tblhead">
+<tr>
+<th>Name of <br/> Dependent</th>
+
+<th>Relationship</th>
+<th>Other<br/>Relationship</th>
+<th>Gender</th>
+<th>Date of birth</th>
+<th>Occupation</th>
+<th>School/University Name</th>
+<th>Health <br/> Insurance<span data-placement="bottom" data-toggle="tooltip" title="Select 'Y' if member covered in health insurance" class="red-tooltip">?</span></th>
+<th>Working <br/> With SNM</th>
+<th>Sewadar <br/> Code</th>
+<th>Family <br/> Dependent</th>
+<th>Aadhaar No.</th>
+<th>Attach Aadhaar</th>
+<th>Nominee</th>
+<th>%</th>
+<th>Nominee <br/> Bank details</th>
+<th colspan="2">Action</th>
+</tr>
+</thead>
+
+<tbody id="process_canidate_families">
+<%
+i = 2;
+if @EmpKycFamily && @EmpKycFamily.length >0
+@EmpKycFamily.each do |familydetail|
+  universityname = ""
+  famlobjs = get_unversity_firstrecord(familydetail.skf_university)
+  if famlobjs
+    universityname = famlobjs.un_description
+  end
+%>
+<tr class="new_familydetail">
+<input type="hidden" class="form-control-sm " id="familyfooterid<%=i%>" value="<%=familydetail.id%>"/>
+<input type="hidden" class="form-control-sm " maxlength="250" id="skf_address<%=i%>" value="<%=familydetail.skf_address%>"/>
+<input type="hidden" class="form-control-sm " id="currattachment<%=i%>" value="<%=familydetail.skf_attachment%>"/>
+<input type="hidden" class="form-control-sm" maxlength="50" id="skf_dependent<%=i%>" value="<%=familydetail.skf_dependent%>"/>
+<input type="hidden" class="form-control-sm" maxlength="50" id="skf_relation<%=i%>" value="<%=familydetail.skf_relation%>"/>
+<input type="hidden" class="form-control-sm" readonly maxlength="10" id="skf_gender<%=i%>" value="<%=familydetail.skf_gender%>"/>
+<input type="hidden" class="form-control-sm " autocomplete="off"  id="skf_datebirth<%=i%>" value="<%=familydetail.bdate2%>"/>
+<input type="hidden" class="form-control-sm " autocomplete="off"  id="skf_occupation<%=i%>" value="<%=familydetail.skf_occupation%>"/>
+<input type="hidden" class="form-control-sm " autocomplete="off"  id="skf_optedpolicy<%=i%>" value="<%=familydetail.skf_optedpolicy%>"/>
+<input type="hidden" class="form-control-sm " id="skf_pannumber<%=i%>" value="<%=familydetail.skf_pannumber%>"/>
+<input type="hidden" class="form-control-sm " id="skf_nominee<%=i%>" value="<%=familydetail.skf_nominee%>"/>
+<input type="hidden" class="form-control-sm " id="skf_percentage<%=i%>" value="<%=currency_formatted(familydetail.skf_percentage)%>"/>
+<input type="hidden" class="form-control-sm " maxlength="140"  id="skf_nomineebank<%=i%>" value="<%=familydetail.skf_nomineebank%>"/>
+<input type="hidden" class="form-control-sm " id="skf_married_snmstatus<%=i%>" value="<%=familydetail.skf_married_status%>"/>
+<input type="hidden" class="form-control-sm " id="skf_workingwith_snm<%=i%>" value="<%=familydetail.skf_working_withsnm%>"/>
+<input type="hidden" class="form-control-sm " id="skf_sewadar_snmcode<%=i%>" value="<%=familydetail.skf_working_sewacode%>"/>
+<input type="hidden" class="form-control-sm " id="skf_family_depends<%=i%>" value="<%=familydetail.skf_family_dependent%>"/>
+<input type="hidden" class="form-control-sm " id="skf_familyothers<%=i%>" value="<%=familydetail.skf_otherrelation%>"/>
+<input type="hidden" class="form-control-sm " id="skf_university<%=i%>" value="<%=familydetail.skf_university%>"/>
+
+
+
+<td><%=familydetail.skf_dependent%></td>
+<td><%=familydetail.skf_relation%></td>
+<td><%=familydetail.skf_otherrelation%></td>
+<td><%=familydetail.skf_gender%></td>
+<td><%=familydetail.bdate2%></td>
+<td>
+  <%=familydetail.skf_occupation == 'Salaried' ? 'EARNING' : familydetail.skf_occupation%> 
+</td>
+<td><%=universityname%></td>
+<td><%=familydetail.skf_optedpolicy%></td>
+<td><%=familydetail.skf_working_withsnm%></td>
+<td><%=familydetail.skf_working_sewacode%></td>
+<td><%=familydetail.skf_family_dependent%></td>
+<td><%=familydetail.skf_pannumber%></td>
+<td><% if familydetail && familydetail.skf_attachment !=nil && familydetail.skf_attachment !='' %>Attached<% end %></td>
+<td><%=familydetail.skf_nominee%></td>
+<td><%=currency_formatted(familydetail.skf_percentage)%></td>
+<td><%=familydetail.skf_nomineebank%></td>
+<td><a href="javascript:" onclick="get_edited_family_list_detail('<%=i%>');"><i class="fa fa-pencil m-r-5"></i></a></td>
+<td><a href="javascript:" onclick="delete_common_items('FML','<%=familydetail.id%>');"><i class="fa fa-trash-o m-r-5"></i></a></td>
+
+</tr>
+<%
+    i +=1
+  end
+end
+%>
+
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<div class="col-md-12 process_save">
+<div class="submit-section m-t-5">
+<button onclick="process_sewadar_kyc();" class="btn btn-primary submit-btn process_save" type="button">Save & Next</button>
+<button onclick="prvious_back_action('emp_office');" class="btn btn-danger submit-btn m-l-5 " type="button">Previous</button>
+
+</div>
+</div>
+
+</div>
+<% end %>
+
+

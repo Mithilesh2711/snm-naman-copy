@@ -1,0 +1,2 @@
+class MstSewdarKycFamilyDetail < ApplicationRecord
+end

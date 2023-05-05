@@ -1,0 +1,105 @@
+<h1>Test</h1>
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Manage Magazine</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+		
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+		<div class="row">
+			<div class="col-md-12">
+
+				  <div >
+                                  	<a href="<%=root_url%>magazine/add_magazine" class="btn add-btn m-b-5 float-left"><i class="fa fa-plus"></i> Add Magazine</a> 
+                                  	 <%
+                                           if @ListMagazine.length >0
+                                         %>
+                                        <div class="col-auto float-right ml-auto">
+                                              <div class="btn-group btn-group-sm">
+									<a  class="btn btn-white"href="<%=@printpath%>" class="btn btn-white">CSV</a>
+									
+									 <a href="<%=@printpdfpath%>" target="_blank" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</a>
+								</div>
+							</div>
+                                          
+                                          <% end %>
+                                  </div>
+				<div class="table-responsive">
+
+					<table class="table table-striped  mb-0">
+						<thead class="new_tblhead">
+							<tr>
+								<th>S.NO</th>
+								<th>Magazine Code </th>
+								<th>Name</th>
+                                <th>Language</th>
+                                <th>No. of Magazines/year</th>
+                                <th>Status</th>
+								<th class="text-right">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+                                                  <%
+                                                    pagestart = params[:page] ? params[:page] : 1
+                                                    if pagestart.to_i <=1
+                                                      i = 1
+                                                    else
+                                                      i = ((pagestart.to_i-1)*10)+1
+                                                      i = i.to_i
+                                                    end
+                                                   if @ListMagazine.length >0
+                                                    @ListMagazine.each do |newmagazine|
+                                                  %>
+							<tr class="">
+								<td><%=i%></td>
+								<td><%=newmagazine.mag_code%></td>
+								<td><%=newmagazine.mag_name%></td>
+                                <td><%=newmagazine.mag_language%></td>
+                                <td><%=newmagazine.mag_frequency%></td>
+                                <td><%=newmagazine.status%></td>
+								<td class="text-right">
+									<div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+										<div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>magazine/add_magazine/<%=newmagazine.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>magazine/<%=newmagazine.id%>/deletes');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+									</div>
+								</td>
+							</tr>
+                                                        <%
+                                                          i +=1
+                                                         end
+                                                         else
+                                                       %>
+                                                        <tr class="">
+                                                          <td colspan="4">No Record(s) found. </td>
+                                                        </tr>
+                                                        <%
+                                                         end
+                                                       %>
+							
+						</tbody>
+					</table>
+					 <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@ListMagazine)%></div>
+                              
+                                  </div>
+                                 
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

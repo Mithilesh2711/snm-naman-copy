@@ -1,0 +1,120 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Announcement Entry by EC</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert " style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+          <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          
+          <label class="col-form-label col-md-2">Posting by<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+             <input class="form-control"  required autocomplete="off" name="ls_fromdate" id="ls_fromdate" value="" type="text"/>
+                   
+            
+          </div>
+         <label class="col-form-label col-md-2">Posting Dashboard<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+            <select class="form-control" required   onchange="fill_from_sewadar_listed('code');">
+               <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @newsewdarList && @newsewdarList.length >0
+                @newsewdarList.each do |newswd|
+              %>
+              <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewcode%></option>
+              <%
+              end
+             end
+             %>
+
+            </select>
+          </div>
+          
+
+      </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">Posting Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+             <input class="form-control" onchange="checkValidate(this.value,'ls_fromdate');" required autocomplete="off" name="ls_fromdate" id="ls_fromdate" value="<% if @ListDist %><%=format_oblig_date(@ListDist.ls_fromdate)%><% elsif session[:request_ls_fromdate] %><%=format_oblig_date(session[:request_ls_fromdate])%><% end%>" type="text"/>
+                    </div> </div>
+          <label class="col-form-label col-md-2">Posting Time <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+                      <input class="form-control " required autocomplete="off" name="ls_todate" id="ls_todate"  value="" type="text"/>
+                    </div>
+                  </div>
+                   <div class="form-group row">
+       
+            <label class="col-form-label col-md-2">Announcement<span class="mandatory">*</span></label>
+          <div class="col-md-5">
+           <textarea rows="2" required maxlength="1000" class="form-control" name="ls_leavereson" id="ls_leavereson"><% if @ListDist %><%=@ListDist.ls_leavereson%><% elsif  session[:request_ls_leavereson] %><%=session[:request_ls_leavereson]%><% end %></textarea></div>
+        </div>
+        <div class="form-group row" style="text-align: center">
+<label class="col-form-label col-md-2"><span class="mandatory">*</span></label>
+                              <div class="col-md-5">
+																<label for="active" class="rad-btn"> <input type="radio" checked="" name="monthly_deduction" id="active" value="active">&nbsp;
+																Active</label>
+																<label for="inactive" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="inactive" value="inactive">&nbsp;
+																	In-active</label>
+																	
+                              </div>
+                          </div>
+        
+            <div class="form-group row">
+          <label class="col-form-label col-md-2">Publishing Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+             <input class="form-control" onchange="checkValidate(this.value,'ls_fromdate');" required autocomplete="off" name="ls_fromdate" id="ls_fromdate" value="<% if @ListDist %><%=format_oblig_date(@ListDist.ls_fromdate)%><% elsif session[:request_ls_fromdate] %><%=format_oblig_date(session[:request_ls_fromdate])%><% end%>" type="text"/>
+                    </div> </div>
+          <label class="col-form-label col-md-2">Publishing Time <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                      <input class="form-control " required autocomplete="off" name="ls_todate" id="ls_todate"  value="" type="text"/>
+                    </div>
+                  </div>
+           
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn processleave" onclick="return check_all_leave_ruled();">Save</button>
+          <a href="<%=root_url%>leave"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+        </div>
+          
+        
+      </div>
+        
+    </div>
+  </div>
+          <!-- /Leave Statistics -->
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

@@ -1,0 +1,151 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Address</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="curadrcode" id="curadrcode" value="<% if @ListAddress %><%=@ListAddress.adr_code%><% end %>"/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListAddress %><%=@ListAddress.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="adr_code" id="adr_code" value="<% if @ListAddress %><%=@ListAddress.adr_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> </div>
+                    <label class="col-form-label col-md-2"> Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="adr_name" id="adr_name" value="<% if @ListAddress %><%=@ListAddress.adr_name%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Mobile <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="adr_mobile" id="adr_mobile" value="<% if @ListAddress %><%=@ListAddress.adr_mobile%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Email <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="email" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="adr_email" id="adr_email" value="<% if @ListAddress %><%=@ListAddress.adr_email%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Member <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select class="form-control" name="adr_membercode" autofocus="" tabindex="1" id="adr_membercode">
+                        <option value="">Select</option>
+                                                    <%
+                                                     if @ListMember.length >0
+                                                      @ListMember.each do |newmbr|
+                                                    %>
+                                                    <option value="<%=newmbr.mbr_code%>" <% if @Listadrscription && @Listadrscription.adr_membercode.to_s.downcase == newmbr.mbr_code.to_s.downcase %>selected="selected"<% end %>><%=newmbr.mbr_name%> (<%= newmbr.mbr_code%>)</option>
+                                                    <%
+                                                     end
+                                                    end
+                                                   %>
+                    </select>
+                </div>
+                <label class="col-form-label col-md-2"> Country <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="adr_country" id="adr_country" value="<% if @ListAddress %><%=@ListAddress.adr_country%><% end %>"/> </div>
+            
+            </div>
+                <div class="form-group row">
+					<label class="col-form-label col-md-2">State <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="adr_state" autofocus="" tabindex="1" id="adr_state" onchange="get_district_by_state();">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListSate.length >0
+                                                          @ListSate.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.sts_code%>" <% if @ListAddress && @ListAddress.adr_state.to_s.downcase == newst.sts_code.to_s.downcase %>selected="selected"<% end %>><%=newst.sts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select> 
+					</div>
+					<label class="col-form-label col-md-2">District <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="adr_district" id="adr_district">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListDist && @ListDist.length >0
+                                                          @ListDist.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.dts_districtcode%>" <% if @ListAddress && @ListAddress.adr_district.to_s.downcase == newst.dts_districtcode.to_s.downcase %>selected="selected"<% end %>><%=newst.dts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+
+            <div class="form-group row">
+            <label class="col-form-label col-md-2">City <span class="mandatory">*</span></label>
+            <div class="col-md-3">
+                <select class="form-control" tabindex="2" name="adr_city" id="adr_city">
+                    <option value="">Select</option>
+                                                <%
+                                                 if @ListCity && @ListCity.length >0
+                                                  @ListCity.each do |newct|
+                                                %>
+                                                <option value="<%=newct.ct_citycode%>" <% if @ListAddress && @ListAddress.adr_city.to_s.downcase == newct.ct_citycode.to_s.downcase %>selected="selected"<% end %>><%=newct.ct_description%></option>
+                                                <%
+                                                 end
+                                                end
+                                               %>
+                </select>
+            </div>
+                <label class="col-form-label col-md-2"> Pincode <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="adr_pincode" id="adr_pincode" value="<% if @ListAddress %><%=@ListAddress.adr_pincode%><% end %>"/> </div>
+            
+            </div>
+
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Address Line 1 <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="adr_line1" id="adr_line1" value="<% if @ListAddress %><%=@ListAddress.adr_line1%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Address Line 2 </label>
+                    <div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="adr_line2" id="adr_line2" value="<% if @ListAddress %><%=@ListAddress.adr_line2%><% end %>"/> </div>
+			</div>
+
+            <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="adr_status" id="adr_status">
+                                            <option value="">-Select</option>
+                                            <option value="Y" <% if @ListAddress && @ListAddress.adr_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                            <option value="N" <% if @ListAddress && @ListAddress.adr_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                    </select>
+                </div>
+			</div>
+				
+				<div class="adrmit-section">
+					<button class="btn btn-primary adrmit-btn">Save</button>
+					<a href="<%=root_url%>address"><button class="btn btn-danger adrmit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

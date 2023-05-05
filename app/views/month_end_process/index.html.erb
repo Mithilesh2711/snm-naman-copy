@@ -1,0 +1,87 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Processing Month <%=get_month_listed_data(@HrMonths)%>,<%=@Hryears%></h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+		<!-- /Page Header -->
+		<div class="row">
+			
+				<div class="col-md-12">
+
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Department</label>
+					<div class="col-md-3">
+						 <select class="form-control" required name="salary_depcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                                <option value="">-Select</option>
+                                                <%
+                                                 if @sewDepart && @sewDepart.length >0
+                                                  @sewDepart.each do |newdp|
+                                                %>
+                                                <option value="<%=newdp.departCode%>" <% if @AllotmentAdd && @AllotmentAdd.aa_depcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+                                                <%
+                                                  end
+                                                end
+                                               %>
+                                              </select>
+					</div>
+						<label class="col-form-label col-md-3">Sewadar Category</label>
+					<div class="col-md-3">
+						<select class="form-control" name="salary_category" id="salary_category">
+							<option value="">-Select-</option>
+                                                          <%
+                                                          if @sewadarCategory.length >0
+                                                          @sewadarCategory.each do |newcats|
+                                                          %>
+                                                          <option value="<%=newcats.sc_name%>" <% if @sewadar_categories && @sewadar_categories.to_s.strip == newcats.sc_name.to_s.strip %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+                                                          <%
+                                                          end
+                                                          end
+                                                          %>
+
+						</select> </div>
+					</div>
+					
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Sewadar Code</label>
+					<div class="col-md-3">
+						<select class="form-control" name="salary_sewcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+							<option value="">-Select-</option>
+						</select>
+					</div>
+						<label class="col-form-label col-md-3">Sewadar Name</label>
+					<div class="col-md-3">
+						<select class="form-control" name="salary_sewname" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+							<option value="">-Select-</option>
+						</select> </div>
+					</div>
+				
+			
+						
+				<div class="submit-section processed">
+					<button class="btn btn-primary submit-btn" type="button" onclick="get_districtcode_by_states();">Calculate</button>
+					
+				</div>
+                                  <div class="submit-section noprocessed hidden">
+                                    <img src="<%=root_url%>images/spining_loader.gif" />
+                                  </div>
+				</div>
+			
+			
+				
+			
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

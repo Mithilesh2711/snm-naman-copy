@@ -1,0 +1,182 @@
+<!-- Page Wrapper -->
+
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Manage Accomodation</h3>
+					 <%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" id="mid" name="mid" value="<% if @HeadAccomo %><%=@HeadAccomo.id%><% end %>"/>
+                <input type="hidden" id="ad_belongs" name="ad_belongs" value="<% if @HeadAccomo %><%=@HeadAccomo.ad_belongs%><% else %>H<% end %>"/>
+                <input type="hidden" id="prevaccomod" name="prevaccomod" value="<% if @HeadAccomo %><%=@HeadAccomo.ad_accomodtype%><% end %>"/>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Accomodation Type <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<select class="form-control" name="ad_accomodtype" id="ad_accomodtype" required>
+							<option value="">-Select-</option>
+                                                        <%
+                                                        if @hraccmtype && @hraccmtype.length >0
+                                                          @hraccmtype.each do |newacotype|
+                                                       %>
+							<option value="<%=newacotype.id%>" <% if @HeadAccomo && @HeadAccomo.ad_accomodtype.to_i == newacotype.id.to_i%>selected="selected"<% end %>><%=newacotype.at_description%></option>
+							<%
+                                                          end
+                                                         end
+                                                       %>
+						</select>
+						
+		<a href="javascript:;" onclick="pickup_accomodation_value();" class="" data-toggle="modal" data-target="#add_type"><i class="fa fa-plus" style="width: 50px;margin-left: 10px;margin-top: 5px;"></i></a>
+							</div>
+						<label class="col-form-label col-md-2">Belongs <span class="mandatory">*</span></label>
+					<div class="col-md-3" style="display:inline-flex;">
+					<div class="radio">
+													<label>
+														<input type="radio" onclick="checked_belogs_values(this.value);" <% if @HeadAccomo && @HeadAccomo.ad_belongs.to_s == 'H'  %>checked="checked"<% elsif !@HeadAccomo %>checked="checked"<% end %>   name="radio" name="ad_belongs_1" id="ad_belongs_1" value="H"/> Headquater
+													</label>
+												</div>
+												<div class="radio" style="margin-left: 10px;">
+													<label>
+														<input type="radio" onclick="checked_belogs_values(this.value);" <% if @HeadAccomo && @HeadAccomo.ad_belongs.to_s == 'B'  %>checked="checked"<% end %>  name="radio" name="ad_belongs_2" id="ad_belongs_2" value="B"/> Branch
+													</label>
+												</div>
+					</div>
+					</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Address <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required class="form-control" maxlength="250" autocomplete="off" name="ad_address" id="ad_address" value="<% if @HeadAccomo %><%=@HeadAccomo.ad_address%><% end %>"/>
+				 </div>
+						<label class="col-form-label col-md-2">No of Rooms <span class="mandatory">*</span></label>
+					<div class="col-md-2" >
+					<input type="text" required onkeypress="return isNumberKeys(event);" class="form-control" maxlength="4" autocomplete="off" name="ad_noofrooms" id="ad_noofrooms" value="<% if @HeadAccomo %><%=@HeadAccomo.ad_noofrooms%><% end %>"/>
+					</div>
+					</div>
+				
+					<div class="form-group row">
+						<label class="col-form-label col-md-2">State <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<select class="form-control" required name="ad_state" id="ad_state" onchange="get_districtcode_by_states();">
+						<option value="">-Select</option>
+                                                <%
+                                                 if @sewadarState && @sewadarState.length >0
+                                                  @sewadarState.each do |newsewd|
+                                               %>
+                                               <option value="<%=newsewd.sts_code%>" <% if @HeadAccomo && @HeadAccomo.ad_state.to_s == newsewd.sts_code.to_s%>selected="selected"<% end %>><%=newsewd.sts_description%></option>
+                                                <%
+
+                                                  end
+                                               end
+                                               %>
+					</select>
+				 </div>
+				
+						<label class="col-form-label col-md-2">Type of Kitchen <span class="mandatory">*</span></label>
+					<div class="col-md-2" >
+					<select class="form-control" required name="ad_typeofkitechen" id="ad_typeofkitechen">
+							<option value="Separate" <% if @HeadAccomo && @HeadAccomo.ad_typeofkitechen.to_s == 'Separate'%>selected="selected"<% end %>>Separate</option>
+							<option value="Not Separate" <% if @HeadAccomo && @HeadAccomo.ad_typeofkitechen.to_s == 'Not Separate'%>selected="selected"<% end %>>Not Separate</option>
+						</select>
+					</div>
+					</div>
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">District <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<select class="form-control" required name="ad_district" id="ad_district">
+						<option value="">-Select-</option>
+                                                <%
+                                                if  @sewadarpsDist && @sewadarpsDist.length >0
+                                                   @sewadarpsDist.each do |newdist|
+                                                %>
+                                                <option value="<%=newdist.dts_districtcode%>" <% if @HeadAccomo && @HeadAccomo.ad_district.to_s == newdist.dts_districtcode.to_s%>selected="selected"<% end %>><%=newdist.dts_description%></option>
+                                                <%
+                                                  end
+                                               end
+                                               %>
+					</select>
+				 </div>
+						<label class="col-form-label col-md-2">Type of Washroom <span class="mandatory">*</span></label>
+					<div class="col-md-2" >
+					<select class="form-control" required name="ad_typeofwashroom" id="ad_typeofwashroom">
+						        <option value="Separate" <% if @HeadAccomo && @HeadAccomo.ad_typeofwashroom.to_s == 'Separate'%>selected="selected"<% end %>>Separate</option>
+							<option value="Common" <% if @HeadAccomo && @HeadAccomo.ad_typeofwashroom.to_s == 'Common'%>selected="selected"<% end %>>Common</option>
+						</select>
+					</div>
+					</div>
+					<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">City</label>
+					<div class="col-md-3">
+					<select class="form-control" name="ad_city" id="ad_city">
+						<option value="">-Select-</option>
+
+					</select>
+				 </div>
+					<label class="col-form-label col-md-2">Pincode</label>
+					<div class="col-md-2">
+						<input type="text" maxlength="15" autocomplete="off" class="form-control" name="ad_pincode" id="ad_pincode" value="<% if @HeadAccomo %><%=@HeadAccomo.ad_pincode%><% end %>"/>
+
+                                        </div>
+						
+				</div>
+					
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+                                        <a href="<%=root_url%>accomodation"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>
+
+				<!-- Add Holiday Modal -->
+				<div class="modal custom-modal fade" id="add_type" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Add Accomodation Type</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								
+									<div class="form-group">
+										<label>Type Name <span class="text-danger">*</span></label>
+										<input class="form-control" maxlength="60" type="text" name="at_description" id="at_description" />
+									</div>
+									
+									<div class="submit-section process_popupsave">
+                                                                          <a href="javascript:;" onclick="process_add_accomodationtype();"><button class="btn btn-primary submit-btn" style="min-width:140px" type="button">Submit</button></a>
+                                                                          <a href="javascript:;" onclick="process_delete_accomodation_type();"><button class="btn btn-primary submit-btn"  style="min-width:140px" type="button">Delete</button></a>
+                                                                          <a href="javascript:;" onclick="process_reset_accomodationtype();"><button class="btn btn-primary submit-btn"  style="min-width:140px" type="button">Reset</button></a>
+									</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Add Holiday Modal -->

@@ -1,0 +1,373 @@
+<div id="emp_office" class="tab-pane fade">
+                                                  <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:emp_office ) do  %>
+							<div class="row">
+
+									<div class="col-md-12 d-flex">
+									<div class="card profile-box flex-fill">
+									<div class="card-body">
+											<h3 class="card-title">Office Information</h3>
+<div class="row d-flex">
+  <div class="col-md-6">
+      <div class="form-group row">
+          
+          <label class="col-form-label col-md-6"></label>
+          <div class="col-md-6 emp_radio">
+         <input type="radio" onclick="process_branch_headoffices(this.value);" <% if @seawdarsobj && @seawdarsobj.sw_branchtype == 'Head Office' %>checked<%elsif @seawdarsobj==nil %>checked<% end %>  name="sw_branchtype" id="sw_branchtype_2" value="Head Office" class="m-l-5"/>&nbsp; Head Office
+<input type="radio" onclick="process_branch_headoffices(this.value);" <% if @seawdarsobj && @seawdarsobj.sw_branchtype == 'Branch' %>checked<% end %>   name="sw_branchtype" id="sw_branchtype_1" value="Branch"/>&nbsp; Branch&nbsp;
+          </div>
+
+          </div> 
+           <div class="form-group row">
+          <label class="col-form-label col-md-6">Department</label>
+          <div class="col-md-6">
+          <select required autocomplete="off"  class="form-control " name="so_deprtcode" id="so_deprtcode" onchange="get_my_sub_department();">
+                                          <option value="">-Select-</option>
+                                          <%
+                                           sodepobj = get_sewa_all_department()
+                                           if sodepobj.length >0
+                                             sodepobj.each do |newdpt|
+                                           
+                                         %>
+                                          <option value="<%=newdpt.departCode%>" <% if @empChecked && @empChecked.so_deprtcode.to_s.downcase == newdpt.departCode.to_s.downcase %>selected="selected"<% end %>><%=newdpt.departDescription%></option>
+                                          <%
+                                           end
+                                         end
+                                         %>
+                                        </select>
+          </div>
+          
+          
+
+          </div>
+           <div class="form-group row">
+          <label class="col-form-label col-md-6">Sub Department</label>
+          <div class="col-md-6">
+          <select required autocomplete="off"  class="form-control " name="so_subdepartment" id="so_subdepartment">
+                                          <option value="">-Select-</option>
+                                          <%
+                                           if @sewSubDepart && @sewSubDepart.length >0
+                                            @sewSubDepart.each do |newsubdept|
+                                         %>
+                                         <option value="<%=newsubdept.departCode%>" <% if @empChecked && @empChecked.so_subdepartment.to_s == newsubdept.departCode.to_s %>selected="selected"<% end %>><%=newsubdept.departDescription%></option>
+                                          <%
+                                           end
+                                         end
+                                         %>
+                                         
+                                        </select>
+          </div>
+          <%
+            sewlocationcls =  ""
+            sewzones       = "hidden"
+            styles         = "block"
+            if @seawdarsobj && @seawdarsobj.sw_branchtype.to_s == 'Branch'
+                styles = "none"
+                sewlocationcls = "hidden"
+                sewzones       = ""
+            end
+
+        %>
+          
+
+          </div>
+            <div class="form-group row sewa_location <%=sewlocationcls%>">
+          
+          <label class="col-form-label col-md-6">Location</label>
+          <div class="col-md-6 ">
+          
+          <select class="form-control" name="sw_location" id="sw_location" style="display:<%=styles%>" onchange="get_my_sub_location();">
+         <option value="">-Select-</option>
+            <%
+              if @HeadOffices && @HeadOffices.length >0
+                @HeadOffices.each do |newd|
+            %>
+            <option value="<%=newd.id%>" <% if @seawdarsobj && @seawdarsobj.sw_location.to_i == newd.id.to_i %>selected="selected"<% end %>><%=newd.hof_description%></option>
+            <%
+              end
+            end
+            %>
+</select>
+            
+           
+          </div>
+
+          </div> 
+           <div class="form-group row sewa_location <%=sewlocationcls%>">
+          
+          <label class="col-form-label col-md-6">Sub Location</label>
+         
+           <div class="col-md-6">
+             <select class="form-control" name="so_sublocation" id="so_sublocation">
+               <option value="">-Select-</option>
+               <%
+                 if @subLocobj && @subLocobj.length >0
+                  @subLocobj.each do |newsubloc|
+               %>
+                <option value="<%=newsubloc.id%>" <% if @empChecked && @empChecked.so_sublocation.to_i == newsubloc.id.to_i %>selected="selected"<% end %>><%=newsubloc.sl_description%></option>
+               <%
+                end
+              end
+               %>
+             </select>
+          </div>
+          </div>
+          <div class="form-group row sewa_zones <%=sewzones%>">
+          
+          <label class="col-form-label col-md-6">Zone</label>
+         
+           <div class="col-md-6">
+         <select class="form-control" name="so_zone" id="so_zone" onchange="get_zone_branches();">
+           <option value="">-Select-</option>
+           <%
+            if @ListZone && @ListZone.length >0
+             @ListZone.each do |zones|
+           %>
+            <option value="<%=zones.zn_zonecode%>" <% if @empChecked && @empChecked.so_zone.to_s.downcase == zones.zn_zonecode.to_s.downcase %>selected="selected"<% end %>><%=zones.zn_name%></option>
+           <%
+            end
+           end
+          %>
+         </select>
+          </div>
+          </div>
+          <div class="form-group row sewa_zones <%=sewzones%>">
+          
+          <label class="col-form-label col-md-6">Branch</label>
+         
+           <div class="col-md-6">
+             <select class="form-control" name="so_branch" id="so_branch">
+           <option value="" >-Select-</option>
+           <%
+             if @ZonalBranch && @ZonalBranch.length >0
+              @ZonalBranch.each do |newbrch|
+           %>
+           <option value="<%=newbrch.bch_branchcode%>" <% if @empChecked && @empChecked.so_branch.to_s.downcase == newbrch.bch_branchcode.to_s.downcase %>selected="selected"<% end %>><%=newbrch.bch_branchname%></option>
+           <%
+            end
+          end
+          %>
+         </select>
+          </div>
+          </div>
+
+    
+   
+          <div class="form-group row">
+          
+          <label class="col-form-label col-md-6">Roles Code</label>
+          <div class="col-md-6">
+          <select required autocomplete="off"  class="form-control " name="so_respcode" id="" value="so_respcode">
+                                           <option value="">-Select-</option>
+                                          <%
+                                           respobj = get_sewa_all_rolesresp()
+                                           if respobj.length >0
+                                             respobj.each do |rspl|
+                                           
+                                         %>
+                                          <option value="<%=rspl.rsp_rspcode%>" <% if @empChecked && @empChecked.so_respcode.to_s.downcase == rspl.rsp_rspcode.to_s.downcase %>selected="selected"<% end %>><%=rspl.rsp_description%></option>
+                                          <%
+                                           end
+                                         end
+                                         %>
+                                        </select>
+          </div>
+          
+
+          </div>
+          <div class="form-group row">
+          
+          <label class="col-form-label col-md-6">Qualification</label>
+          <div class="col-md-6">
+          <select required autocomplete="off"  class="form-control " name="so_qualifcode" id="so_qualifcode">
+                                          <option value="">-Select-</option>
+                                          <%
+                                           qlobj = get_sewa_all_qualification()
+                                           if qlobj.length >0
+                                             qlobj.each do |qlobj|
+                                           
+                                         %>
+                                          <option value="<%=qlobj.ql_qualifcode%>" <% if @empChecked && @empChecked.so_qualifcode.to_s.downcase == qlobj.ql_qualifcode.to_s.downcase %>selected="selected"<% end %>><%=qlobj.ql_qualdescription%></option>
+                                          <%
+                                           end
+                                         end
+                                         %>
+                                        </select>
+          </div>
+
+          </div>
+          
+                                         <div class="form-group row">
+          <label class="col-form-label col-md-6">Designation Code</label>
+          <div class="col-md-6">
+              <select required autocomplete="off"  class="form-control " name="so_desigcode" id="so_desigcode">
+                                          <option value="">-Select-</option>
+                                          <%
+                                           desobj = get_sewa_all_designation()
+                                           if desobj.length >0
+                                             desobj.each do |desig|
+
+                                         %>
+                                          <option value="<%=desig.desicode%>" <% if @empChecked && @empChecked.so_desigcode.to_s.downcase == desig.desicode.to_s.downcase %>selected="selected"<% end %>><%=desig.ds_description%></option>
+                                          <%
+                                           end
+                                         end
+                                         %>
+                                        </select>
+
+          </div>
+          
+          </div>
+                <div class="form-group row">
+          
+          <label class="col-form-label col-md-6">Biometric Card No.</label>
+          <div class="col-md-6">
+          <input type="text" class="form-control" name="so_biomatriccard" name="so_biomatriccard" value="<% if @empChecked %><%=@empChecked.so_biomatriccard%><% end %>"/>
+          </div>
+
+          </div>
+            <div class="form-group row">
+          
+          <label class="col-form-label col-md-6">In Note (HR)</label>
+          <div class="col-md-6">
+          <input type="text" class="form-control" name="so_innote_hr" id="so_innote_hr" value=""/>
+          </div>
+
+          </div>
+            <div class="form-group row">
+          
+          <label class="col-form-label col-md-12">
+              <span id="InnoteHr"><% if @empChecked %><%=simple_format(@empChecked.so_innote_hr)%><% end %></span>
+          </label>
+        
+
+          </div>
+       
+                      
+                          
+  </div>
+  <div class="col-md-6">
+          
+          <div class="form-group row">
+          <label class="col-form-label col-md-6">Date of Joining </label>
+          <div class="col-md-6">
+          <input type="text" required autocomplete="off"  class="form-control" name="so_joiningdate" id="so_joiningdate" value="<% if @empChecked %><%=formatted_date(@empChecked.so_joiningdate)%><% end %>"/>
+          </div>
+        
+
+                      </div>
+
+          <div class="form-group row">
+        
+          <label class="col-form-label col-md-6">Date of Regularization </label>
+          <div class="col-md-6">
+          <input type="text" required autocomplete="off"  readonly class="form-control" name="so_regularizationdate" id="so_regularizationdate" value="<% if @empChecked %><%=formatted_date(@empChecked.so_regularizationdate)%><% end %>"/>
+          </div>
+          
+
+
+                      </div>
+  <div class="form-group row">
+          
+            <label class="col-form-label col-md-6">Date of Superannuation </label>
+          <div class="col-md-6">
+          <input type="text" required autocomplete="off"  readonly class="form-control" name="so_superannuationdate" id="so_superannuationdate" value="<% if @empChecked %><%=formatted_date(@empChecked.so_superannuationdate)%><% end %>"/>
+          </div>
+
+
+                      </div>
+                       <div class="form-group row">
+          
+            <label class="col-form-label col-md-6"></label>
+          <div class="col-md-6">
+         <span style="font-size:12px">
+          Sewa Duration : <span id="mytotal_sewa"><% if @empChecked %><%=get_dob_calculate(format_oblig_date(@empChecked.so_joiningdate)).to_s.delete("-")%><% end %></span> <br/>Sewa Left : <span id="mytotal_sewleft"><% if @empChecked %><%=get_dob_calculate(format_oblig_date(@empChecked.so_superannuationdate),'','S').to_s.delete("-")%><% end %></span>
+         </span>
+          </div>
+
+
+                      </div>
+            <div class="form-group  col-md-12 box1">
+                  <div class="form-group row">
+          <label class="col-form-label col-md-6 p-l-5">Date of Leaving </label>
+          <div class="col-md-6">
+          <input type="text" readonly required autocomplete="off"  class="form-control m-t-5 " name="so_leavingdate" id="so_leavingdate" value="<% if @empChecked %><%=formatted_date(@empChecked.so_leavingdate)%><% end %>"/>
+          </div>
+          
+
+                      </div>
+                        <div class="form-group row">
+         
+         
+          <label class="col-form-label col-md-6  p-l-5">Full and Final Date</label>
+          <div class="col-md-6">
+          <input type="text" required autocomplete="off"  readonly class="form-control" name="so_fullfinaldate" id="so_fullfinaldate" value="<% if @empChecked %><%=formatted_date(@empChecked.so_fullfinaldate)%><% end %>"/>
+          </div>
+         
+
+                      </div>
+                        <div class="form-group row">
+          
+          <label class="col-form-label col-md-6 p-l-5">Leaving Reason</label>
+          <div class="col-md-6">
+          <input type="text" required autocomplete="off"  readonly  class="form-control " name="so_leavingreason" id="so_leavingreason" value="<% if @empChecked %><%=@empChecked.so_leavingreason%><% end %>"/>
+          </div>
+
+                      </div>
+               
+            </div>
+                    <div class="form-group row m-t-15">
+          
+          <label class="col-form-label col-md-6">Old Sewadar Code No.</label>
+          <div class="col-md-6">
+          <input type="text" class="form-control" name="so_oldsewdar" id="so_oldsewdar" value="<% if @empChecked %><%=@empChecked.so_oldsewdar%><% end %>"/>
+          </div>
+
+          </div> 
+             <div class="form-group row">
+          
+          <label class="col-form-label col-md-6">Out Note (Sewadar)</label>
+          <div class="col-md-6">
+          <input type="text" class="form-control" name="so_outnote_sewdar" id="so_outnote_sewdar" value=""/>
+          </div>
+
+          </div> 
+           <div class="form-group row ">
+          
+          <label class="col-form-label col-md-12">
+                 <span id="OutnoteSewdar"><% if @empChecked %><%=simple_format( @empChecked.so_outnote_sewdar)%><% end %></span>
+          </label>
+        
+          </div> 
+            
+                    
+  </div>
+   
+</div>
+
+
+
+
+
+					
+
+											
+									
+
+
+
+
+
+
+												
+												<div class="submit-section process_save">
+					<button onclick="process_sewadar_office();" class="btn btn-primary submit-btn" type="button">Save & Next</button>
+                                        <button onclick="prvious_back_action('presonalinfo');" class="btn btn-success submit-btn m-l-5 " type="button">Previous</button>
+
+				</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						<% end %>
+						</div>

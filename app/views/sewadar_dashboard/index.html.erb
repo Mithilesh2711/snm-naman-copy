@@ -1,0 +1,633 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+
+<!-- Page Content -->
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row">
+<div class="col-sm-12">
+<h3 class="page-title">Profile</h3>
+<ul class="breadcrumb">
+<li class="breadcrumb-item"><a href="javascript:;">Dashboard</a></li>
+<li class="breadcrumb-item active">Profile</li>
+</ul>
+</div>
+</div>
+</div>
+<!-- /Page Header -->
+<%
+myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+if @seawdarsobj
+if @seawdarsobj.sw_image !=nil && @seawdarsobj.sw_image !=''
+chekpath = "#{Rails.root}/public/images/sewadar/"+@seawdarsobj.sw_image.to_s
+if File.file?(chekpath)
+myimages = "#{root_url}images/sewadar/"+@seawdarsobj.sw_image.to_s
+end
+
+end
+end
+
+%>
+<%
+department  = ""
+designation = ""
+reporttos = ""
+if @seawdarsobj
+depobj = get_all_department_detail(@seawdarsobj.sw_depcode)
+if depobj
+    department  = depobj.departDescription
+    hodcode     = depobj.departHod
+    sewnmaesobj = get_first_my_sewadar(hodcode)
+    if sewnmaesobj
+      reporttos = sewnmaesobj.lds_name
+    end
+end
+desgnobj = get_sewdar_designation_detail(@seawdarsobj.sw_desigcode)
+if desgnobj
+   designation = desgnobj.ds_description
+end
+end
+%>
+<div class="card mb-0">
+<div class="card-body">
+<div class="row">
+<div class="col-md-12">
+<div class="profile-view">
+<div class="profile-img-wrap" style="overflow:unset;">
+<div class="profile-img">
+<a href="javascript:;"><img alt="" src="<%=myimages%>"/></a>
+</div>
+<%
+if  session[:autherizedUserType].to_s == 'adm'
+ if @seawdarsobj
+%>
+  <div class="staff-msg m-l-10"><a class="btn btn-custom" href="<%=root_url%>sewadar_information/add_sewadar/<%=@seawdarsobj.id%>">Edit Profile</a></div>
+  <% end end%>
+
+</div>
+<div class="profile-basic">
+<div class="row">
+<div class="col-md-5 profile-info-left">
+<div class="">
+<h3 class="user-name m-t-0 m-b-10"><% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %></h3>
+<h6 class="text-muted m-b-10"><%=department%></h6>
+<small class="text-muted m-b-10"><% if @seawdarsobj %><%=@seawdarsobj.sw_catgeory%><% end %></small>
+<div class="staff-id m-b-10">Sewadar ID : <% if @seawdarsobj %><%=@seawdarsobj.sw_sewcode%><% end %></div>
+<div class="small doj text-muted m-b-10">Date of Joining : <% if @seawdarsobj %><%=formatted_date(@seawdarsobj.sw_joiningdate)%><% end %></div>
+<div class="small doj text-muted m-b-10"><% if @seawdarsobj %><%=@seawdarsobj.sw_branchtype%><% end %></div>
+<div class="small doj text-muted m-b-10">Report To : <%=reporttos%></div>
+
+</div>
+</div>
+<div class="col-md-7">
+
+<div class="form-group row  m-b-10">
+<div class="col-md-5 title">Email:</div>
+<div class="col-md-6 text"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_personal_email%><% end %></div>
+</div>
+<div class="form-group row  m-b-10">
+<div class="col-md-5 title">Phone:</div>
+<div class="col-md-6 text"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_mobileno%><% end %></div>
+</div>
+<div class="form-group row  m-b-10">
+<div class="col-md-5 title">Birthday:</div>
+<div class="col-md-6 text"><% if @seawdarsobj %><%=formatted_date(@seawdarsobj.sw_date_of_birth)%><% end %></div>
+</div>
+
+                                            <%
+                                            distcity  = nil
+                                            statename = nil
+                                            pincode   = nil
+                                            if @sewadarpersonal
+                                                dstobj = get_district_detail(@sewadarpersonal.sp_pres_distcity)
+                                                 if dstobj
+                                                  distcity = dstobj.dts_description
+                                                 end
+                                                 stsobj = get_state_detail(@sewadarpersonal.sp_pres_state)
+                                                 if stsobj
+                                                   statename = stsobj.sts_description
+                                                 end
+                                                 pincode   = @sewadarpersonal.sp_pres_pincode
+                                            end
+                                           %>
+<div class="form-group row  m-b-10">
+<div class="col-md-5 title">Address:</div>
+<div class="col-md-6 text">   <% if @sewadarpersonal %><%=@sewadarpersonal.sp_pres_houseaddress%><% end %>
+                                                      <%=(distcity ?  ","+distcity.to_s : '') %>
+                                                      <%=(statename ?  ","+statename.to_s : '') %>
+                                                      <%=(pincode ?  pincode : '') %></div>
+</div>
+<div class="form-group row  m-b-10">
+<div class="col-md-5 title">Gender:</div>
+<div class="col-md-3 text">     <%
+                                                      if @seawdarsobj && @seawdarsobj.sw_gender == 'M'
+                                                      %>
+                                                      Male
+                                                      <%
+                                                      elsif @seawdarsobj && @seawdarsobj.sw_gender == 'F'
+                                                      %>
+                                                      Female
+                                                      <% end %></div>
+                                                      <div class="col-md-4"> <a href="javascript:;" id="hide_info" class="btn btn-success btn-sm">Show all details</a></div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="" id="profile_hide">
+<div class="card tab-box hide">
+<div class="row user-tabs">
+<div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+<ul class="nav nav-tabs nav-tabs-bottom">
+<li class="nav-item"><a href="#emp_profile" data-toggle="tab" class="nav-link active">Profile</a></li>
+
+<li class="nav-item  hidden"><a href="#bank_statutory" data-toggle="tab" class="nav-link">Salary & Statutory</a></li>
+<li class="nav-item hidden"><a href="#downloads" data-toggle="tab" class="nav-link">Downloads</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="tab-content">
+
+<!-- Profile Info Tab -->
+<div id="emp_profile" class="pro-overview tab-pane fade show active">
+<div class="row">
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Personal Information </h3>
+
+
+<div class="form-group row m-b-10">
+  <div class=" col-md-6 title">Father's Name</div>
+  <div class=" col-md-6 text"><% if @seawdarsobj %><%=@seawdarsobj.sw_father_name%><% end %></div>
+</div>
+<%
+if @seawdarsobj && @seawdarsobj.sw_gender.to_s =='F' && @seawdarsobj.sw_maritalstatus.to_s =='Y'
+%>
+<div class="form-group row m-b-10">
+    <div class=" col-md-6 title">Husband's Name</div>
+    <div class=" col-md-6 text"><% if @seawdarsobj %><%=@seawdarsobj.sw_husbandname%><% end %></div>
+</div>
+<% end %>
+
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Mother's Name</div>
+<div class=" col-md-6 text"><% if @seawdarsobj %><%=@seawdarsobj.sw_mothername%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Marital status</div>
+<div class=" col-md-6 text">
+  <%
+  marsttaus = ""
+  if @seawdarsobj
+    if @seawdarsobj.sw_maritalstatus == 'Y'
+    marsttaus = "Married"
+    elsif  @seawdarsobj.sw_maritalstatus == 'N'
+    marsttaus = "Unmarried"
+    elsif  @seawdarsobj.sw_maritalstatus == 'W'
+    marsttaus = "Widow"
+    elsif  @seawdarsobj.sw_maritalstatus == 'S'
+    marsttaus = "Single Parent"
+    end
+  end
+  %>
+                                        
+  <%=marsttaus%>
+
+
+</div>
+</div>
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Previous Member ID </div>
+<div class=" col-md-6 text"><% if @seawdarsobj %><%=@seawdarsobj.sw_oldsewdarcode%><% end %></div>
+</div>
+<%
+ if @EmpKyc
+ if @EmpKyc.sk_language !=nil && @EmpKyc.sk_language !=''
+%>
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Language </div>
+<div class=" col-md-6 text"><% if @EmpKyc %><%=@EmpKyc.sk_language%><% end %></div>
+</div>
+<%
+  end
+end
+%>
+<%
+  if @EmpKyc 
+  if @EmpKyc.sk_physicalissue != 'N' && @EmpKyc.sk_physicalissue != '' && @EmpKyc.sk_physicalissue != nil
+%>
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Physically Handicap</div>
+<div class=" col-md-6 text"><% if @EmpKyc %><%=@EmpKyc.sk_physicalissue%><% end %></div>
+</div>
+<% end 
+  end
+%>
+</div>
+</div>
+</div>
+<div class="col-md-6 d-flex">
+
+<div class="card profile-box flex-fill">
+
+<div class="card-body">
+                      <h3 class="card-title">Contact Info<% if @seawdarsobj %><!--<a href="<%=root_url%>sewadar_information/add_sewadar/<%=@seawdarsobj.id%>" data-placement="bottom" data-toggle="tooltip" title="Edit information" class="edit-icon" ><i class="fa fa-pencil" ></i></a>--><% end%> </h3>
+                     
+                   
+                       <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Mobile No</div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_mobileno%><% end %></div>
+                        </div>
+                      <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Office Mobile No</div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_officemobno%><% end %></div>
+                        </div>
+                       <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Landline No </div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_landlineno%><% end %></div>
+                        </div>
+                     <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Personal Email</div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_personal_email%><% end %></div>
+                        </div>
+                        <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Official Email </div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_officialmail%><% end %></div>
+                        </div>
+                      <hr/>
+                       <h3 class="card-title">Emergency Info</h3>
+                     
+                        <ul class="personal-info">
+                       <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Name</div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_name%><% end %></div>
+                        </div>
+                      <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Relationship</div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_relation%><% end %></div>
+                        </div>
+                      <div class="form-group row m-b-10">
+                          <div class="title col-md-6">Phone </div>
+                          <div class="text col-md-6"><% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_mobno%><% end %></div>
+                        </div>
+                      </ul>
+                     
+                    </div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Bank information</h3>
+
+<div class="form-group row m-b-10">
+<div class="title col-md-6">Bank account No.</div>
+<div class="text col-md-6"><% if @EmpKycBank %><%=@EmpKycBank.skb_accountno%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+
+<div class="title col-md-6">IFSC Code</div>
+<div class="text col-md-6"><% if @EmpKycBank %><%=@EmpKycBank.skb_ifccocde%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+<div class="title col-md-6">Bank name</div>
+<div class="text col-md-6"><% if @EmpKycBank %><%=@EmpKycBank.skb_bank%><% end %></div>
+</div>
+
+<div class="form-group row m-b-10">
+
+<div class="title col-md-6">Branch Name</div>
+<div class="text col-md-6"><% if @EmpKycBank %><%=@EmpKycBank.skb_branch%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+
+<div class="title col-md-6">Address</div>
+<div class="text col-md-6"><% if @EmpKycBank %><%=@EmpKycBank.skb_address%><% end %></div>
+</div>
+  <div class="form-group row m-b-10">
+<div class=" col-md-6 title">PAN</div>
+<div class=" col-md-6 text"><% if @EmpKyc %><%=@EmpKyc.sk_panno%><% end %> <% if @EmpKyc %><%  if File.file?("#{Rails.root}/public/images/pan/"+@EmpKyc.sk_pan.to_s) %> <a href="<%=root_url%>images/pan/<%=@EmpKyc.sk_pan%>" target="_blank" class="edit-icon" data-placement="bottom" data-toggle="tooltip" title="View Pancard"><i class="fa fa-eye"></i></a><% end end %> </div>
+</div>
+<div class="form-group row m-b-10">
+<div class=" col-md-6 title">Aadhaar No.</div>
+<div class=" col-md-6 text"><% if @EmpKyc %><%=@EmpKyc.sk_adharno%><% end %> <% if @EmpKyc %><%  if File.file?("#{Rails.root}/public/images/adhar/"+@EmpKyc.sk_adhar.to_s) %> <a href="<%=root_url%>images/adhar/<%=@EmpKyc.sk_adhar%>" target="_blank" class="edit-icon" data-placement="bottom" data-toggle="tooltip" title="View Aadhaar Card"><i class="fa fa-eye"></i></a><% end end %></div>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Sewadar History</h3>
+
+<div class="form-group row m-b-10">
+<div class="title col-md-6">Date of joining</div>
+<div class="text col-md-6"><% if @seawdarsobj %><%=formatted_date(@seawdarsobj.sw_joiningdate)%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+
+<div class="title col-md-6">Date of Regularization </div>
+<div class="text col-md-6"><% if @empChecked %><%=formatted_date(@empChecked.so_regularizationdate)%><% end %></div>
+</div>
+<div class="form-group row m-b-10">
+<div class="title col-md-6">Date of Superannuation</div>
+<div class="text col-md-6"><% if @empChecked %><%=formatted_date(@empChecked.so_superannuationdate)%><% end %></div>
+</div>
+
+<div class="row">
+    <div class="table-responsive col-md-12">
+
+<table class="table_input table-bordered mb-0" style="width:100%">
+<thead class="new_tblhead">
+<tr>
+<th>From</th>
+
+<th>To</th>
+<th>Category</th>
+<th>Department</th>
+<th>Location</th>
+<th>MI</th>
+
+
+</tr>
+</thead>
+
+<tbody id="process_canidate_families">
+<% if @mytransacted == 'Y' %>
+  <tr>
+  <td>22-03-2022</td>
+  <td>22-03-2022</td>
+  <td></td>
+  <td>Accounts</td>
+  <td>Delhi</td>
+  <td></td>
+ 
+  </tr>
+  <% else%>
+  <tr>
+  <td colspan="6">
+  No record(s) found.
+  </td>
+  </tr>
+  <% end%>
+
+</tbody>
+</table>
+</div>
+     </div>
+
+</div>
+</div>
+</div>
+</div>
+<div class="row ">
+  <div class="col-md-12">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Family Informations</h3>
+<div class="table-responsive">
+
+<table class="table_input table-bordered mb-0" style="width:100%">
+<thead class="new_tblhead">
+<tr>
+<th>Name of <br/> Dependent</th>
+
+<th>Relationship</th>
+<th>Gender</th>
+<th>Date of birth</th>
+<th>Occupation</th>
+<th>Health Insurance<span data-placement="bottom" data-toggle="tooltip" title="Select 'Y' if member covered in health insurance" class="red-tooltip">?</span></th>
+<th>Aadhaar No.</th>
+<th>Attach Aadhaar</th>
+<th>Nominee</th>
+<th>Percentage</th>
+<th>Nominee Bank details</th>
+
+</tr>
+</thead>
+
+<tbody id="process_canidate_families">
+  <%
+i = 1;
+if @EmpKycFamily && @EmpKycFamily.length >0
+@EmpKycFamily.each do |familydetail|
+%>
+  <tr>
+  <td><%=familydetail.skf_dependent%></td>
+  <td><%=familydetail.skf_relation%></td>
+  <td><%=familydetail.skf_gender%></td>
+  <td><%=format_oblig_date(familydetail.skf_datebirth)%></td>
+  <td><%=familydetail.skf_occupation%></td>
+  <td><%=familydetail.skf_optedpolicy%></td>
+  <td><%=familydetail.skf_pannumber%></td>
+  <td><% if familydetail && familydetail.skf_attachment !=nil && familydetail.skf_attachment !='' %>Attached<% end %></td>
+  <td><%=familydetail.skf_nominee%></td>
+  <td><%=currency_formatted(familydetail.skf_percentage)%></td>
+  <td><%=familydetail.skf_nomineebank%></td>
+  </tr>
+  <%
+    i +=1
+   end
+  end
+  %>
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Education Informations </h3>
+<div class="experience-box">
+<ul class="experience-list">
+                              <%
+                               if @EmpKycQulifc && @EmpKycQulifc.length >0
+                                 @EmpKycQulifc.each do |newql|
+                                 degreename = ""
+                                 degobj     = get_name_global_qualification(newql.skq_degreedip)
+                                 if degobj
+                                   degreename = degobj.ql_qualdescription
+                                 end
+                              %>
+<li>
+<div class="experience-user">
+<div class="before-circle"></div>
+</div>
+<div class="experience-content">
+<div class="timeline-content">
+<a href="javascript:;" class="name"><%=newql.skq_qualtype%></a>
+<% if newql.skq_attach !=nil && newql.skq_attach != '' %><%  if File.file?("#{Rails.root}/public/images/qualfattch/"+newql.skq_attach.to_s) %> <a href="<%=root_url%>images/qualfattch/<%=newql.skq_attach%>" class="edit-icon" target="_blank" data-placement="bottom" data-toggle="tooltip" title="View Documents"><i class="fa fa-eye"></i></a> <% end end %>
+<div><%=degreename%></div>
+<span class="time"><%=newql.skq_passingyear%></span>
+</div>
+</div>
+</li>
+                                    <%
+                                     end
+                                   else
+                                   %>
+                                    No record(s) found.
+                                    <%
+                                    end
+                                   %>
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Experience </h3>
+<div class="experience-box">
+<ul class="experience-list">
+                              <%
+                               if @EmpWorkExp && @EmpWorkExp.length >0
+                                 @EmpWorkExp.each do |newexp|
+                              %>
+<li>
+<div class="experience-user">
+<div class="before-circle"></div>
+</div>
+<div class="experience-content">
+<div class="timeline-content">
+<a href="javascript:;" class="name"><%=newexp.swe_designation%>&nbsp;<%=(newexp.swe_employer ?  'at '+newexp.swe_employer.to_s : '')%></a>
+<span class="time"><%=newexp.swe_from%></span>
+</div>
+</div>
+</li>
+                                    <%
+                                     end
+                                   else
+                                   %>
+                                    No record(s) found.
+                                    <%
+                                    end
+                                   %>
+
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!--- OUT NOTE -->
+<div class="row">
+<div class="col-md-6 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<h3 class="card-title">Out Note </h3>
+<div class="experience-box">
+ <label class="col-form-label col-md-12">
+              <span id="InnoteHr"><% if @empChecked %><%=simple_format(@empChecked.so_innote_hr)%><% end %></span>
+          </label>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+<!-- END OUT NOTE -->
+</div>
+<!-- /Profile Info Tab -->
+
+
+<!-- Bank Statutory Tab -->
+<div class="tab-pane fade" id="bank_statutory">
+<div class="card">
+<div class="card-body">
+<h3 class="card-title"> Basic Salary Information</h3>
+
+<div class="row">
+<div class="col-md-6"> 
+<div class="row m-b-10">
+<div class="col-md-6">Salary Amount <small class="text-muted">per month</small></div>
+<div class="col-md-6 text"><div class="input-group">
+<div class="input-group-prepend">
+<span class="input-group-text"><i class="fa fa-inr" aria-hidden="true"></i>
+</span>
+</div>
+<input type="text" readonly="" class="form-control" placeholder="0.00" value="<% if @empChecked %><%=currency_formatted(@empChecked.so_totalgross)%><% end %>"/>
+</div></div>
+</div>
+<div class="row m-b-10">
+<div class="col-md-6">LIC Group Saving Linked Insurance</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_licgroup%><% end %></div>
+</div>
+
+<div class="row m-b-10"> 
+<div class="col-md-6">Group Health Insurance</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_healthinsurance%><% end %></div>
+</div>
+<div class="row  m-b-10"> 
+<div class="col-md-6">Blessed with Brahma Gyan</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_blessedbrahma%><% end %><span><% if @empChecked %><%=formatted_date(@empChecked.sp_gyandate)%><% end %></span></div>
+</div>
+
+
+</div>
+<div class="col-md-6">
+
+
+<div class="row m-b-10"> 
+<div class="col-md-6">PF/PF No</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_pf%><% end %><% if @empChecked && @empChecked.so_pfno !='' && @empChecked.so_pfno !=nil %>/ <%=@empChecked.so_pfno%><% end %></div>
+</div>
+<div class="row  m-b-10"> 
+<div class="col-md-6">ESI / ESI No</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_esi%><% end %> <% if @empChecked && @empChecked.so_esino !=nil && @empChecked.so_esino!=''%>/ <%=@empChecked.so_esino%><% end %></div>
+</div>
+<div class="row  m-b-10"> 
+<div class="col-md-6">ESI Dispensar</div>
+<div class="col-md-6 text"><% if @empChecked %><%=@empChecked.so_dispensary%><% end %></div>
+</div>
+<div class="row  m-b-10"> 
+<div class="col-md-6">Extra PF</div>
+<div class="col-md-6 text"><% if @empChecked %><%=currency_formatted(@empChecked.so_extrapf)%><% end %></div>
+</div>
+<div class="row  m-b-10"> 
+<div class="col-md-6">Settlement Date</div>
+<div class="col-md-6 text"><% if @empChecked %><%=formatted_date(@empChecked.so_settmentdate)%><% end %></div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<!-- /Bank Statutory Tab -->
+
+</div>
+</div>
+</div>
+<!-- /Page Content -->
+
+
+
+</div>
+<!-- /Page Wrapper -->

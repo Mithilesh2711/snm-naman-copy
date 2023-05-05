@@ -1,0 +1,119 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Qualification</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_qualif_code" id="cur_depart_code" value="<% if @ListQualifc %><%=@ListQualifc.ql_qualifcode%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListQualifc %><%=@ListQualifc.id%><% end %>"/>
+                <input type="hidden" name="cqualification" id="cqualification" value="<% if @ListQualifc %><%=@ListQualifc.ql_qualification%><% end %>"/>
+                <input type="hidden" name="cqualdescription" id="cqualdescription" value="<% if @ListQualifc %><%=@ListQualifc.ql_qualdescription%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+			
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Qualification Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                          <input type="text" maxlength="30" readonly required class="form-control" autocomplete="off" name="ql_qualifcode" id="ql_qualifcode" value="<% if @ListQualifc %><%=@ListQualifc.ql_qualifcode%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> </div>
+				
+				</div>
+
+                          <%
+                            qualif_in = ""
+                            qualif_type = ""
+                            qualif_isprofinter = ""
+                            if @ListQualifc
+                                if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'No Schooling'
+                                    qualif_in = "hidden"
+                                    qualif_type = "hidden"
+                                    qualif_isprofinter = "hidden"
+                                elsif @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Non Matric'
+                                    qualif_in = ""
+                                    qualif_type = "hidden"
+                                    qualif_isprofinter = "hidden"
+                                else
+                                    qualif_in = ""
+                                    qualif_type = ""
+                                    qualif_isprofinter = ""
+                                end
+                            end
+
+                         %>
+			
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Qualification  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                            <select class="form-control" required name="ql_qualification" id="ql_qualification" onchange="check_qualification(this.value);">
+                                              <option value="">-Select-</option>
+                                              <option value="No Schooling" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'No Schooling' %>selected="selected"<% end %> >No Schooling</option>
+                                              <option value="Non Matric" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Non Matric' %>selected="selected"<% end %>>Non Matric</option>
+                                              <option value="High School/Matric/Secondary" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'High School/Matric/Secondary' %>selected="selected"<% end %>>High School/Matric/Secondary</option>
+                                              <option value="Intermediate/10+2/Higher Secondary" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Intermediate/10+2/Higher Secondary' %>selected="selected"<% end %>>Intermediate/10+2/Higher Secondary</option>
+                                              <option value="Graduate" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Graduate' %>selected="selected"<% end %>>Graduate</option>
+                                              <option value="Post Graduate" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Post Graduate' %>selected="selected"<% end %>>Post Graduate</option>
+                                              <option value="Doctorate" <% if @ListQualifc && @ListQualifc.ql_qualification.to_s == 'Doctorate' %>selected="selected"<% end %>>Doctorate</option>
+                                              <option value="Certificate" <% if @ListQualifc && @ListQualifc.ql_type.to_s == 'Certificate' %>selected="selected"<% end %> >Certificate</option>
+                                                       
+                                                        <option value="Diploma" <% if @ListQualifc && @ListQualifc.ql_type.to_s == 'Degree' %>selected="selected"<% end %>>Diploma</option>
+                                                        <option value="Training/Others" <% if @ListQualifc && @ListQualifc.ql_type.to_s == 'Training/Others' %>selected="selected"<% end %>>Training/Others</option>
+					      </select>
+                                        </div>
+					    <label class="col-form-label col-md-2 qualif_in <%=qualif_in%>">Qualify In </label>
+					<div class="col-md-2 qualif_in <%=qualif_in%>">
+						<input type="text" maxlength="90"  class="form-control" autocomplete="off" name="ql_qualdescription" id="ql_qualdescription" tabindex="1" value="<% if @ListQualifc %><%=@ListQualifc.ql_qualdescription%><% end %>"/> </div>
+				</div>
+					<div class="form-group row qualif_type <%=qualif_type%> ">
+					<label class="col-form-label col-md-2 hidden">Qualification Type </label>
+					<div class="col-md-3 hidden">
+                                        <select class="form-control" name="ql_type" id="ql_type">
+							<option value="">-Select-</option>
+                                                       
+
+						</select></div>
+					    <label class="col-form-label col-md-2">Duration </label>
+					<div class="col-md-2">
+						<input type="text" maxlength="2" onkeypress="return isNumberFloatKey(event);"  class="form-control" autocomplete="off" name="ql_duration" id="ql_duration" tabindex="1" value="<% if @ListQualifc %><%=@ListQualifc.ql_duration%><% end %>"/> </div>
+				</div>
+						<div class="form-group row qualif_isprofinter <%=qualif_isprofinter%>">
+					<label class="col-form-label col-md-2">Is Professional Qualification?  </label>
+					<div class="col-md-3">
+                                        <select class="form-control" name="ql_isprofessional" id="ql_isprofessional">
+                                                          <option value="N" <% if @ListQualifc && @ListQualifc.ql_isprofessional.to_s == 'N' %>selected="selected"<% end %> >N</option>
+							<option value="Y" <% if @ListQualifc && @ListQualifc.ql_isprofessional.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+							
+						</select></div>
+					    <label class="col-form-label col-md-2">Is International Qualification?</label>
+					<div class="col-md-2">
+					   <select class="form-control" name="ql_isinternational" id="ql_isinternational">
+                                                        <option value="N" <% if @ListQualifc && @ListQualifc.ql_isinternational.to_s == 'N' %>selected="selected"<% end %> >N</option>
+							<option value="Y" <% if @ListQualifc && @ListQualifc.ql_isinternational.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+							
+						</select></div>
+				</div>
+			<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>qualification"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+				</div>
+				
+			</div>
+                <% end %>
+		</div>
+	</div>
+	<!-- /Page Content -->

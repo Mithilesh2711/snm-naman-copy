@@ -1,0 +1,56 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<div class="row">
+							<h3 class="page-title col-md-10"> File Import</h3>
+
+						 	<div class="col-md-2 m-b-5 ">
+						 		<a href="<%=root_url%>city" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+						 	</div>
+
+					</div>
+
+
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">File<span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						 <input type="file" name="file" id="file"/>
+					</div>
+					
+				</div>
+			</div>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>city"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+				</div>
+				</div>
+
+
+			</div>
+                <% end %>
+		</div>
+	
+	<!-- /Page Content -->

@@ -1,0 +1,340 @@
+<div class="page-wrapper">
+
+<!-- Page Content -->
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row align-items-center">
+<div class="col">
+<h3 class="page-title">Sewadar </h3>
+<%=render'layouts/breadcrumbs'%>
+</div>
+
+</div>
+</div>
+<!-- /Page Header -->
+
+<!-- Search Filter -->
+<% if flash[:error] %>
+<div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+<%= flash[:error] %>
+</div>
+<% end %>
+<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+<input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+<input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+
+<div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+
+<!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
+<div class="col-sm-6 col-md-3 hidden">  
+<div class="form-group form-focus">
+<input type="text" class="form-control floating" name="sewadar_code" id="sewadar_code" value="<% if @sewadar_code %><%=@sewadar_code%><% end %>"/>
+<label class="focus-label">Sewadar ID</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3 hidden">  
+<div class="form-group form-focus">
+<input type="text" class="form-control floating" name="sewadar_name" id="sewadar_name" value="<% if @sewadar_name %><%=@sewadar_name %><% end %>"/>
+<label class="focus-label">Sewadar Name</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3 "> 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_categories" id="sewadar_categories">
+<option value="">-Select-</option>
+<%
+if @sewadarCategory.length >0
+@sewadarCategory.each do |newcats|
+%>
+<option value="<%=newcats.sc_name%>" <% if @sewadar_categories && @sewadar_categories.to_s.strip == newcats.sc_name.to_s.strip %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+<%
+end
+end
+%>
+
+</select>
+<label class="focus-label">Category</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3"> 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_departments" id="sewadar_departments" <% if session[:autherizedUserType].to_s == 'spt' %>disabled<% end%>>
+<option value="">-Select -</option>
+<%
+  mydepartlist = get_sewa_all_department()
+  if mydepartlist.length >0
+   mydepartlist.each do |nedpts|
+%>
+<option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+<%
+   end
+ end
+
+ %>
+
+</select>
+<label class="focus-label">Department</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3"> 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_rolesresp" id="sewadar_rolesresp">
+<option value="">-Select-</option>
+<%
+  myallroles = get_sewa_all_rolesresp()
+  if myallroles.length >0
+   myallroles.each do |roles|
+%>
+<option value="<%=roles.rsp_rspcode%>" <% if @sewadar_rolesresp && @sewadar_rolesresp.to_s.strip == roles.rsp_rspcode.to_s.strip %>selected="selected"<% end %> ><%=roles.rsp_description%></option>
+<%
+   end
+ end
+
+ %>
+
+</select>
+<label class="focus-label">Roles</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-2" > 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_mysttatus" id="sewadar_mysttatus">
+  <option value="All" <% if @sewadar_mysttatus && @sewadar_mysttatus.to_s == 'All' %>selected="selected"<% end %>>All</option>
+<option value="Working" <% if @sewadar_mysttatus && @sewadar_mysttatus.to_s == 'Working' %>selected="selected"<% end %>>Working</option>
+<option value="Left" <% if @sewadar_mysttatus && @sewadar_mysttatus.to_s == 'Left' %>selected="selected"<% end %>>Left</option>
+
+
+</select>
+<label class="focus-label">Status</label>
+</div>
+</div>
+
+<div class="col-sm-6 col-md-1 "> 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_genders" id="sewadar_genders">
+<option value="All" <% if @sewadar_genders && @sewadar_genders.to_s == 'All' %>selected="selected"<% end %>>All</option>
+<option value="M" <% if @sewadar_genders && @sewadar_genders.to_s == 'M' %>selected="selected"<% end %>>Male</option>
+<option value="F" <% if @sewadar_genders && @sewadar_genders.to_s == 'F' %>selected="selected"<% end %>>Female</option>
+</select>
+<label class="focus-label">Gender</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3  "> 
+<div class="form-group form-focus select-focus">
+<select class="form-control" name="sewadar_codetype" id="sewadar_codetype">
+  <option value="">-Select-</option>
+<option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+<option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+<option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+<option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+<option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+</select>
+<label class="focus-label">Search According</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3">  
+<div class="form-group form-focus">
+<input type="text" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+<label class="focus-label" style="font-size:11px">Code,Name,Mobile,Email</label>
+</div>
+</div>
+<div class="col-sm-6 col-md-3 m-t-5">  
+<a href="javascript:;" style="padding: 14px;" onclick="process_search_sewadar();" class="btn btn-success btn-sm"  > Search </a>
+<a href="<%=root_url%>sewadar_information/refresh_sewadar_information" style="padding: 14px;" class="btn btn-success btn-sm"  > Reset </a>
+</div>
+<div>
+
+</div>     
+</div>
+<% end %>
+<!-- /Search Filter -->
+<div class="row m-t-10">
+<div class="col-md-6 col-sm-6 col-lg-6 col-xl-4">
+<div class="card dash-widget">
+<div class="card-body">
+<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+<div class="dash-widget-info">
+<h3><%=@Totalcounts ? @Totalcounts.length : 0 %></h3>
+<span>Total Sewadar</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-6 col-sm-6 col-lg-6 col-xl-4">
+<div class="card dash-widget">
+<div class="card-body">
+<span class="dash-widget-icon"><i class="fa fa-users"></i></span>
+<div class="dash-widget-info">
+<h3><%=@Allsewobj.length%>/<%=@familylisted.length%></h3>
+<span>Family Members</span>
+</div>
+</div>
+</div>
+</div>
+<div class="col-md-2"></div>
+<div class="col-md-2">
+  <a href="<%=root_url%>sewadar_information/new_sewadar_user" class="btn add-btn float-left m-b-5"><i class="fa fa-plus"></i> Add Sewadar</a>
+</div>
+<div class="col-md-6 col-sm-6 col-lg-6 col-xl-4 hidden">
+<div class="card dash-widget">
+<div class="card-body">
+<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+<div class="dash-widget-info">
+<h3>37</h3>
+<span>Profile Incomplete</span>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="row">
+<div class="col-md-12">
+<div >
+
+
+
+<div class="col-auto float-right ml-auto hidden">
+<div class="btn-group btn-group-sm m-r-5">
+<a  class="btn btn-white"href="javascript:;" class="btn btn-white">CSV</a>
+
+<button class="btn btn-white" type="button"><i class="fa fa-print fa-lg"></i> Print</button>
+</div>
+
+<div class="view-icons hidden">
+<a href="<%= root_url %>sewadar_information/sewadar_info_grid" class="grid-view btn btn-link active"><i class="fa fa-th"></i></a>
+<a href="<%= root_url %>sewadar_information"  class="list-view btn btn-link"><i class="fa fa-bars"></i></a>
+</div>
+</div>
+
+
+</div>
+<div class="table-responsive">
+<table class="table table-striped ">
+<thead class="new_tblhead">
+<tr>
+<th>Code<br/>Name<br/>Gender</th>
+
+<th>Mobile <br/> Email</th>
+<th class="text-nowrap">Join Date <br/>Regularization Date <br/> Superannuation Date <br/> </th>
+
+<th>Departments <br/> Roles <br/>Designation</th>
+<th class="text-right no-sort">Action</th>
+</tr>
+</thead>
+<tbody>
+<%
+pagestart = params[:page] ? params[:page] : 1
+if pagestart.to_i <=1
+i = 1
+else
+i = ((pagestart.to_i-1)*20)+1
+i = i.to_i
+end
+if @sewdarList.length >0
+@sewdarList.each do |newsewa|
+roles = ""
+email  = ""
+mobileno = ""
+joiningdate = ""
+anumationdate = ""
+regulardate = ""
+department     = ""
+persobj = get_personal_information(newsewa.sw_compcode,newsewa.sw_sewcode)
+if persobj
+email    = persobj.sp_personal_email
+mobileno = persobj.sp_mobileno
+end
+offobj = get_office_information(newsewa.sw_compcode,newsewa.sw_sewcode)
+if offobj
+joiningdate = offobj.so_joiningdate
+anumationdate = offobj.so_superannuationdate
+regulardate = offobj.so_regularizationdate
+rolobj      = get_roles_information(newsewa.sw_compcode,offobj.so_respcode)
+if rolobj
+roles = rolobj.rsp_description
+end
+deprtobj = get_all_department_detail(offobj.so_deprtcode)
+if deprtobj
+department = deprtobj.departDescription
+end
+end
+desiname = ""
+sewdesobj = get_sewdar_designation_detail(newsewa.sw_desigcode)
+if sewdesobj
+desiname = sewdesobj.ds_description
+end
+%>
+<%
+myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+if newsewa
+if newsewa.sw_image !=nil && newsewa.sw_image !=''
+chekpath = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+if File.file?(chekpath)
+  myimages = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+end
+
+end
+end
+mycatgpars = newsewa.sw_catgeory
+%>
+  <tr>
+<td>
+
+<h2 class="table-avatar">
+
+<a href="<%=root_url%>sewadar_dashboard/<%=newsewa.id%>" class="avatar"><img alt="<%=newsewa.sw_sewadar_name%>" src="<%=myimages%>"/></a>
+<div>
+<span>	<%=newsewa.sw_sewcode%> <% if newsewa.sw_oldsewdarcode !=nil && newsewa.sw_oldsewdarcode!='' %> (<%=newsewa.sw_oldsewdarcode%>)<% end %> </span>
+<a href="<%=root_url%>sewadar_dashboard/<%=newsewa.id%>"><%=newsewa.sw_sewadar_name%></a>
+<span><% if newsewa.sw_gender =='M'%>MALE<% elsif newsewa.sw_gender =='F'%>FEMALE<% end %><%=mycatgpars ?  ', '+mycatgpars.to_s : ''%></span>
+</div>
+</h2>
+<br/> 
+</td>
+
+
+
+<td><%=mobileno%> <br/> <%=email%></td>
+<td><%=formatted_date(newsewa.sw_joiningdate)%> <br/> <%=formatted_date(regulardate)%>  <br/><%=formatted_date(anumationdate)%> </td>
+
+<td>
+<%=department%> <br/>
+<%=roles%> <br/> <%=desiname%>
+</td>
+<td class="text-right">
+<div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+              <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>sewadar_information/add_sewadar/<%=newsewa.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item hidden" onclick="alertChecked('<%=root_url%>sewadar_information/<%=newsewa.id%>/deletes');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+            </div>
+</td>
+</tr>
+<%
+i +=1
+end
+else
+
+%>
+<tr>
+<td colspan="4">No record(s) found.</td>
+</tr>
+<% end %>
+
+
+</tbody>
+</table>
+<div class="col-md-12 d-flex">
+<div class="col-md-4"></div>
+<div class="col-md-8">  <%= will_paginate(@sewdarList)%></div>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>

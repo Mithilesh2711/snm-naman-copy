@@ -1,0 +1,2 @@
+class TrnVoucherDetail < ApplicationRecord
+end

@@ -1,0 +1,537 @@
+	<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<h3 class="page-title">Leave Approval</h3>
+								 <%=render'layouts/breadcrumbs'%>
+							</div>
+							
+						</div>
+					</div>
+					<!-- /Page Header -->
+					
+					<!-- Leave Statistics -->
+					<div class="row hidden">
+						<div class="col-md-3">
+							<div class="stats-info">
+								<h6>Today Presents</h6>
+								<h4>12 / 60</h4>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="stats-info">
+								<h6>Planned Leaves</h6>
+								<h4>8 <span>Today</span></h4>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="stats-info">
+								<h6>Unplanned Leaves</h6>
+								<h4>0 <span>Today</span></h4>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="stats-info">
+								<h6>Pending Requests</h6>
+								<h4>12</h4>
+							</div>
+						</div>
+					</div>
+					<!-- /Leave Statistics -->
+					<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                            <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                            <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+							<input type="hidden" id="approvedby"  value="<% if session[:sec_ec_approved] %><%=session[:sec_ec_approved]%><% end %>"/>
+							
+					<!-- Search Filter -->
+					<div class="row filter-row">
+					     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department" >
+                                                                 <%
+																 	if @sewDepart && @sewDepart.length >1
+																 %> 
+																  <option value="">-Select-</option>
+																  <% end %>
+                                                                    <%
+                                                                     if @sewDepart && @sewDepart.length >0
+                                                                     @sewDepart.each do |depts|
+                                                                  %>
+                                                                    <option value="<%=depts.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == depts.departCode.to_s.downcase%>selected="selected"<% end %>><%=depts.departDescription%></option>
+                                                                  <%
+                                                                   end
+                                                                 end
+                                                                 %>
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus">
+								<input type="text" class="form-control floating" name="search_sewadar" id="search_sewadar" value="<% if @search_sewadar %><%=@search_sewadar%><% end %>"/>
+								<label class="focus-label">Sewadar Name</label>
+							</div>
+					   </div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus select-focus">
+								<select class="form-control" name="leave_code" id="leave_code">
+                                                                  <option value="">-Select-</option>
+									<%
+                                                                             if @MstLeave && @MstLeave.length >0
+                                                                              @MstLeave.each do |mstleave|
+
+                                                                            %>
+                                                                            <option value="<%=mstleave.attend_leaveCode%>" <% if @leave_code && @leave_code.to_s == mstleave.attend_leaveCode.to_s %>selected="selected"<% end %> ><%=mstleave.attend_leavetype%></option>
+                                                                            <% end end %>
+								</select>
+								<label class="focus-label">Leave Type</label>
+							</div>
+					   </div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col"> 
+							<div class="form-group form-focus select-focus">
+								<select class="form-control" name="leave_type" id="leave_type">
+									
+                                                                        
+                                                                        <option value="P" <% if @leave_type && @leave_type.to_s == "P" %>selected="selected"<% end %>> Pending </option>
+                                                                         <option value="A" <% if @leave_type && @leave_type.to_s == "A" %>selected="selected"<% end %>> Approved </option>
+                                                                         <option value="D" <% if @leave_type && @leave_type.to_s == "D" %>selected="selected"<% end %>> Rejected </option>
+                                                                         <option value="R" <% if @leave_type && @leave_type.to_s == "R" %>selected="selected"<% end %>> Request for Cancellation </option>
+									
+								</select>
+								<label class="focus-label">Leave Status</label>
+							</div>
+					   </div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating" type="text" name="search_fromdated" id="search_fromdated" value="<% if @search_fromdated %><%=@search_fromdated%><% end %>"/>
+								</div>
+								<label class="focus-label">From</label>
+							</div>
+						</div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating" type="text" name="search_uptodated" id="search_uptodated" value="<% if @search_uptodated %><%=@search_uptodated%><% end %>"/>
+								</div>
+								<label class="focus-label">To</label>
+							</div>
+						</div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<a href="javascript:;" onclick="filter_approval_leaves();" class="btn btn-success btn-block"> <i class="fa fa-search"></i> Search </a>
+					   </div>     
+                    </div>
+                                        <% end %>
+					<!-- /Search Filter -->
+					
+					<div class="row">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table table-striped custom-table mb-0 datatable">
+									<thead>
+										<tr>
+											<th>Sewadar Details</th>
+											
+											<th>Leave Type</th>
+											<th>Leave Balance</th>
+											<th>Date of apply</th>
+											<th>From</th>
+											<th>To</th>
+											<th>No of Days</th>
+											<th>Reason</th>
+											<th class="text-center">Status</th>
+											<th class="text-center">Approved By</th>
+                                                                                        <th class="text-center">Action</th>
+
+											
+										</tr>
+									</thead>
+									<tbody>
+                                                                           <%
+                                                                          unlinkimg = "#{root_url}assets/img/profiles/avatar-09.jpg"
+                                                                           if @ApplyLeaves && @ApplyLeaves.length >0
+                                                                            @ApplyLeaves.each do |aplleave|
+                                                                              lsobj   = get_leavemaster_detail(aplleave.ls_leave_code)
+                                                                              leavsnm = ""
+                                                                              if lsobj
+                                                                                leavsnm = lsobj.attend_leavetype
+                                                                              end
+                                                                              sewdar      = ""
+                                                                              lds_profile = ""
+                                                                              desicode    = ""
+																			  department  = ""
+																			  oldsewadar  = ""
+																			  sw_catgeory = ""
+																			  approvedby  = ""
+                                                                              updateddate = ""
+                                                                              sewnmaesobj = get_mysewdar_list_details(aplleave.ls_empcode)
+                                                                              if sewnmaesobj                                                                                  
+                                                                                   lds_profile   = sewnmaesobj.sw_image
+                                                                                   sewdar        = sewnmaesobj.sw_sewadar_name
+                                                                                   desicode      = sewnmaesobj.sw_desigcode
+																				   oldsewadar    = sewnmaesobj.sw_oldsewdarcode
+																				   sw_gender     = sewnmaesobj.sw_gender
+																				   sw_catgeory   = sewnmaesobj.sw_catgeory
+																				   dobs          = sewnmaesobj.sw_date_of_birth
+																					deprtobj     = get_all_department_detail(sewnmaesobj.sw_depcode)
+																					if deprtobj
+																						department = deprtobj.departDescription
+																					end
+
+                                                                              end
+                                                                              desiname  = ""
+                                                                              sewdesobj = get_sewdar_designation_detail(desicode)
+                                                                              if sewdesobj
+                                                                                desiname = sewdesobj.ds_description
+                                                                              end
+																			   myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                                                                               if lds_profile !=nil && lds_profile !=''
+                                                                                    chekpath = "#{Rails.root}/public/images/sewadar/"+lds_profile.to_s
+                                                                                    if File.file?(chekpath)
+                                                                                      myimages = "#{root_url}images/sewadar/"+lds_profile.to_s
+                                                                                    end
+
+                                                                                end
+                                                                               linkimages   =  myimages
+                                                                               leavebalance =  get_leave_balances(aplleave.ls_leave_code,aplleave.ls_empcode)
+																			   kycobj       =  global_sewadar_kyc_information(aplleave.ls_empcode)  
+																				if kycobj
+																				   selfadhar = kycobj.sk_adharno
+																				end
+																				seapprovedobj     = get_global_users(aplleave.ls_approved_by)
+																				if seapprovedobj
+																					membercode  = seapprovedobj.ecmember
+																					ldsobj      = get_member_listed(membercode)
+																					if ldsobj
+																						approvedby  = ldsobj.lds_name
+																						lds_profile = ldsobj.lds_profile																						
+																				    else
+																					   approvedby  = seapprovedobj.username		
+																					end
+																					
+																				end
+																				updateddate = aplleave.ls_approve_date
+																				membmyimages = "#{root_url}assets/img/profiles/avatar-02.jpg"                    
+																				if lds_profile !=nil && lds_profile !=''
+																					chekpath = "#{Rails.root}/public/images/ledger/profile/"+lds_profile.to_s
+																					if File.file?(chekpath)
+																						membmyimages = "#{root_url}images/ledger/profile/"+lds_profile.to_s
+																					end
+																				end 
+
+                                                                            %>
+										<tr>
+											<td>
+												<h2 class="table-avatar">
+
+											<a href="javascript:;" class="avatar"><img alt="<%=sewdar%>" src="<%=linkimages%>"/></a>
+											<div>
+											<span>	<%=aplleave.ls_empcode%> <% if oldsewadar !=nil && oldsewadar !='' %> (<%=oldsewadar%>)<% end %> </span>
+											<a href="javascript:;"><%=sewdar%></a>
+											<br/>
+											<%=department%>
+											<span><% if sw_gender =='M'%>MALE<% elsif sw_gender =='F'%>FEMALE<% end %><%=sw_catgeory ?  ', '+sw_catgeory.to_s : ''%></span>
+											</div>
+											</h2>
+											<br/>
+											</td>
+											
+											<td><%=leavsnm%></td>
+											<td>
+											   <%
+											     if aplleave.ls_leave_code.to_s == 'OD'
+											   %>
+											    0										   
+											   <%
+											    else
+											   %>
+											    <%=leavebalance%>
+											   <% end %>
+											</td>
+											<td><%=formatted_date(aplleave.created_at)%></td>
+											<td><%=formatted_date(aplleave.ls_fromdate)%></td>
+											<td><%=formatted_date(aplleave.ls_todate)%></td>
+											<td><%=(aplleave.ls_nodays.to_i <= 1 ? aplleave.ls_nodays.to_s+' Day' : aplleave.ls_nodays.to_s+' Days')%></td>
+											<td><%=aplleave.ls_leavereson%></td>
+<td class="text-center">
+
+
+                            <%
+                             if aplleave.ls_status == 'A'
+                            %>
+                             Approved
+                            <%
+                             elsif aplleave.ls_status == 'C'
+                            %>
+                             Cancelled
+                            <%
+                             elsif aplleave.ls_status == 'R'
+                            %>
+                             Request For cancellation
+							<%
+                             elsif aplleave.ls_status == 'D'
+                            %>
+                             Rejected 
+                            <%
+                            else
+                           %>
+                             Pending
+                            <% end %>
+                         
+</td>
+<td>
+<%
+ if approvedby !=nil && approvedby !=''
+%>
+<h2 class="table-avatar">
+    <a href="javascript:;" class="avatar avatar-xs"><img src="<%=membmyimages%>" width="30pix;"/></a>
+    <a href="javascript:;"><%=approvedby%></a>
+    
+  </h2>
+  <br/>
+<%=formatted_date(updateddate)%>
+	<% end %>
+</td>
+<td class="text-center">
+<div class="dropdown action-label">
+<a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+	<span id="selected_status<%=aplleave.id%>">
+
+
+                                  <i class="fa fa-dot-circle-o
+
+                                  <%
+                                          if aplleave.ls_status.to_s == 'P'
+                                       %>
+                                       text-purple
+                                        <% elsif aplleave.ls_status.to_s == 'A' %>
+                                        text-success
+                                       <% elsif aplleave.ls_status.to_s == 'D' %>
+                                        text-danger
+                                        <% else %>
+                                        text-info
+                                        <% end %>
+
+                                  "></i>
+                                    <%
+                                          if aplleave.ls_status.to_s == 'P'
+                                       %>
+                                        Pending
+                                        <% elsif aplleave.ls_status.to_s == 'A' %>
+                                        Approved
+                                       <% elsif aplleave.ls_status.to_s == 'D' %>
+                                        Rejected
+                                        <% else %>
+                                          Pending
+                                        <% end %>
+                                   </span>
+</a>
+<%
+if aplleave.ls_status.to_s == 'P' || aplleave.ls_status.to_s == 'N' || aplleave.ls_status.to_s == ''
+%>
+<div class="dropdown-menu dropdown-menu-right">
+
+<a class="dropdown-item" href="javascript:;" onclick="process_change_approved_status('<%=aplleave.ls_empcode%>','<%=aplleave.ls_leave_code%>','A','<%=aplleave.id%>')"><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+<a class="dropdown-item" href="javascript:;" onclick="process_change_approved_status('<%=aplleave.ls_empcode%>','<%=aplleave.ls_leave_code%>','D','<%=aplleave.id%>')"><i class="fa fa-dot-circle-o text-danger"></i> Rejected</a>
+</div>
+</div>
+<% else %>
+	<div class="dropdown-menu dropdown-menu-right">
+
+		<a class="dropdown-item" href="javascript:;" ><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+		<a class="dropdown-item" href="javascript:;" ><i class="fa fa-dot-circle-o text-danger"></i> Rejected</a>
+</div>
+</div>
+<% end %>
+</td>
+											
+										</tr>
+                                                                              <%
+                                                                                 end
+                                                                              else
+                                                                               %>
+                                                                                <tr>
+                                                                                  <td colspan="4">
+                                                                                    No record(s) found.
+                                                                                  </td>
+                                                                                
+                                                                                </tr>
+                                                                                <% end %>
+										
+										
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+                </div>
+				<!-- /Page Content -->
+				
+				<!-- Add Leave Modal -->
+				<div id="add_leave" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Add Leave</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-group">
+										<label>Leave Type <span class="text-danger">*</span></label>
+										<select class="select">
+											<option>Select Leave Type</option>
+											<option>Casual Leave 12 Days</option>
+											<option>Medical Leave</option>
+											<option>Loss of Pay</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label>From <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" type="text">
+										</div>
+									</div>
+									<div class="form-group">
+										<label>To <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" type="text">
+										</div>
+									</div>
+									<div class="form-group">
+										<label>Number of days <span class="text-danger">*</span></label>
+										<input class="form-control" readonly type="text">
+									</div>
+									<div class="form-group">
+										<label>Remaining Leaves <span class="text-danger">*</span></label>
+										<input class="form-control" readonly value="12" type="text">
+									</div>
+									<div class="form-group">
+										<label>Leave Reason <span class="text-danger">*</span></label>
+										<textarea rows="4" class="form-control"></textarea>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Add Leave Modal -->
+				
+				<!-- Edit Leave Modal -->
+				<div id="edit_leave" class="modal custom-modal fade" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Edit Leave</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="form-group">
+										<label>Leave Type <span class="text-danger">*</span></label>
+										<select class="select">
+											<option>Select Leave Type</option>
+											<option>Casual Leave 12 Days</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label>From <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" value="01-01-2019" type="text">
+										</div>
+									</div>
+									<div class="form-group">
+										<label>To <span class="text-danger">*</span></label>
+										<div class="cal-icon">
+											<input class="form-control datetimepicker" value="01-01-2019" type="text">
+										</div>
+									</div>
+									<div class="form-group">
+										<label>Number of days <span class="text-danger">*</span></label>
+										<input class="form-control" readonly type="text" value="2">
+									</div>
+									<div class="form-group">
+										<label>Remaining Leaves <span class="text-danger">*</span></label>
+										<input class="form-control" readonly value="12" type="text">
+									</div>
+									<div class="form-group">
+										<label>Leave Reason <span class="text-danger">*</span></label>
+										<textarea rows="4" class="form-control">Going to hospital</textarea>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Save</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Edit Leave Modal -->
+
+				<!-- Approve Leave Modal -->
+				<div class="modal custom-modal fade" id="approve_leave" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="form-header">
+									<h3>Leave Approve</h3>
+									<p>Are you sure want to approve for this leave?</p>
+								</div>
+								<div class="modal-btn delete-action">
+									<div class="row">
+										<div class="col-6">
+											<a href="javascript:void(0);" class="btn btn-primary continue-btn">Approve</a>
+										</div>
+										<div class="col-6">
+											<a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Decline</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Approve Leave Modal -->
+				
+				<!-- Delete Leave Modal -->
+				<div class="modal custom-modal fade" id="delete_approve" role="dialog">
+					<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-content">
+							<div class="modal-body">
+								<div class="form-header">
+									<h3>Delete Leave</h3>
+									<p>Are you sure want to delete this leave?</p>
+								</div>
+								<div class="modal-btn delete-action">
+									<div class="row">
+										<div class="col-6">
+											<a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+										</div>
+										<div class="col-6">
+											<a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Delete Leave Modal -->
+				
+            </div>
+			<!-- /Page Wrapper -->

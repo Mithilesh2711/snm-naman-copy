@@ -1,0 +1,2 @@
+class MstSewadarKycBank < ApplicationRecord
+end

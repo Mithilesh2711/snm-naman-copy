@@ -1,0 +1,334 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add User</h3>
+							<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                 <input type="hidden" name="mid" id="mid" value="<% if @ListUsers %><%=@ListUsers.id%><% end %>"/>
+                 <input type="hidden" name="currentusername" id="currentusername" value="<% if @ListUsers %><%=@ListUsers.username%><% end %>"/>
+                 <input type="hidden" name="mysupportstaffdepartment"  id="mysupportstaffdepartment" value=""/>
+
+
+		
+		<!-- /Page Header -->
+		<div class="row">
+			<div class="col-md-12">
+			
+					<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Username <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required autocomplete="off" class="form-control"  name="username" id="username" value="<% if @ListUsers %><%=@ListUsers.username%><% end %>"/> </div>
+						<label class="col-form-label col-md-2">Password <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="password" <% if @ListUsers %><% else %> required <% end %> autocomplete="off" class="form-control" name="userpassword" id="userpassword" value=""/> </div>
+				</div>
+					
+					<div class="form-group row">
+					
+						 <label class="col-form-label col-md-2">User Type <span class="mandatory">*</span></label>
+                                                  <div class="col-md-3">
+                                                          <select required class="form-control" name="usertype" id="usertype" onchange="get_user_has_listing(this.value);">
+                                                              <option value="">-Select</option>
+                                                            <option value="adm" <% if @ListUsers && @ListUsers.usertype.to_s == 'adm'%>selected="selected"<% end %>>Administrator</option>
+                                                            <option value="swd" <% if @ListUsers && @ListUsers.usertype.to_s == 'swd'%>selected="selected"<% end %>>User-HQ</option>
+                                                            <option value="brc" <% if @ListUsers && @ListUsers.usertype.to_s == 'brc'%>selected="selected"<% end %>>User-Branch</option>
+                                                            <option value="gue" <% if @ListUsers && @ListUsers.usertype.to_s == 'gue'%>selected="selected"<% end %>>Guest</option>
+                                                            
+                                                        </select>
+                                                  </div>
+                                                  <label class="col-form-label col-md-2" >Dashboard <span class="mandatory">*</span></label>
+
+
+					<div class="col-md-3" >
+						<select required  name="mydashboards" class="form-control" id="mydashboards" >
+                                                    <option value="">-Select-</option>
+                                                   
+                                                    <option value="swd"  <% if @ListUsers && @ListUsers.userdashboard.to_s.downcase == 'swd' %>selected="selected"<% end %>>Sewadar Dashboard</option>
+													
+                                                    <option value="na"   <% if @ListUsers && @ListUsers.userdashboard.to_s.downcase == 'na' %>selected="selected"<% end %>>NA</option>
+                                                  </select>
+					</div>
+                                          
+				</div>
+                                 <%
+
+                              requireddeprt           = ""
+                              requiredbrchzn          = ""
+                              requiredsewadar         = ""
+                              ecrequired              = ""
+                              supstfrequired          = "";
+                              eccodhide               = "hidden"
+                              processupportstaff      = 'hidden'
+                              user_department         = "hidden";
+                              mysewadar_list          = "hidden";
+                              user_zone               = "hidden";
+                              process_department      = "hidden"
+                              approvaltype            = "hidden"
+                              process_liested_modules = "hidden"
+                              processecmembers	      = "hidden"	
+
+                              if @ListUsers && @ListUsers.usertype.to_s != 'brc'
+                                process_liested_modules    = ""
+                                 processecmembers	      = ""
+                                
+                              
+                              end
+
+
+							  
+                              mylistmodule  = @ListUsers ? @ListUsers.listmodule.to_s.split(",") : ''
+
+                             
+                            
+                            if @ListUsers && ( @ListUsers.approvalby.to_s.downcase == 'ec' || @ListUsers.approvalby.to_s.downcase == 'cod' )
+                                    eccodhide          = "";                                   
+                                    user_department    = "hidden"
+                                    mysewadar_list     = "hidden"
+                                    process_department = "hidden"
+                                    requireddeprt      = ""
+                                    requiredsewadar    = ""
+                                    ecrequired         = "required";
+                                    processecmembers   = ""
+                                    approvaltype       = ""
+                             elsif @ListUsers && ( @ListUsers.approvalby == 'oth' )
+                                   
+                                  requireddeprt      = "required"
+                                  requiredsewadar    = "required"
+                                  ecrequired         = "";
+                                  eccodhide          = "";
+                                  process_department = ""
+                                  user_department    = ""
+                                  mysewadar_list     = ""
+                            end
+
+                                          %>
+                          <div class="form-group row  processecmembers <%=processecmembers%>">
+                              <label class="col-form-label col-md-2">Selection Type <% if @ListUsers %><%=@ListUsers.approvalby%><% end %><span class="mandatory">*</span></label>
+                                                  <div class="col-md-3">
+                                                          <select  <%=ecrequired%> class="form-control" name="approvalby" id="approvalby" onchange="get_employee_by_ecmember(this.value);">
+                                                             <option value="">-Select</option>
+                                                             <option value="ec" <% if @ListUsers && @ListUsers.approvalby.to_s == 'ec'%>selected="selected"<% end %>>EC Member</option>
+                                                             <option value="cod" <% if @ListUsers && @ListUsers.approvalby.to_s == 'cod'%>selected="selected"<% end %>>Co-Ordinator/Other Organization</option>
+                                                             <option value="oth" <% if @ListUsers && @ListUsers.approvalby.to_s == 'oth'%>selected="selected"<% end %>>Sewadar</option>
+
+                                                        </select>
+                                                  </div>
+                                            <!--<div class="approvaltype <%=approvaltype%>" >-->
+											 <label class="col-form-label col-md-2 approvaltype <%=approvaltype%>">EC/Co-Ordinator/Other<span class="mandatory">*</span></label>
+											 <div class="col-md-3 approvaltype <%=approvaltype%>">
+                                                <select <%=ecrequired%>  name="myecordination" class="form-control" id="myecordination" >
+                                                  <%
+                                                   if @ListUsers && @ListUsers.userdashboard.to_s.downcase == 'cod'
+                                                 %>
+                                                   <option value="">-Select Co-Ordinator-</option>
+                                                  <%
+                                                   elsif @ListUsers && @ListUsers.userdashboard.to_s.downcase == 'ec'
+                                                 %>
+                                                    <option value="">-Select EC Member-</option>
+                                                  <% else %>
+                                                  <option value="">-Select-</option>
+                                                  <% end %>
+                                                  <%
+                                                   if @EcCodMemmber && @EcCodMemmber.length >0
+                                                     @EcCodMemmber.each do |newmemb|
+                                                  %>
+                                                  <option value="<%=newmemb.id%>" <% if @ListUsers && @ListUsers.ecmember.to_i == newmemb.id.to_i %>selected="selected"<% end %>><%=newmemb.lds_name%> (<%=newmemb.lds_membno%>)</option>
+                                                  <%
+
+                                                   end
+                                                 end
+                                                  %>
+                                                </select></div>
+                                            <!--</div>-->
+
+				</div>
+
+
+				<div class="form-group row process_department <%=process_department%>">
+					    <label class="col-form-label col-md-2 user_department " >Department <span class="mandatory">*</span></label>
+
+                                            <%
+                                            mydepratments = nil
+                                            if @ListUsers
+                                             sdobj =  get_mysewdar_list_details(@ListUsers.sewadarcode)
+                                             if sdobj
+                                               mydepratments = sdobj.sw_depcode
+                                             end
+                                             if mydepratments == nil  || mydepratments == ''
+                                               mydepratments = @ListUsers.sewdepart
+                                             end
+
+                                            %>
+
+                                           <% end %>
+
+					<div class="col-md-3 user_department" >
+						<select  name="mydepartment" <%=requireddeprt%> class="form-control" id="mydepartment" onchange="get_employee_by_department();">
+                                                                            <option value="">-Select Department-</option>
+                                                                            <%
+                                                                             if @ListDepart && @ListDepart.length >0
+                                                                               @ListDepart.each do |newdpt|
+                                                                            %>
+                                                                            <option value="<%=newdpt.departCode%>" <% if mydepratments && newdpt.departCode.to_s.downcase == mydepratments.to_s.downcase  %> selected="selected"<% end%>  ><%=newdpt.departDescription%></option>
+                                                                            <%
+                                                                              end
+                                                                            end
+                                                                            %>
+
+                                                                    </select>
+					</div>
+						<div class="col-md-2 mysewadar_list " >
+						<select <%=requiredsewadar%>  name="sewadarcode" class="form-control" id="sewadarcode">
+									<option value="">-Select Sewadar-</option>
+                                                                        <%
+                                                                         if @sewdarListed && @sewdarListed.length >0
+                                                                          @sewdarListed.each do |newsewd|
+                                                                        %>
+                                                                        <option value="<%=newsewd.sw_sewcode%>" <% if @ListUsers && @ListUsers.sewadarcode.to_s.downcase == newsewd.sw_sewcode.to_s.downcase %>selected="selected"<% end %> ><%=newsewd.sw_sewadar_name%> (<%=newsewd.sw_sewcode%>)</option>
+									<%
+                                                                         end
+                                                                       end
+                                                                       %>
+								</select>
+					</div>
+				</div>
+
+                          <div class="form-group row user_zone <%=user_zone%>" >
+					    <label class="col-form-label col-md-2">Zone</label>
+
+
+
+					<div class="col-md-3">
+						<select  name="my_zones" <%=requiredbrchzn%> class="form-control" id="my_zones" onchange="get_employee_by_zone();">
+                                                                            <option value="">-Select Zone-</option>
+                                                                            <%
+                                                                             if @ZoneList && @ZoneList.length >0
+                                                                               @ZoneList.each do |zones|
+                                                                            %>
+                                                                            <option value="<%=zones.zn_zonecode%>" <% if @ListUsers && @ListUsers.zonecode.to_s.downcase == zones.zn_zonecode.to_s.downcase  %> selected="selected"<% end%>  ><%=zones.zn_name%></option>
+                                                                            <%
+                                                                              end
+                                                                            end
+                                                                            %>
+
+                                                                    </select>
+					</div>
+						<div class="col-md-2">
+						<select  <%=requiredbrchzn%>  name="my_branch" class="form-control" id="my_branch" onchange="get_employee_by_branch();">
+									<option value="">-Select Branch-</option>
+                                                                        <%
+                                                                         if @BranchList && @BranchList.length >0
+                                                                          @BranchList.each do |branchlst|
+                                                                        %>
+                                                                        <option value="<%=branchlst.bch_branchcode%>" <% if @ListUsers && @ListUsers.branchcode.to_s.downcase == branchlst.bch_branchcode.to_s.downcase %>selected="selected"<% end %> ><%=branchlst.bch_branchname%></option>
+									<%
+                                                                         end
+                                                                       end
+                                                                       %>
+								</select>
+					</div>
+				</div>
+                                
+
+                                <div class="form-group row ">
+					    
+					</div>
+					<div class="form-group row process_liested_modules <%=process_liested_modules%>">
+                    
+		                        <label class="col-form-label col-md-2">List of Module <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+					<!--<div class="listbox_details position">-->
+					<div class="listbox_details">
+                                            <ul class="form-control" style="height:100%;width: 244px;">
+                                              <%
+                                              i = 1
+                                               hideclass = @ListUsers ? @ListUsers.listmodule.to_s.split(",") : ''
+                                              if @ListModule && @ListModule.length >0
+                                                @ListModule.each do |newmodlue|
+                                              %>
+                                                <li id="listmodules_<%=i%>"  class="<% if @ListUsers && ( @ListUsers.approvalby == 'ec' || @ListUsers.approvalby == 'cod' ) && ( newmodlue.lm_modulecode.to_s =='SSS' ||  newmodlue.lm_modulecode.to_s =='STF')%>hidden<% elsif @ListUsers && ( @ListUsers.approvalby == 'oth' ) && ( newmodlue.lm_modulecode.to_s =='APV')%>hidden<% end %>"><input type="checkbox" onclick="check_modules_listing(this);" <% if hideclass.include?(newmodlue.lm_modulecode.to_s)%> checked="checked" <% end %> class="mr-2" name="listmodule[]" id="listmodule_<%=i%>" autocomplete="off" value="<%=newmodlue.lm_modulecode%>"/><%=newmodlue.lm_modules%></li>
+                                               <%
+                                                    i +=1
+                                                  end
+                                               end
+                                              %>
+                                               
+                                            </ul>
+                                      </div>
+                                    </div>
+                                  <% 
+                                    myallowparms    = @ListUsers ? @ListUsers.allowhrparameter.to_s.split(",") : ''    
+                                    manage_paramets = "hidden"
+                                    if myallowparms !=nil && myallowparms !=''
+                                        if myallowparms.length >0
+                                           manage_paramets = ""
+                                        end
+                                    end
+                                     managtype = @ListUsers ? @ListUsers.managetype : ''
+                                  %> 
+
+
+                                    <div class="col-md-3">
+                                        <div class="listbox_details manage_malisted <%=manage_paramets%>">
+                                            <ul class="form-control" style="height:100%;width: 244px;">
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR1") %>checked<% end %>  class="mr-2" name="allowhrparameter[]" id="allowhrparameter_1" value="HR1">Sewadar Information</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR2") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_2" autocomplete="off" value="HR2">Aid & Facilities</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR3") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_3" value="HR3">Sewadar Leaves</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR4") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_4" autocomplete="off" value="HR4">Sewadar Attendance</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR5") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_5" autocomplete="off" value="HR5">Advances</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR6") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_6" autocomplete="off" value="HR6">Monthly Process</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR7") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_7" autocomplete="off" value="HR7">All Formats</li>                                                
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR8") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_8" autocomplete="off" value="HR8">Postal </li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR9") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_9" autocomplete="off" value="HR9">Stationary  </li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR10") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_10" autocomplete="off" value="HR10">Attendance Master</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR11") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_11" autocomplete="off" value="HR11">HR Masters</li>
+                                                <li id="" class=""><input type="checkbox"  <% if myallowparms !=nil && myallowparms.include?("HR12") %>checked<% end %> class="mr-2" name="allowhrparameter[]" id="allowhrparameter_12" autocomplete="off" value="HR12">Helpdesk</li>
+
+                                            </ul>
+                                      </div>
+                                    </div>
+                             <% 
+                              manage_malisted = "hidden"
+                              if hideclass !=nil
+                                if hideclass.include?("HR")
+                                  manage_malisted = ""
+                                end
+                             end
+                             managtype = @ListUsers ? @ListUsers.managetype : ''
+                             %>       
+                          <label class="col-form-label col-md-2">&nbsp;<span class="mandatory"></span></label> 
+                          <div class="manage_malisted <%=manage_malisted%>">
+                          <input type="checkbox" name="maallowed" id="maallowed" <% if managtype && managtype.to_s == 'MA'%>checked<% end %> value="MA" /> Manage MA
+                          </div>          
+                </div>
+					
+                          <br/><br/>
+                          
+				
+				
+				<div class="submit-section process_save_button" style="margin-top:1%">
+					<button class="btn btn-primary submit-btn" onclick="return check_module_isselected();">Save</button>
+					<a href="<%=root_url%>create_user/user_list"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+	</div>
+        <% end %>
+	<!-- /Page Content -->
+</div>

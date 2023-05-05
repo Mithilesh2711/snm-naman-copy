@@ -1,0 +1,345 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+ <div class="row">
+              <h3 class="page-title col-md-10">Apply For Education Aid</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>apply_educationaid/educationaid_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>    
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" id="cursewacode" name="cursewacode" value="<% if @ListEducation !=nil %><%=@ListEducation.aea_sewadarcode%><% end %>"/>
+                <input type="hidden" id="curdependcode" name="curdependcode" value="<% if @ListEducation !=nil %><%=@ListEducation.aea_dependent%><% end %>"/>
+                <input type="hidden" id="mid" name="mid" value="<% if @ListEducation !=nil %><%=@ListEducation.id%><% end %>"/>
+                <input type="hidden" id="updateremark" name="updateremark" value=""/>
+                
+   <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+
+                                        <label class="col-form-label col-md-2">Request No<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                          <input type="text"  required="" readonly autocomplete="off" maxlength="30" class="form-control" name="ama_requestno" id="ama_requestno" value="<% if @ListEducation !=nil %><%=@ListEducation.aea_requestno%><% else @lastEntryNo %><%=@lastEntryNo%><% end %>">
+             </div>
+             <label class="col-form-label col-md-2">Request Date</label>
+          <div class="col-md-2">
+                                          <input type="text" required="" readonly autocomplete="off" maxlength="30" class="form-control " name="ama_requestdate" id="ama_requestdate" value="<% if @ListEducation !=nil %><%=formatted_date(@ListEducation.aea_requestdate)%><% else %><%=formatted_date(Date.today)%><% end %>">
+             </div>
+          </div>          
+        
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">Department </label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_departcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                        <%
+                                          if @sewDepart && @sewDepart.length >1
+                                        %>
+                                        <option value="">-Select-</option>
+                                        <% end %>
+                                        <%
+                                            if @sewDepart && @sewDepart.length >0
+                                              @sewDepart.each do |newdp|
+                                            %>
+                                            <option value="<%=newdp.departCode%>" <% if @ListEducation && @ListEducation.aea_departcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+                                            <%
+                                              end
+                                            end
+                                          %>
+                                     </select>
+             </div>          
+            
+           </div>
+            <div class="form-group row">
+            <label class="col-form-label col-md-2">Sewadar Name <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="amasewadarcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                                       <%
+                                        if @Allsewobj && @Allsewobj.length >1
+                                       %>
+                                       <option value="">-Select-</option>
+                                       <% end %>
+                                       <%
+                                        if @Allsewobj && @Allsewobj.length >0
+                                          @Allsewobj.each do |sewdnm|
+                                        %>
+                                        <option value="<%=sewdnm.sw_sewcode%>" <% if @ListEducation && @ListEducation.aea_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewadar_name%></option>
+                                        <%
+                                          end
+                                        end
+                                      %>
+                                     </select>
+             </div> 
+          <label class="col-form-label col-md-2">Sewadar Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_sewadarcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+                                       <%
+                                        if @Allsewobj && @Allsewobj.length >1
+                                       %>
+                                       <option value="">-Select-</option>
+                                       <% end %>
+                                       <%
+                                          if @Allsewobj && @Allsewobj.length >0
+                                            @Allsewobj.each do |sewdnm|
+                                          %>
+                                          <option value="<%=sewdnm.sw_sewcode%>" <% if @ListEducation && @ListEducation.aea_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+                                          <%
+                                            end
+                                          end
+                                        %>
+                                     </select>
+             </div>          
+             
+           </div>
+           <%
+            listeducation = "hidden"
+            reqdependent  = ""
+            if @ListEducation && @ListEducation.aea_applyfor.to_s == 'dependent'
+              listeducation =""
+              reqdependent = "required"
+            end
+            relatoinname = ""
+            if @ListEducation
+              relaobj = get_family_relation_detail(@ListEducation.aea_dependent);
+              if relaobj
+                relatoinname = relaobj.skf_dependent
+              end
+            end  
+           %>
+               <div class="form-group row">
+          <label class="col-form-label col-md-2">Apply For <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_applyfor" id="ama_applyfor" onchange="get_dependent_listed();">
+                                       <option value="">-Select-</option>
+                                       <option value="self" <% if @ListEducation && @ListEducation.aea_applyfor.to_s == 'self' %>selected<% end %> >Self</option>
+                                       <option value="dependent" <% if @ListEducation && @ListEducation.aea_applyfor.to_s == 'dependent' %>selected<% end %>>Dependent</option>
+                                     </select>
+             </div>          
+             <label class="col-form-label col-md-2 mydependentlist <%=listeducation%>">Dependent List <span class="mandatory"></span></label>
+          <div class="col-md-3 mydependentlist <%=listeducation%>">
+                                <%
+                                 if @ListEducation                                 
+                                %>
+                                 <input type="text" readonly="" <%=reqdependent%> class="form-control" name="mydependentedlist" id="mydependentedlist" value="<%=relatoinname%>"/>
+                              <% end %>
+                              <%
+                              myfakgs = false
+                                if @ListEducation  
+                                  if @ListEducation.aea_status == 'A' || @ListEducation.aea_status == 'F'
+                                    myfakgs = true
+                                  end
+                                end  
+                                if myfakgs
+                              %>
+                              <input type="hidden" name="ama_dependent" id="ama_dependent" value="<% if @ListEducation %><%=@ListEducation.aea_dependent%><% end %>"/>
+                              <% else %>
+                              <select class="form-control" name="ama_dependent" id="ama_dependent" onchange="get_changes_onselected();">
+                                <option value="">-Select-</option>
+                                <%
+                                  if @AlldependentList && @AlldependentList.length >0
+                                    @AlldependentList.each do |newdept|
+                                %>
+                                <option value="<%=newdept.id%>" <% if @ListEducation && @ListEducation.aea_dependent.to_i == newdept.id.to_i %>selected<% end %> ><%=newdept.skf_dependent%></option>
+                                <%
+                                    end
+                                  end 
+                                %>
+                              </select>
+                              <% end %>
+                                    
+             </div> 
+           </div>
+
+            <div class="form-group row">
+          <label class="col-form-label col-md-2"> For Class <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select required class="form-control" name="aea_forclass" id="aea_forclass" onchange="get_apply_aidamts();">
+                                       <option value="">-Select-</option>
+                                       <option value="1" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 1 %>selected<% end%> >1</option>
+                                       <option value="2" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 2 %>selected<% end%> >2</option>
+                                       <option value="3" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 3 %>selected<% end%> >3</option>
+                                       <option value="4" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 4 %>selected<% end%> >4</option>
+                                       <option value="5" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 5 %>selected<% end%> >5</option>
+                                       <option value="6" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 6 %>selected<% end%> >6</option>
+                                       <option value="7" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 7 %>selected<% end%> >7</option>
+                                       <option value="8" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 8 %>selected<% end%> >8</option>
+                                       <option value="9" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 9 %>selected<% end%> >9</option>
+
+                                       <option value="10" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 10 %>selected<% end%> >10</option>
+                                       <option value="11" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 11 %>selected<% end%> >11</option>
+                                       <option value="12" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 12 %>selected<% end%> >12</option>
+                                       <option value="13" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 13 %>selected<% end%> >U1</option>
+
+                                       <option value="14" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 14 %>selected<% end%> >U2</option>
+                                       <option value="15" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 15 %>selected<% end%> >U3</option>
+                                       <option value="16" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 16 %>selected<% end%> >U4</option>
+                                       <option value="17" <% if @ListEducation && @ListEducation.aea_forclass.to_i == 17 %>selected<% end%> >U5</option>
+
+
+                                     </select>
+             </div>          
+           </div>
+           <input type="hidden" name="currfilefirst" value="<% if @ListEducation %><%=@ListEducation.ama_attachfirst%><% end %>"/>
+           <input type="hidden" name="currfilesecond" value="<% if @ListEducation %><%=@ListEducation.aea_attachsecond%><% end %>"/>
+           <input type="hidden" name="currfilethird" value="<% if @ListEducation %><%=@ListEducation.aea_attachthird%><% end %>"/>
+
+             <div class="form-group row">
+          <label class="col-form-label col-md-2">Amount<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+             <input class="form-control" readonly required name="aea_amount" id="aea_amount" value="<% if @ListEducation && @ListEducation.aea_amount.to_f >0 %><%=@ListEducation.aea_amount%><% end %>"/>
+          </div>  
+           <%
+             if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'          
+           %>        
+             <label class="col-form-label col-md-2">Remark <span class="mandatory"></span></label>
+             <div class="col-md-3">
+              <textarea class="form-control" name="aea_remark" id="aea_remark" /><% if @ListEducation %><%=@ListEducation.aea_remark%><% end %></textarea>
+                                       
+             </div> 
+                   
+           <% end %>
+           </div>
+          
+           <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 1<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Upload School Verification Form" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachfirst" id="ama_attachfirst"/>
+              <% if @ListEducation && @ListEducation.ama_attachfirst != nil && @ListEducation.ama_attachfirst != '' %>
+                &nbsp;<a href="<%=root_url%>images/education/a1/<%=@ListEducation.ama_attachfirst%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Upload School Verification Form" name="ama_titlefirst" id="ama_titlefirst" value="<% if @ListEducation%><%=@ListEducation.aea_titlefirst%><% end %>"/>
+					 </div>
+            <div class="col-md-3 m-l-5">
+            
+					 	   
+	          </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 2<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Fee Receipt For Higher Education" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachsecond" id="ama_attachsecond"/>
+            <% if @ListEducation && @ListEducation.aea_attachsecond != nil && @ListEducation.aea_attachsecond != '' %>
+                &nbsp;<a href="<%=root_url%>images/education/a2/<%=@ListEducation.aea_attachsecond%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Fee Receipt For Higher Education" name="ama_tiitlesec" id="ama_tiitlesec" value="<% if @ListEducation%><%=@ListEducation.aea_tiitlesec%><% end %>"/>
+					 </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 3<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Add other documents" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachthird" id="ama_attachthird"/>
+            <% if @ListEducation && @ListEducation.aea_attachthird != nil && @ListEducation.aea_attachthird != '' %>
+                &nbsp;<a href="<%=root_url%>images/education/a3/<%=@ListEducation.aea_attachthird%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Add other documents" name="ama_titlethird" id="ama_titlethird" value="<% if @ListEducation%><%=@ListEducation.aea_titlethird%><% end %>"/>
+					 </div>
+					 </div>
+            <% 
+           mybtton = "Apply"
+           showstatus = "hidden"
+            if @ListEducation 
+               mybtton = "Update"            
+             end
+             myshowns = ""
+             updatrmk = "hidden"
+             if @ListEducation !=nil
+               if  @ListEducation.aea_status == 'A' || @ListEducation.aea_status == 'R' || @ListEducation.aea_status == 'C' || @ListEducation.aea_status == 'F'
+                 myshowns = "hidden"
+               end
+               if  @ListEducation.aea_status == 'F'
+                  updatrmk = ""
+                  showstatus =""
+               end
+             end
+           %>
+           <%
+              if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+            %>
+					<div class="form-group row <%=showstatus%>">
+           <label class="col-form-label info col-md-2">Status</label>
+					<div class="col-md-2">
+						<select class="form-control" name="aea_status" id="aea_status">
+                                       <option value="">-Select-</option>
+                                       <option value="A">Accept</option>
+                                       <option value="R">Rejected</option>
+                                     </select>
+					 </div>
+					 
+					 </div>
+          <% end %>
+
+            
+            <div class="form-group row">
+            <label class="col-form-label col-md-2"><span class="mandatory"></span></label>
+          
+          <div class = "col-md-12 fnt-sm1">      
+          <a href="<%=root_url%>images/education-aid-school.pdf" class = "btn btn-primary hidden" target="_blank">Download</a> <br>
+              Kindly <a href="<%=root_url%>images/education-aid-school.pdf" target="_blank">Download</a> school verification form, fill it and upload verified, stamped, signed copy of respective school HOS when you applying for education aid.<br>
+
+जब आप शिक्षा सहायता के लिए आवेदन कर रहे हों तो कृपया स्कूल सत्यापन फॉर्म <a href="<%=root_url%>images/education-aid-school.pdf" target="_blank">डाउनलोड </a> करें, उसे भरें और संबंधित स्कूल एचओएस की सत्यापित, मुहर लगी हस्ताक्षरित प्रति अपलोड करें।<br>
+					 	     
+                  </div>
+            
+          
+            <div class="col-md- m-l-5">
+           
+                  
+	          </div>
+					 </div>
+                      <div class="form-group row">
+          <label class="col-form-label col-md-2"><span class="mandatory"></span></label>
+          <div class="col-md-3">
+            
+          </div>          
+             <label class="col-form-label col-md-2"> <span class="mandatory"></span></label>
+          <div class="col-md-3">
+              
+                                       
+             </div> 
+           </div>
+          
+            <%
+              if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+            %>
+              <div class="submit-section <%=updatrmk%>">
+                <button type="button" class="btn btn-primary submit-btn" onclick="return process_update_remarks();">Update Remark</button>         
+              </div>
+          <% end %>
+        <div class="submit-section <%=myshowns%>">
+          <button class="btn btn-primary submit-btn" onclick="return validate_education_forms();"><%=mybtton%> </button>
+          <a href="<%=root_url%>apply_educationaid/educationaid_list"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+      </div>
+    </div>
+      </div>
+                 <% end %>  
+    </div>
+  </div>
+  <!-- /Page Content -->

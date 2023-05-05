@@ -1,0 +1,187 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Manage Discipline Note</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+       
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                         <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments" >
+           
+          <option value="">-Select -</option>
+       
+          <%
+            
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+          <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          <label class="focus-label">Department</label>
+          </div>
+          </div>
+
+
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_codetype" id="sewadar_codetype" >
+            <option value="">-Select-</option>
+          <option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+          <option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+          <option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+          <option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+          <option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+          </select>
+          <label class="focus-label">Search According</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-3">
+          <div class="form-group form-focus">
+          <input type="text" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+          <label class="focus-label" style="font-size:11px">Code,Name,Mobile,Email</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-1 m-t-5" >
+          <a href="javascript:;" style="padding: 12px;" onclick="filter_discipline();" class="btn btn-success btn-sm"  > Search </a>
+          </div>
+
+          
+          </div>
+<% end %>
+         
+          <!-- /Leave Statistics -->
+          
+          <div class="row">
+            <div class="col-md-12">
+                <div >
+                                    <a href="<%=root_url%>discipline/add_discipline" class="btn add-btn float-left">Add note</a>
+
+                                  </div>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable">
+                  <thead>
+                    <tr>
+                      <th>Sewadar</th>
+                      
+                      <th>Discipline Date</th>
+                      <th>Remarks</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <%
+                     if @ListDispline && @ListDispline.length >0
+                  
+                    @ListDispline.each do |newdiscp|
+
+                      newsewa =  get_mysewdar_list_details(newdiscp.dsp_empcode)
+                      myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                      sewdanmame   = ""
+                      sewaoldcode  = ""
+                      mycatgpars   = ""
+                      genders      = ""
+                      
+                      if newsewa
+                        sewdanmame = newsewa.sw_sewadar_name
+                        sewaoldcode = newsewa.sw_oldsewdarcode
+                        if  newsewa.sw_gender == 'M'
+                           genders = "Male"
+                        elsif  newsewa.sw_gender == 'F'
+                          genders = "Female"
+                        end
+
+                        
+                      if newsewa.sw_image !=nil && newsewa.sw_image !=''
+                      chekpath = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+                      if File.file?(chekpath)
+                        myimages = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+                      end
+
+                      end
+                      end
+                      mycatgpars = newsewa.sw_catgeory
+                      %>
+                    <tr>
+                      <td>
+                        
+                        <h2 class="table-avatar">
+
+                        <a href="javascript:;" class="avatar"><img alt="<%=sewdanmame%>" src="<%=myimages%>"></a>
+                        <div>
+                        <span>  <%=newdiscp.dsp_empcode%>  <% if sewaoldcode !=nil && sewaoldcode  !='' %>% (<%=sewaoldcode%>)<% end %> </span>
+                        <a href="javascript:;"><%=sewdanmame%></a>
+                        <span><%=genders%>, <%=mycatgpars%></span>
+                        </div>
+                        </h2>
+                        <br>
+                    
+                    
+                      </td>
+                     
+                      <td><%=newdiscp.dsp_date%></td>
+                      <td><%=newdiscp.dsp_rem%></td>
+
+                      
+                    </tr>
+                <%
+                   end
+                 else
+                
+                %>
+                <tr>
+                <td conspan="4">No record(s found.</td>
+                </tr>
+
+                <% end%>
+                    
+                    
+                    
+                  </tbody>
+                </table>
+                <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8"> </div>
+
+                                  </div>
+              </div>
+            </div>
+          </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

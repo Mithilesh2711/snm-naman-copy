@@ -1,0 +1,298 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				  <div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Leave types in company</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>attendance/leave_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>
+        
+
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'save_master_leave'} ,:multipart=>true ) do  %>
+                <input type="hidden" name="cuurentleavecode" id="cuurentleavecode" value="<%  if @selecMstLeave %><%=@selecMstLeave.attend_leaveCode%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<%  if @selecMstLeave %><%=@selecMstLeave.id%><% end %>"/>
+                <input type="hidden" name="curcategory" id="curcategory" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_category%><% end %>"/>
+
+		<div class="row">
+		
+		<div class="col-md-12">
+                  <div class="form-group row">
+          <label class="col-form-label col-md-3">Category <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                <select class="form-control" name="attend_category" id="attend_category">
+                <option value="">-Select-</option>
+                <%
+                if @sewadarCategory.length >0
+                @sewadarCategory.each do |newcats|
+                %>
+                <option value="<%=newcats.sc_catcode%>" <% if @selecMstLeave && @selecMstLeave.attend_category.to_s.strip.downcase == newcats.sc_catcode.to_s.strip.downcase  %>selected="selected"<% elsif session[:req_attend_category] && session[:req_attend_category].to_s.delete(' ').downcase == newcats.sc_catcode.to_s.delete(' ').downcase %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+                <%
+                end
+                end
+                %>
+
+                </select>
+          </div>
+          
+      </div>
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">Leave Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+          <input type="text" placeholder="" maxlength="6" required class="form-control hrmsfont_uppercase" name="attend_leaveCode" value="<%  if @selecMstLeave %><%=@selecMstLeave.attend_leaveCode%><% elsif session[:req_attend_leaveCode] %><%=session[:req_attend_leaveCode]%><% end %>"/>
+          </div>
+          <label class="col-form-label col-md-3">Leave Type<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+         <input type="text" placeholder=""  maxlength="50" required class="form-control hrmsfont_uppercase" name="attend_leavetype" value="<%  if @selecMstLeave %><%=@selecMstLeave.attend_leavetype%><% elsif session[:req_attend_leavetype] %><%=session[:req_attend_leavetype]%><% end %>"/>
+        </div>
+      </div>
+         <div class="form-group row">
+          <label class="col-form-label col-md-3">  Paid Leave <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <select class="form-control" required name="attend_paidleave">
+            <option value="">-Select-</option>
+            <option value="Y" <%  if @selecMstLeave && @selecMstLeave.attend_paidleave.to_s == 'Y'%>selected="selected"<% elsif session[:req_attend_paidleave] && session[:req_attend_paidleave].to_s == 'Y'  %>selected="selected"<% end %>>Y</option>
+            <option value="N" <%  if @selecMstLeave && @selecMstLeave.attend_paidleave.to_s == 'N'%>selected="selected"<% elsif session[:req_attend_paidleave] && session[:req_attend_paidleave].to_s == 'N'  %>selected="selected"<% end %>>N</option>
+          </select>
+          </div>
+          <label class="col-form-label col-md-3">Balance Leave <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+         <select class="form-control" required name="attend_balancesleave">
+            <option value="">-Select-</option>
+            <option value="Y" <%  if @selecMstLeave && @selecMstLeave.attend_balancesleave.to_s == 'Y'%>selected="selected"<% elsif session[:req_attend_balancesleave] && session[:req_attend_balancesleave].to_s =='Y' %>selected="selected"<% end %>>Y</option>
+            <option value="N" <%  if @selecMstLeave && @selecMstLeave.attend_balancesleave.to_s == 'N'%>selected="selected"<% elsif session[:req_attend_balancesleave] && session[:req_attend_balancesleave].to_s =='N' %>selected="selected"<% end %>>N</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group row">
+          <label class="col-form-label col-md-3">   Running/Working <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required name="attend_runworking">
+            <option value="">-Select-</option>
+            <option value="R" <%  if @selecMstLeave && @selecMstLeave.attend_runworking.to_s == 'R'%>selected="selected"<% elsif session[:req_attend_runworking] && session[:req_attend_runworking].to_s == 'R' %>selected="selected"<% end %>>R</option>
+            <option value="W" <%  if @selecMstLeave && @selecMstLeave.attend_runworking.to_s == 'W'%>selected="selected"<% elsif session[:req_attend_runworking] && session[:req_attend_runworking].to_s == 'W' %>selected="selected"<% end %>>W</option>
+          </select>
+          </div>
+          <label class="col-form-label col-md-3"> Enchashment Available <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+         <select class="form-control" required name="attend_enchash">
+            <option value="">-Select-</option>
+            <option value="Y" <%  if @selecMstLeave && @selecMstLeave.attend_enchash.to_s == 'Y'%>selected="selected"<% elsif session[:req_attend_enchash] && session[:req_attend_enchash].to_s =='Y' %>selected="selected"<% end %>>Y</option>
+            <option value="N" <%  if @selecMstLeave && @selecMstLeave.attend_enchash.to_s == 'N'%>selected="selected"<% elsif session[:req_attend_enchash] && session[:req_attend_enchash].to_s =='N'  %>selected="selected"<% end %>>N</option>
+          </select>
+        </div>
+      </div>
+  <div class="form-group row">
+          <label class="col-form-label col-md-3"> Bal. of previous year will be C/F ? <span class="mandatory">*</span></label>
+         <div class="col-md-3">
+             <select class="form-control" required name="attend_balanceforprevious">
+            <option value="">-Select-</option>
+            <option value="Y" <%  if @selecMstLeave && @selecMstLeave.attend_balanceforprevious.to_s == 'Y'%>selected="selected"<% elsif session[:req_attend_balanceforprevious] && session[:req_attend_balanceforprevious].to_s =='Y' %>selected="selected"<% end %>>Y</option>
+            <option value="N" <%  if @selecMstLeave && @selecMstLeave.attend_balanceforprevious.to_s == 'N'%>selected="selected"<% elsif session[:req_attend_balanceforprevious] && session[:req_attend_balanceforprevious].to_s =='N' %>selected="selected"<% end %>>N</option>
+          </select>
+         </div>
+       <label class="col-form-label col-md-3">Max. accumulation allowed <span class="mandatory">*</span></label>
+             <div class="col-md-3">
+                <input type="text" placeholder="" onkeypress="return isNumberKeys(event);"  maxlength="5" required class="form-control hrmsfont_uppercase" name="attend_accumulationleave" id="attend_accumulationleave" value="<%  if @selecMstLeave %><%=@selecMstLeave.attend_accumulationleave%><% end %>"/>
+                
+       </div>
+          <label class="col-form-label col-md-3 hidden">Enter annual quota of leave <span class="mandatory">*</span></label>
+          <div class="col-md-3 hidden">
+            <input type="text" placeholder="" onkeypress="return isNumberKeys(event);"  maxlength="5"  class="form-control hrmsfont_uppercase" name="attend_annualquota" id="attend_annualquota" value="<%  if @selecMstLeave %><%=@selecMstLeave.attend_annualquota%><% end %>"/>
+          
+        </div>
+      </div>
+                          
+<div class="form-group row">
+          
+       <label class="col-form-label col-md-3">Credit Rules<span class="mandatory">*</span></label>
+          
+            <div class="col-md-3 info">   
+            <select class="form-control" required name="attend_creditrule" id="attend_creditrule">
+            <option value="">-Select-</option>
+            <option value="M" <%  if @selecMstLeave && @selecMstLeave.attend_creditrule.to_s == 'M'%>selected="selected"<% end %>>Monthly</option>
+            <option value="Q" <%  if @selecMstLeave && @selecMstLeave.attend_creditrule.to_s == 'Q'%>selected="selected"<% end %>>Quarterly</option>
+            <option value="H" <%  if @selecMstLeave && @selecMstLeave.attend_creditrule.to_s == 'H'%>selected="selected"<% end %>>Half Yearly</option>
+            <option value="Y" <%  if @selecMstLeave && @selecMstLeave.attend_creditrule.to_s == 'Y'%>selected="selected"<% end %>>Yearly</option>
+          </select>
+        
+        <input type="text" placeholder="" onkeypress="return isNumberFloatKey(event);" required class="form-control hrmsfont_uppercase" name="attend_creditruledays" id="attend_creditruledays" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_creditruledays%><% end %>"/>
+            </div>
+            <label class="col-form-label col-md-3">Merge With Other Leave?<span class="mandatory">*</span></label>
+          <div class="col-md-3 emp_radio">
+        
+         <input type="radio" <%  if @selecMstLeave && @selecMstLeave.attend_mergeleave.to_s == 'Y'%>checked <% elsif !@selecMstLeave  %>checked<% end %>  name="attend_mergeleave" id="attend_mergeleave_1" value="Y"/>&nbsp; Yes
+         <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_mergeleave.to_s == 'N'%>checked<% end %> name="attend_mergeleave"  id="ls_mergeleave_2 "value="N"/>&nbsp; No&nbsp;
+          
+        </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">Period of Apply<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+         <select class="form-control" required name="attend_periodapply" id="attend_periodapply">
+            <option value="">-Select-</option>
+            <option value="anyday" <%  if @selecMstLeave && @selecMstLeave.attend_periodapply.to_s == 'anyday'%>selected="selected"<% end %>>Anyday</option>
+            <option value="further" <%  if @selecMstLeave && @selecMstLeave.attend_periodapply.to_s == 'further'%>selected="selected"<% end %>>Further Days</option>
+            <!--option value="previous" <%  if @selecMstLeave && @selecMstLeave.attend_periodapply.to_s == 'previous'%>selected="selected"<% end %>>Previous Days</option-->
+            <option value="today" <%  if @selecMstLeave && @selecMstLeave.attend_periodapply.to_s == 'today'%>selected="selected"<% end %>>Today</option>
+            <!--option value="onetime" <%  if @selecMstLeave && @selecMstLeave.attend_periodapply.to_s == 'onetime'%>selected="selected"<% end %>>One time</option-->
+          </select>
+        </div>
+       
+        <label class="col-form-label col-md-3">Include WO & Holiday<span class="mandatory">*</span></label>
+          <div class="col-md-3 emp_radio">
+        
+         <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_sundayleave.to_s == 'Y'%>checked <% elsif !@selecMstLeave %>checked<% end %>   name="attend_sundayleave" id="attend_sundayleave_1" value="Y" />&nbsp; Yes
+         <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_sundayleave.to_s == 'N'%>checked<% end %> name="attend_sundayleave" id="attend_sundayleave_2" value="N"/>&nbsp; No&nbsp;
+          
+        </div>
+        </div>
+        <div class="form-group row">
+          
+
+         
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">Leave avail by<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+         <select class="form-control" required name="attend_leaveavailby" id="attend_leaveavailby">
+            <option value="">-Select-</option>
+            <option value="M" <%  if @selecMstLeave && @selecMstLeave.attend_leaveavailby.to_s == 'M'%>selected="selected"<% end %>>Male</option>
+            <option value="F" <%  if @selecMstLeave && @selecMstLeave.attend_leaveavailby.to_s == 'F'%>selected="selected"<% end %>>Female</option>
+            <option value="B" <%  if @selecMstLeave && @selecMstLeave.attend_leaveavailby.to_s == 'B'%>selected="selected"<% end %>>Both</option>
+          </select>
+        </div>
+        <label class="col-form-label col-md-3">Halfday Permissible<span class="mandatory">*</span></label>
+          <div class="col-md-3 emp_radio">
+        
+           <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_halfpermisable.to_s == 'Y'%>checked<% elsif @selecMstLeave == nil%>checked<% end %> name="attend_halfpermisable" id="attend_halfpermisable_1" value="Y" />&nbsp; Yes
+           <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_halfpermisable.to_s == 'N'%>checked<% end %> name="attend_halfpermisable" id="attend_halfpermisable_2" value="N"/>&nbsp; No&nbsp;
+          
+        </div>
+         
+        </div>
+<div class="form-group row">
+          <label class="col-form-label col-md-3">Total sewa required (year)<span class="mandatory">*</span></label>
+             <div class="col-md-3">
+                <input type="text" placeholder="" maxlength="5" onkeypress="return isNumberKeys(event);" required class="form-control hrmsfont_uppercase" name="attend_totalsewarequired" id="attend_totalsewarequired" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_totalsewarequired%><% end %>"/>
+                
+       </div>
+       
+        <label class="col-form-label col-md-3">Leave taken one go<span class="mandatory">*</span></label>
+             <div class="col-md-3">
+                <input type="text" placeholder="" maxlength="5" onkeypress="return isNumberFloatKey(event);" required class="form-control hrmsfont_uppercase" name="attend_leavetakenrow" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_leavetakenrow%><% end %>"/>
+                
+       </div>
+        </div>
+
+      <div class="form-group row">
+      
+            <label class="col-form-label col-md-3">How many times can take leave ?<span class="mandatory">*</span></label>
+                 <div class="col-md-3">
+                    <input type="text" placeholder="" maxlength="5" onkeypress="return isNumberFloatKey(event);" required class="form-control hrmsfont_uppercase" name="attend_monthlyleave" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_monthlyleave%><% end %>"/>
+
+           </div>
+                  <label class="col-form-label col-md-3">Who can apply<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+        <%
+        requerslsleace = nil
+        if @selecMstLeave
+          requerslsleace = @selecMstLeave.attend_whocanapply.to_s.split(",")
+        end
+
+       %>
+         <div class="listbox_details">
+                <ul>
+
+                   <li><input type="checkbox" <% if requerslsleace && requerslsleace.include?("SSS")%>checked<% end %>  class="mr-2" name="attend_whocanapply[]"  autocomplete="off" value="SSS"/>Sewadar</li>
+
+                   <li><input type="checkbox"  <% if requerslsleace && requerslsleace.include?("STF")%>checked<% end %> class="mr-2" name="attend_whocanapply[]"  autocomplete="off" value="STF"/>Support Staff</li>
+
+                   <li><input type="checkbox"  <% if requerslsleace && requerslsleace.include?("HR")%>checked<% end %> class="mr-2" name="attend_whocanapply[]"  autocomplete="off" value="HR"/>HR</li>
+
+
+                </ul>
+          </div>
+          
+        </div>
+      </div>
+      <div class="form-group row">
+          <label class="col-form-label col-md-3">Leave Request Required<span class="mandatory">*</span></label>
+             <div class="col-md-3">
+                 <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_leavereqst.to_s == 'Y'%>checked<% elsif @selecMstLeave == nil%>checked<% end %> name="attend_leavereqst" id="attend_leavereqst_1" value="Y" />&nbsp; Yes
+                 <input type="radio"  <%  if @selecMstLeave && @selecMstLeave.attend_leavereqst.to_s == 'N'%>checked<% end %> name="attend_leavereqst" id="attend_leavereqst_2" value="N"/>&nbsp; No&nbsp;
+
+
+       </div>
+
+        <label class="col-form-label col-md-3">Forfeit After Days<span class="mandatory">*</span></label>
+             <div class="col-md-3">
+                <input type="text" placeholder="" maxlength="5" onkeypress="return isNumberFloatKey(event);" required class="form-control hrmsfont_uppercase" name="attend_forefeitdays" value="<% if @selecMstLeave %><%=@selecMstLeave.attend_forefeitdays%><% end %>"/>
+
+       </div>
+        </div>
+      <input type="hidden"  class="form-control" name="compCode" value="<%=@compCodes%>"/>
+      <input type="hidden"  class="form-control" id="rootPath" value="<%=root_url%>"/>
+ 
+          <div class="submit-section">
+          <button class="btn btn-primary submit-btn" onclick="return process_save_leave_master();">Save</button>
+          <a href="<%=root_url%>attendance/leave_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+        </div>
+          <div class="col-md-2 col-xs-6 hidden">
+          <a href="<% if @paths!='' %> <%=@paths %><% else %>javascript:;<% end %> " <% if @paths!='' %>target="_blank"<% end %>>
+          <img src="<%=root_url%>images/print.png"/>
+          </a>
+          </div>
+          
+         
+        
+ 
+
+      </div>
+        
+
+
+
+
+    
+    
+
+     
+
+                        </div>
+                        </div>
+
+
+
+
+  
+
+      </div>
+
+                     
+      <!-- END PAGE CONTENT-->
+
+  
+                <% end %>
+    </div>
+	</div>
+	<!-- /Page Content -->

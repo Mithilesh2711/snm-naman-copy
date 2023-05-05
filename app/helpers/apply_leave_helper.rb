@@ -1,0 +1,2 @@
+module ApplyLeaveHelper
+end

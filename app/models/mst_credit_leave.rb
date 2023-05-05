@@ -1,0 +1,2 @@
+class MstCreditLeave < ApplicationRecord
+end

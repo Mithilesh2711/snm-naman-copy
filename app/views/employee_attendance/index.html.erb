@@ -1,0 +1,454 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Periodic Details Sewadar Wise</h3>
+					
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+			<% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+		
+			
+			
+			<!------------------text Being-------------->
+
+
+
+
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+				<div class="portlet">
+				<div class="portlet-body">
+                                   
+				
+					 <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>'myForms' ) do  %>
+                                        <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                                        <input type="hidden"  id="processdetail" name="processdetail" value="DTL"/>
+					
+					 
+                                       
+                                        
+                  <div class = "row">
+           <div class ="col-md-12 d-flex" style="text-align: center;">
+           <div class="col-sm-6 col-md-3">
+           <label class="focus-label">Department<span class="mandatory">*</span></label>
+          <select   class="form-control " <% if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' ) %>  <% else %><% if @Department && @Department.length >1 %><% else %>readonly<% end %> <% end %> name="emp_department" id="emp_department" onchange="get_all_sewadar_by_department();">
+                                                         
+                                                         <% if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' ) %> 
+                                                           <option value="">-Select-</option>
+                                                         <% else %>
+                                                         <%
+                                                          if @Department && @Department.length >1
+                                                          %>
+                                                          <option value="">-Select-</option>
+                                                          <% end %>
+
+                                                          <% end %>
+                                                          <%
+                                                          if @Department && @Department.length >0
+                                                           @Department.each do |dp|
+                                                          %>
+                                                          <option value="<%=dp.departCode%>" <% if @emp_department && @emp_department.to_s==dp.departCode.to_s%>selected="selected"<% end %>><%=dp.dp_name%></option>
+                                                          <% end end %>
+                                                        </select>
+            
+          
+         
+       
+          </div>
+         
+
+       
+      
+          <div class="col-md-3">
+           <label class="focus-label">Sewadar Name<span class="mandatory">*</span></label>
+                      <select class="form-control" <% if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' ) %>  <% else %> <% if @mstXEmpEdit && @mstXEmpEdit.length >1 %><% else %>readonly<% end %> <% end %> id="emp_listed" name="emp_listed" onchange="fill_from_sewadar_listed_fillcode('sewadar');">
+                                <% if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' ) %> 
+                                  <option value="">-Select-</option>
+                                <% else %>
+                               
+                                <%
+                                  if @mstXEmpEdit !=nil && @mstXEmpEdit.length >1
+                                %>
+                                   <option value="">-Select-</option>
+                              <% end %>
+                              <% end %>
+                              <%
+                            if @mstXEmpEdit !=nil && @mstXEmpEdit.length >0
+                              @mstXEmpEdit.each do |emps|
+                                
+                            %>
+                              <option value="<%=emps.emp_cust_id%>" <% if @emp_listed && @emp_listed.to_s == emps.emp_cust_id.to_s %>selected="selected"<% end %>><%=emps.firstname%> (<%=emps.emp_cust_id%>)</option>
+                        <%
+                            end
+                            end
+                          %>
+
+
+                      </select>
+                      
+          </div>
+         
+          <div class="col-sm-2 col-md-2">
+           <label class="focus-label">From Date<span class="mandatory">*</span></label>
+            <input type="text"  class="form-control" id="from_dates" name="from_date"  value="<% if @from_date !=nil %><%=@from_date%><% else %><%=@nbegindates%><% end %>" style="color:black;"/>
+          </div>
+          
+         
+          <div class="col-sm-3 col-md-2">
+           <label class="focus-label">Upto Date<span class="mandatory">*</span></label>
+          <input type="text" class="form-control"  id="upto_dates" name="upto_date"  value="<% if @upto_date !=nil %><%=@upto_date%><% else %><%=@enddates%><% end %>" style="color:black;"/>
+          </div>
+             <div class="col-md-2" style="padding-left: 10px">
+             </br>
+           <a href="javascript:;" class="btn btn-success btn-sm m-t-5"  title="Press for search" onclick="search_employee_attendance();"><i class="la la-search"></i> Search </a> 
+             
+                                       
+          </div>
+
+          </div>
+         
+          </div>       
+
+            <div class="row m-t-10">
+                          <div class="col-md-12 d-flex">
+                          <div class=" col-md-2">
+                          <label class=" focus-label"> Sewadar Code : </label>
+                          </div>
+          <div class=" col-md-2">
+                    <label class=" focus-label"> <span id="myselected_codes"><% if @listSewadars %><%=@listSewadars.emp_cust_id%><% end %></span></label>
+
+                    </div>
+                    <div class=" col-md-2">
+                                    <label class=" focus-label"> Sewadar Name : </label>
+                                    </div>
+          <div class=" col-md-4">
+                    <label class=" focus-label">  <span id="myselected_names"><% if @listSewadars %><%=@listSewadars.firstname%><% end %> </span> </label>
+                     
+                    </div>
+                    
+
+                                    </div>
+                    </div>
+					   
+  
+
+			<!-- BEGIN PAGE CONTENT-->
+                        <div class="row">
+                          <div class="col-md-12">
+                              <div class="col-md-10 hidden">
+                                <input type="radio" onclick="process_attend_dashboard_summary();" checked="checked"  name="radiodetail" id="radiodetail1" value="DTL"/><strong>Detail</strong>&nbsp;<input type="radio" onclick="process_attend_dashboard_summary();" name="radiodetail" id="radiodetail1"  value="SMRY"/><strong>Summary</strong>
+                                </div>
+                                   <%
+            if @listAttend && @listAttend.length >0 ||  @SummListed && @SummListed.length >0
+             %>
+                 
+                      <div class="col-md-2 hidden" style="margin-top: -13px; ">
+                            <a href="<%=@mypaths%>" target="_blank">
+                              <img src="<%=root_url%>images/excel.png"/>
+                            </a>
+                      </div>
+
+                
+               <% end %>
+                          </div>
+                        </div>
+
+                        <br/>
+                      <div class="row">
+                          <div class="col-md-12">
+                            
+                             </div>                          		
+                      </div>     
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					
+                                                          
+							<div class="table-responsive col-md-12 mt10">
+                                                          <%
+                                                        if @listAttend && @listAttend.length >0
+                                                         %>
+								<table class="table" id="myattendancelisted">
+								<thead>
+                                                                  <tr class="head_table" >
+									<th>
+									 SL No. 
+									</th>
+                       <th style="width: 120px;">
+                                                                          Date
+                  </th>
+                                                                       
+                                                                   
+									<th>
+									 Shift 
+									</th>
+                                                                        <th>
+									 Arrival Time
+									</th>
+                                                                        <th>
+									 Departure Time
+									</th>
+                                                                        <th>
+									 Working Hrs
+									</th>
+                                                                        <th>
+									 Late Hrs
+									</th>
+                                                                         <th>
+									 Early Hrs
+									</th>
+                  <th style="width:60px" class="hidden">
+									 OT
+									</th>
+                                                                        <th>
+									 Miss punch
+									</th>
+                                                                       
+                                                                       <th>
+									Late Penalty
+									</th>
+                  <th>
+									Remark
+									</th>
+                   <th>
+									Leave Type
+									</th>                                                      
+                                                                         
+								</tr>
+								</thead>
+								<tbody>
+								<%
+                                                                @myEditAld = true
+                                                                @myDeletAld = true
+                                                                presents = 0
+                                                                absent   = 0
+                                                                workhrct = 0
+                                                                latect   = 0
+                                                                earlyct  = 0
+                                                                othrsct  = 0
+                                                                fwkhrs   = 0
+                                                                fwkmns   = 0
+                                                                fovthrs  = 0
+                                                                fovtmns  = 0
+                                                                lateplhrs = 0
+                                                                lateplmns = 0
+                                                                ltspenty  = 0
+                                                                pagestart = params[:page] ? params[:page] : 1
+                                                                if pagestart.to_i <=1
+                                                                  i = 1
+                                                                else
+                                                                  i = ((pagestart.to_i-1)*25)+1
+                                                                  i = i.to_i
+                                                                end
+                                                              if @listAttend && @listAttend.length >0
+                                                                 @listAttend.each do |gps|
+                                                              %>
+                                                                <%
+                                                                          departname = ""
+                                                                          desnation  = ""
+                                                                          empname    = ""
+                                                                          empobj     = get_mysewdar_list_details(gps.al_empcode)
+                                                                           if empobj
+                                                                              empname = empobj.sw_sewadar_name
+                                                                               dpobj =  get_all_department_detail(empobj.sw_depcode)
+                                                                               if dpobj
+                                                                                 departname = dpobj.departDescription
+                                                                               end
+
+                                                                               desobj =  get_sewdar_designation_detail(empobj.sw_desigcode)
+                                                                               if desobj
+                                                                                 desnation = desobj.ds_description
+                                                                               end
+                                                                           end
+                                                                          
+                                                                            presents += gps.al_present.to_f
+                                                                            absent   += gps.al_absent.to_f
+                                                                            if gps.al_workhrs !=nil && gps.al_workhrs != ''
+                                                                               newkhrs   =  get_calculated_hours_minute(gps.al_workhrs,'H')
+                                                                               newmnts   =  get_calculated_hours_minute(gps.al_workhrs,'M')
+                                                                               fwkhrs    += newkhrs.to_i
+                                                                               fwkmns    += newmnts.to_i                                                                            
+                                                                          end
+                                                                            if gps.al_latehrs != nil && gps.al_latehrs !=''
+                                                                              nlates = gps.al_latehrs.to_s.gsub(":",".")
+                                                                               if nlates.to_f >0
+                                                                                 latect +=1
+                                                                               end
+                                                                            end
+                                                                            if gps.al_earlhrs != nil && gps.al_earlhrs !=''
+                                                                              erlys = gps.al_earlhrs.to_s.gsub(":",".")
+                                                                               if erlys.to_f >0
+                                                                                 earlyct +=1
+                                                                               end
+                                                                            end
+                                                                            if gps.al_overtime !=nil && gps.al_overtime != ''
+                                                                               ovthrs     =  get_calculated_hours_minute(gps.al_overtime,'H')
+                                                                               ovtmns     =  get_calculated_hours_minute(gps.al_overtime,'M')
+                                                                               fovthrs    += ovthrs.to_i
+                                                                               fovtmns    += ovtmns.to_i                                                                              
+                                                                            end
+                                                                           if gps.al_latepelanty != nil && gps.al_latepelanty != ''
+                                                                                lateplhrsf = gps.al_latepelanty.to_s.gsub(":",".")
+                                                                                ltspenty   += lateplhrsf.to_f
+                                                                                
+                                                                           end
+                                                                            
+                                                                         %>
+                                                                      <tr style="<% if gps.al_absent.to_f >0 %>color:red;<% end %>">
+                                                                        <td id="center">
+                                                                        <%=i%>
+                                                                        </td>
+                                                                          <td id="center">
+                                                                        <%=formatted_date(gps.al_trandate)%>
+                                                                        </td>
+                                                                                                                             
+                                                                      
+                                                                      
+                                                                        <td id="center">
+                                                                                                                                <%=gps.al_shift%>
+                                                                        </td>
+                                                                                                                              
+                                                                        <td id="center">
+                                                                        <%=gps.al_arrtime%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=gps.all_deptime%>
+                                                                        </td>
+                                                                         <td id="center">
+                                                                        <%=(gps.al_workhrs.gsub(":",".").to_s == '0' ? '' : gps.al_workhrs )%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=(gps.al_latehrs.gsub(":",".").to_s =='0' ? '' : gps.al_latehrs)%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=(gps.al_earlhrs.gsub(":",".").to_s  == '0' ? '' : gps.al_earlhrs)%>
+                                                                        </td>
+                                                                        <td id="center" class="hidden">
+                                                                        <%=(gps.al_overtime.gsub(":",".").to_s  =='0' ? '' : gps.al_overtime)%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=(gps.al_misspunch.gsub(":",".").to_s  =='0' ? '' : gps.al_misspunch)%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        <%=gps.al_latepelanty.to_s.gsub(":",".")%>
+                                                                        </td>
+                                                                        <td id="center">
+                                                                        
+                                                                        <%
+                                                                          if gps.al_present.to_f >0
+                                                                        %>
+                                                                        Present <% if gps.al_presabsent.to_s == 'OD' %><% end %>
+                                                                        <%
+                                                                        elsif gps.al_absent.to_f >0
+                                                                        %>
+                                                                        Absent
+                                                                        <%
+                                                                        elsif gps.al_presabsent == 'HD'
+                                                                        %>
+                                                                        Half Day
+                                                                         <%
+                                                                        elsif gps.al_presabsent == 'HL'
+                                                                        %>
+                                                                        Holiday
+                                                                        <%
+                                                                        elsif gps.al_presabsent == 'WO'
+                                                                        %>
+                                                                       WO
+                                                                        <% end %>
+                                                                        </td>
+                                                                        <td>
+                                                                        <%=gps.al_leavecode%>
+                                                                        </td>
+                                                            </tr>
+                                                            <%
+                                                              i +=1
+                                                              end
+                                                              %>
+                                                                
+                                                               
+                                                                
+                                                                
+                                                                <tr class="">
+                                                                  <td colspan="4">
+                                                                    Total
+                                                                  </td>
+                                                                  
+                                                                  
+                                                                  <td id="center">
+                                                                  Present <br/><span style="font-weight:bold"><%=presents%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Absent <br/> <span style="font-weight:bold"><%=absent%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                    <%                                                                    
+                                                                    wrkshrs = get_hours_calculation(fwkhrs,fwkmns)    
+                                                                   %>                                                                 
+                                                                  WHrs <br/> <span style="font-weight:bold"> <%=wrkshrs%></span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Late <br/><span style="font-weight:bold"> <%=latect%> </span>
+                                                                  </td>
+                                                                  <td id="center">
+                                                                  Early <br/><span style="font-weight:bold"> <%=earlyct%></span>
+                                                                  </td>
+                                                                  
+                                                                  <td id="center">
+                                                                  
+                                                                  </td>
+                                                                  <td id="center">
+                                                                 
+                                                                  </td>
+                                                                  <td>
+
+                                                                  </td>
+                                                                </tr>
+                                                              <%
+                                                              else
+                                                              %>
+								<tr>
+								<td>No Records Found</td>
+								</tr>
+									<%	end %>				
+								</tbody>
+								</table>
+              </div>
+            </div>
+          </div>
+                                                                <% end %>
+                                                          <!---- SUMMARY-------->
+                                                          
+							</div>
+						
+					
+					<!-- END SAMPLE TABLE PORTLET-->
+				</div>
+				
+			</div>
+			<% end %>
+                                                    <!-- END PAGE CONTENT-->
+                                            </div>
+                                        </div>
+                                    <!-- END CONTENT -->
+                                  </div>
+                              </div>
+                            </div>
+                      </div>
+                </div>
+           
+       
+<!-- END CONTAINER -->
+<% #render "layouts/popupforms"%>

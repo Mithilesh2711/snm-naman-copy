@@ -1,0 +1,145 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Manage Branch</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+               
+                  <div class="row filter-row">
+                        
+                          <div class="col-md-2">
+                             Search 
+                          </div>
+                          
+                          <div class="col-md-3">
+                             <input type="text"  placeholder="Search Branch code,name" class="form-control" name="zone_branch_search" id="zone_branch_search" value="<% if @zone_branch_search %><%=@zone_branch_search%><% end %>"/>
+                          </div>
+                          
+                          <div class="col-md-2">
+                           
+              <a href="javascript:;" class="btn btn-success btn-sm"  onclick="filter_branches();"><i class="la la-search"></i> Search </a>
+             
+                 
+                          </div>
+                        
+                 </div>
+                <% end %>
+		<div class="row">
+			<div class="col-md-12">
+         <div>
+                                    <a href="<%=root_url%>branch/add_branch" class="btn add-btn float-left"><i class="fa fa-plus"></i>Add Branch</a>
+                              <%
+
+                            if @Listbranch && @Listbranch.length >0
+
+                            %>
+                                        
+                                                           <div class="col-auto float-right ml-auto">
+                                              <div class="btn-group btn-group-sm">
+                  <a  class="btn btn-white"href="<%=@printpath%>" class="btn btn-white">CSV</a>
+                  
+                   <a href="<%=@printpdfpath%>" target="_blank" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</a>
+                </div>
+              </div>
+                 <% end %>
+                                        
+                                  </div>
+				<div class="table-responsive">
+					<table class="table table-striped mb-0 ">
+									<thead class="new_tblhead">
+										<tr>
+											<th style="width: 30px;">#</th>
+											<th>Zone No</th>
+                                                                                        <th>Zone</th>
+                                                                                        <th>District Name</th>
+											<th>Branch Code</th>
+                                                                                        <th>Branch</th>
+                                                                                        
+                                                                                        <th>Address</th>
+											
+											<th class="text-right">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+                                                                        
+                                                                              <%
+                                                                              pagestart = params[:page] ? params[:page] : 1
+                                                                              if pagestart.to_i <=1
+                                                                                i = 1
+                                                                              else
+                                                                                i = ((pagestart.to_i-1)*10)+1
+                                                                                i = i.to_i
+                                                                              end
+                                                                               if @Listbranch && @Listbranch.length >0
+                                                                                 @Listbranch.each do |listbrnch|
+                                                                                  myzone      = ""
+                                                                                  mydistrict  = ""
+                                                                                  myzonnumber = ""
+                                                                                   zoneobj    = get_zone_name_detail(listbrnch.bch_zonecode)
+                                                                                  if zoneobj
+                                                                                    myzone      = zoneobj.zn_name
+                                                                                    myzonnumber = zoneobj.zn_number
+                                                                                  end
+                                                                                   distobj = get_zone_district_listed(listbrnch.bch_districtcode)
+                                                                                  if distobj
+                                                                                    mydistrict = distobj.zd_name
+                                                                                  end
+                                                                                %>
+										<tr>
+											<td><%=i%></td>
+                                                                                        <td><%=myzonnumber%></td>
+											<td><%=myzone%></td>
+                                                                                        <td><%=mydistrict%></td>
+											<td><%=listbrnch.bch_branchcode%></td>
+                                                                                        <td><%=listbrnch.bch_branchname%></td>
+                                                                                                                                                                            
+                                                                                        <td><%=listbrnch.bch_address%></td>
+											
+											<td class="text-right">
+            <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                  <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>branch/add_branch/<%=listbrnch.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>branch/<%=listbrnch.id%>/deletes');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                                </div>
+											</td>
+										</tr>
+                                                                                <%
+                                                                                  i +=1
+                                                                                 end
+                                                                                else
+                                                                               %>
+                                                                               <%
+                                                                               end
+                                                                               %>
+										
+										
+									</tbody>
+								</table>
+                 
+                                 <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@Listbranch)%></div>
+
+                                  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

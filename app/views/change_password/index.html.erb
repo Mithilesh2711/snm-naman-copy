@@ -1,0 +1,44 @@
+	<!-- Page Wrapper -->
+            <div class="page-wrapper">
+                <div class="content container-fluid">
+                		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Change Password</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		  <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+					<div class="row">
+						<div class="col-md-6 offset-md-3">
+							 <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+							
+								<div class="form-group">
+									<label>Old password</label>
+									<input type="password" autocomplete="off" required class="form-control" name="old_password" id="old_password" value=""/>
+								</div>
+								<div class="form-group">
+									<label>New password</label>
+									<input type="password" autocomplete="off" required maxlength="50" class="form-control" name="user_password" id="user_password" />
+								</div>
+								<div class="form-group">
+									<label>Confirm password</label>
+									<input type="password" autocomplete="off" required maxlength="50" class="form-control" name="new_password" id="new_password" />
+								</div>
+								<div class="submit-section">
+									<button class="btn btn-primary submit-btn" onclick="return change_password_validation();">Update Password</button>
+								</div>
+							<% end %>
+						</div>
+					</div>
+				</div>
+				<!-- /Page Content -->
+				
+			</div>
+			<!-- /Page Wrapper -->

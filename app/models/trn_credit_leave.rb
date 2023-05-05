@@ -1,0 +1,2 @@
+class TrnCreditLeave < ApplicationRecord
+end

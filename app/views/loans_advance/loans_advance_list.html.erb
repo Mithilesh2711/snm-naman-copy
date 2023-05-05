@@ -1,0 +1,475 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Advances List</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                         <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+           
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments" >
+         <%
+             if @sewDepart && @sewDepart.length >1
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+          <%
+           
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+          <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          <label class="focus-label">Department </label>
+          </div>
+          </div>
+
+
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_codetype" id="sewadar_codetype" >
+            <option value="">-Select-</option>
+          <option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+          <option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+          <option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+          <option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+          <option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+          </select>
+          <label class="focus-label">Search According</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-3" style="max-width: 14%;
+          padding-left: 0px;
+          padding-right: 0px;">
+          <div class="form-group form-focus">
+          <input type="text" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+          <label class="focus-label" style="font-size:11px">Code,Name,Mobile,Email</label>
+          </div>
+          </div>
+
+            <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+           
+          <select class="form-control" name="sewadar_category" id="sewadar_category" >
+         <%
+             if @sewadarCategory && @sewadarCategory.length >1
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+          <%
+           
+            if @sewadarCategory && @sewadarCategory.length >0
+             @sewadarCategory.each do |catgs|
+          %>
+          <option value="<%=catgs.sc_catcode%>" <% if @sewadar_category && @sewadar_category.to_s.strip == catgs.sc_catcode.to_s.strip %>selected="selected"<% end %> ><%=catgs.sc_name%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          <label class="focus-label">Category </label>
+          </div>
+          </div>
+
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+           
+          <select class="form-control" name="sewadar_status" id="sewadar_status" >
+          <option value="">-Select-</option>
+          <option value="A" <% if @sewadar_status && @sewadar_status.to_s == 'A'%>selected="selected"<% end %>>Approved</option>
+          <option value="F" <% if @sewadar_status && @sewadar_status.to_s == 'F'%>selected="selected"<% end %>>Forward To HR</option>
+          <option value="P" <% if @sewadar_status && @sewadar_status.to_s == 'P'%>selected="selected"<% end %>>Requested</option>
+          <option value="R" <% if @sewadar_status && @sewadar_status.to_s == 'R'%>selected="selected"<% end %>>Rejected</option>
+          <option value="H" <% if @sewadar_status && @sewadar_status.to_s == 'H'%>selected="selected"<% end %>>Hold</option>
+          <option value="C" <% if @sewadar_status && @sewadar_status.to_s == 'C'%>selected="selected"<% end %>>Cancelled</option>
+
+          </select>
+          <label class="focus-label">Status </label>
+          </div>
+          </div>
+          
+          <div class="col-sm-6 col-md-1 m-t-5" style="padding-left: 10px">
+          <a href="javascript:;" style="padding: 14px;" onclick="filter_loan_advance();" class="btn btn-success btn-sm"  > Search </a>
+          </div>
+
+          
+          </div>
+
+           <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+               <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+           
+           <select class="form-control" name="sewdar_requesttype" id="sewdar_requesttype">
+              <option value="">Select</option>
+              <option value="Loan" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Loan'%>selected="selected"<% end %>>Advance upto 60k </option>
+              <option value="Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Advance'%>selected="selected"<% end %>>MA Advance</option>
+              <%
+                if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+              %>
+              <option value="Advance Above 60k" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Advance Above 60k'%>selected="selected"<% end %>>Advance Above 60k</option>
+              <option value="Ex-gratia" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Ex-gratia'%>selected="selected"<% end %>>Ex-gratia</option>
+              <option value="Special Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Special Advance'%>selected="selected"<% end %>>Special Advance</option>
+              <option value="Wheat Advance" <% if @sewdar_requesttype && @sewdar_requesttype.to_s == 'Wheat Advance'%>selected="selected"<% end %>>Wheat Advance</option>
+              
+              <% end %>          
+            
+            </select>
+          <label class="focus-label">Request Type </label>
+          </div>
+          </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating" type="text" name="search_fromdated" id="search_fromdated" value="<% if @search_fromdated %><%=formatted_date(@search_fromdated)%><% end %>"/>
+								</div>
+								<label class="focus-label">From</label>
+							</div>
+						</div>
+					   <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating" type="text" name="search_uptodated" id="search_uptodated" value="<% if @search_uptodated %><%=formatted_date(@search_uptodated)%><% end %>"/>
+								</div>
+								<label class="focus-label">To</label>
+							</div>
+						</div>
+
+           </div>
+<% end %>
+		<div class="row">
+			<div class="col-md-12">
+           <div >
+                           <a href="<%=root_url%>loans_advance" class="btn add-btn float-left"><i class="fa fa-plus"></i>Request for Advance</a>           
+                           
+      
+                          <div class="col-auto float-right ml-auto">
+                          <%
+                          if @LoanRequest && @LoanRequest.length >0
+                          %>
+                 <div class="btn-group btn-group-sm">
+                  <a  class="btn btn-white" href="<%=root_url%><%=@printpath%>" target="_blank"  class="btn btn-white">CSV</a>                  
+                   <a href="javascript:;" target="_blank" class="btn btn-white hidden"><i class="fa fa-print fa-lg"></i> Print</a>
+                </div>
+                <% end %>
+              </div>
+                                                                         </div>
+				<div class="table-responsive">
+<table class="table table-striped  mb-0 " id="sewadar_loan_request">
+<thead>
+<tr>
+<th>Request No<br/>Date of Request</th>
+<th>Request For</th>
+<th width="20%">Sewadar Details</th>											
+
+<th>Date of Joining<br/>Date of Superannuation<br/>Date of Regularization</th>
+<th>Advance Amount<br/>Installment</th>
+<th>Purpose <br/>Remark</th>
+
+<th>Guarantor<br/> Attachments</th>
+<th>Status <br/> Forwarded By<br/>
+(Sh./Smt.)</th>
+
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<%
+  if @LoanRequest && @LoanRequest.length >0
+   @LoanRequest.each do |newloans|
+    sewdarname = ""
+    refercode  = ""
+    deginname  = ""
+    department = ""
+    dates      = ""
+    prevbalance = 0
+    mycatgpars  = ""
+    
+    dos        = ""
+    dor        = ""
+    myimagex   = "#{root_url}assets/img/profiles/avatar-02.jpg"
+    sewdobjs   = get_mysewdar_list_details(newloans.al_sewadarcode)
+    if sewdobjs
+          sewdarname  = sewdobjs.sw_sewadar_name
+          refercode   = sewdobjs.sw_oldsewdarcode
+          dsicode     = sewdobjs.sw_desigcode
+          dates       = sewdobjs.sw_joiningdate
+          dobs        = sewdobjs.sw_date_of_birth
+          gnders      = sewdobjs.sw_gender
+
+          prevbalance = sewdobjs.sw_outstandingamt.to_f+sewdobjs.sw_loanamount.to_f
+          sewdptobj   = get_all_department_detail(newloans.al_depcode)
+          if sewdptobj
+              department = sewdptobj.departDescription
+          end
+          desobjs = get_sewdar_designation_detail(dsicode)
+          if desobjs
+             deginname = desobjs.ds_description
+          end
+
+          
+            if sewdobjs.sw_image !=nil && sewdobjs.sw_image !=''
+                  chekpaths = "#{Rails.root}/public/images/sewadar/"+sewdobjs.sw_image.to_s
+                  if File.file?(chekpaths)
+                    myimagex = "#{root_url}images/sewadar/"+sewdobjs.sw_image.to_s
+                  end
+
+              end
+
+           mycatgpars = sewdobjs.sw_catgeory
+
+    end
+    officeobj = get_office_information(newloans.al_sewadarcode)
+    if officeobj       
+      dos        = officeobj.so_superannuationdate
+      dor        = officeobj.so_regularizationdate
+
+    end
+    kycobj    =  global_sewadar_kyc_information(newloans.al_sewadarcode)  
+    if kycobj
+        selfadhar = kycobj.sk_adharno
+    end
+    seapprovedobj     = get_global_users(newloans.al_approvedby)
+    if seapprovedobj
+          membercode  = seapprovedobj.ecmember
+          ldsobj      = get_member_listed(membercode)
+          if ldsobj
+              approvedby  = ldsobj.lds_name
+              lds_profile = ldsobj.lds_profile
+          end
+          
+    end
+     myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"                    
+    if lds_profile !=nil && lds_profile !=''
+        chekpath = "#{Rails.root}/public/images/ledger/profile/"+lds_profile.to_s
+          if File.file?(chekpath)
+            myimages = "#{root_url}images/ledger/profile/"+lds_profile.to_s
+          end
+      end 
+      guarantorname = ""
+      guarnobj      =  get_mysewdar_list_details(newloans.al_guarantorname)
+      if guarnobj
+        guarantorname = guarnobj.sw_sewadar_name
+
+      end
+  %>
+<tr>
+<td>
+<%=newloans.al_requestno%><br/><%=formatted_date(newloans.al_requestdate)%>  
+</td>
+<td>
+
+  <%
+  namesx = ""
+    if newloans.al_requesttype == 'Advance'
+    namesx = "MA Advance"
+   %>
+    MA Advance
+  <% elsif newloans.al_requesttype == 'Loan' 
+    namesx = "Advance upto 60k"
+  %>
+   Advance upto 60k
+    <% else
+      namesx = newloans.al_requesttype
+    
+    %>
+    <%=newloans.al_requesttype%>
+  <% end %>
+</td>
+<td  width="20%">
+<h2 class="table-avatar">
+  <a href="javascript:;" class="avatar"><img alt="<%=sewdarname%>" src="<%=myimagex%>"/></a>
+  <div>
+  <span>	<%=newloans.al_sewadarcode%><% if refercode !=nil && refercode !='' %> (<%=refercode%>)<br/><% end %> <%=sewdarname%><br/><%=department%></span>
+   <span><% if gnders =='M'%>MALE<% elsif gnders =='F'%>FEMALE<% end %><br/><%=mycatgpars%></span>
+  </div>
+  </h2>
+  <br/> 
+
+</td>
+
+<td>
+<%=formatted_date(dates)%><br/><%=formatted_date(dos)%><br/><%=formatted_date(dor)%>
+</td>
+
+<td style="text-align: right;">
+<%
+tamounts = newloans.al_loanamount.to_f+newloans.al_advanceamt
+%>
+  <%=currency_formatted(tamounts)%>
+<br/>
+<%=currency_formatted(newloans.al_installpermonth)%>
+</td>
+<td><%=newloans.al_purpose%> <br/> <%=newloans.al_remark%></td>
+
+<td>
+<%=guarantorname ? guarantorname.to_s+"\n" : ''%>
+  <% if newloans.al_attachfirst != nil && newloans.al_attachfirst != '' %>
+    <a href="<%=root_url%>images/advance/a1/<%=newloans.al_attachfirst%>" target="_blank">
+    <%=newloans.al_atttitlefirst!=nil && newloans.al_atttitlefirst!= '' ? newloans.al_atttitlefirst : newloans.al_attachfirst%>
+    </a>
+  <% end %>
+  <% if newloans.al_attchsec != nil && newloans.al_attchsec != '' %>
+    <br/>
+    <a href="<%=root_url%>images/advance/a2/<%=newloans.al_attchsec%>" target="_blank">
+    <%=newloans.al_attachtilesec!=nil && newloans.al_attachtilesec!= '' ? newloans.al_attachtilesec : newloans.al_attchsec%>
+    </a>
+    <% end %>
+    <% if newloans.al_attachthird != nil && newloans.al_attachthird != '' %>
+    <br/>
+    <a href="<%=root_url%>images/advance/a3/<%=newloans.al_attachthird%>" target="_blank">
+    <%=newloans.al_attachtitlethird!=nil && newloans.al_attachtitlethird!= '' ? newloans.al_attachtitlethird : newloans.al_attachthird%>
+    </a>
+  <% end %>
+  <% if newloans.al_guarantorattach != nil && newloans.al_guarantorattach != '' %>
+    <br/>
+    <a href="<%=root_url%>images/advance/a4/<%=newloans.al_guarantorattach%>" target="_blank">
+    <%=newloans.al_guarantortitle!=nil && newloans.al_guarantortitle!= '' ? newloans.al_guarantortitle : newloans.al_guarantorattach%>
+    </a>
+  <% end %>
+  </td>
+
+
+
+<td>
+<% if newloans.al_approvestatus =='A'%>
+Approved
+<% elsif newloans.al_approvestatus =='R'%>
+Rejected
+<% elsif newloans.al_approvestatus =='H'%>
+Hold
+<% elsif newloans.al_approvestatus =='C'%>
+Cancelled
+<% else %>
+    <%
+      if newloans.al_hod_status =='A' && newloans.al_approvestatus !='A'
+    %>
+    Forwarded To HR
+    <% else %>
+    Requested
+    <%
+    end
+    %>
+<% end %> 
+<br/>
+<%
+  if newloans.al_hod_status =='A'
+%>
+  <h2 class="table-avatar">
+    <a href="javascript:;" class="avatar avatar-xs"><img src="<%=myimages%>" width="30pix;"/></a>
+    <a href="javascript:;"><%=approvedby%></a>
+    
+  </h2>
+  <br/>
+    <%=formatted_date(newloans.al_hoddated)%>
+  <% else %>
+
+  <% end %>
+</td>
+
+  <td class="text-right">
+  <%
+   if newloans.al_approvestatus == 'C'  
+  %>
+    <%
+      elsif newloans.al_approvestatus == 'A' || newloans.al_approvestatus == 'R'  || newloans.al_approvestatus == 'H' 
+    %>
+  <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+  <div class="dropdown-menu dropdown-menu-right">
+  <a class="dropdown-item" href="<%=root_url%>loans_advance/<%=newloans.id%>"><i class="fa fa-pencil m-r-5"></i> View</a> 
+  
+  <%
+  if newloans.al_approvestatus == 'A' 
+  %>
+  <%
+  if newloans.al_requesttype == 'Advance' && newloans.al_broucherno !=nil && newloans.al_broucherno !=''
+  %>
+  <a class="dropdown-item" target="_blank" href="<%=root_url%>loans_advance/1_prt_mas_<%=newloans.al_requestno%>_<%=newloans.al_sewadarcode%>_sanction_report.pdf"> Sanction Letter</a> 
+  <%
+   elsif newloans.al_requesttype == 'Ex-gratia' && newloans.al_broucherno !=nil && newloans.al_broucherno !=''
+  %>
+  <a class="dropdown-item" target="_blank" href="<%=root_url%>loans_advance/1_prt_ex_<%=newloans.al_requestno%>_<%=newloans.al_sewadarcode%>_sanction_report.pdf"> Sanction Letter</a> 
+ <%
+   elsif newloans.al_requesttype == 'Wheat Advance' && newloans.al_broucherno !=nil && newloans.al_broucherno !=''
+  %>
+  <a class="dropdown-item" target="_blank" href="<%=root_url%>loans_advance/1_prt_wh_<%=newloans.al_requestno%>_<%=newloans.al_sewadarcode%>_sanction_report.pdf"> Sanction Letter</a> 
+  <%
+  elsif newloans.al_requesttype == 'Loan' && newloans.al_broucherno !=nil && newloans.al_broucherno !=''
+  %>
+    <a class="dropdown-item" target="_blank" href="<%=root_url%>loans_advance/1_prt_adv_<%=newloans.al_requestno%>_<%=newloans.al_sewadarcode%>_sanction_report.pdf"> Sanction Letter</a> 
+   <%
+  elsif newloans.al_requesttype == 'Advance Above 60k' && newloans.al_broucherno !=nil && newloans.al_broucherno !=''
+  %>
+  <a class="dropdown-item" target="_blank" href="<%=root_url%>loans_advance/1_prt_adv_<%=newloans.al_requestno%>_<%=newloans.al_sewadarcode%>_sanction_report.pdf"> Sanction Letter</a> 
+
+<% end %>
+<% end %>
+    </div>
+  </div>
+  <% else %>
+  <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+      <div class="dropdown-menu dropdown-menu-right">
+      
+       <a class="dropdown-item" href="<%=root_url%>loans_advance/<%=newloans.id%>"><i class="fa fa-pencil m-r-5"></i> <% if newloans.al_hod_status =='A' %>View<% else %>Edit<% end %></a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>loans_advance/<%=newloans.id%>/cancel');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Cancel</a> 
+       <a class="dropdown-item"  href="<%=root_url%>process_update_installment"><i class="fa fa-pencil m-r-5"></i>  Update Installment</a>    
+     </div>
+  </div>
+  <% end%>
+</td>
+
+</tr>
+<%
+  end
+else
+%>
+<tr>
+  <td colspan="4">
+    No record(s) found.
+  </td>
+</tr>
+<%
+ end
+%>
+
+
+
+</tbody>
+</table>
+                                
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>
+</div>

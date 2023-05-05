@@ -1,0 +1,319 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Manage Shift</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>attendance/shift_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>
+        
+
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'shift'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+  <input type="hidden" name="attendpst" value="Y"/>
+  <input type="hidden" name="cuurentcode" value="<% if @selecMstShift %><%=@selecMstShift.attend_shiftcode%><% end %>"/>
+  <input type="hidden" name="mid" value="<% if @selecMstShift %><%=@selecMstShift.id%><% end %>"/>
+               <div class="row">
+		<div class="col-md-12">
+		
+                      
+
+                          <div class="row">
+                            <div class="col-md-4 box_shift1">
+                            <div id="center">
+
+               <label class="cust_info1 mt10">Shift Time</label>
+              </div>
+                              <div class="row">
+             <div class="col-md-12 d-flex">
+                <div class="col-md-4" >
+                  Code <span class="mandatory">*</span>
+                  <input type="text" placeholder="" required class="form-control" name="attend_shiftcode" value="<% if @selecMstShift %><%=@selecMstShift.attend_shiftcode%><% end %>"/>
+                </div>
+
+                <div class="col-md-5">
+                  Night Shift <span class="mandatory">*</span>
+                     <select class="form-control" name="attend_nightshift">
+                    <option value="">-Select-</option>
+                    <option value="Y" <% if @selecMstShift && @selecMstShift.attend_nightshift== 'Y'  %> selected="selected"<% end  %>>Y</option>
+                    <option value="N" <% if @selecMstShift && @selecMstShift.attend_nightshift== 'N'  %> selected="selected"<% end  %>>N</option>
+                  </select>
+                </div>
+
+             </div>
+               </div> <%
+                isStarted  = ""
+                isEndSatrt = ""
+                isStHrs    = ""
+                if @selecMstShift
+                  isStarted  = formatted_times(@selecMstShift.attend_shfintime)
+                  isEndSatrt = formatted_times(@selecMstShift.attend_shfout)
+                  isStHrs    = formatted_times(@selecMstShift.attend_shfhrs)
+                end
+               %>
+                              <div class="row m-t-5">
+             <div class="col-md-12 d-flex">
+                <div class="col-md-4 ">
+                 In Time <span class="mandatory">*</span>
+                   <input type="text" required onchange="validate_in_out_time(this.value,'attend_shfintime');" autocomplete="off"  class="form-control attend_shfintime" name="attend_shfintime" id="attend_shfintime" value="<% if @selecMstShift %><%=isStarted%><% end  %>"/>
+                </div>
+                <div class="col-md-4 txt_cntr">
+                 Out <span class="mandatory">*</span>
+                  <input type="text" required onchange="validate_in_out_time(this.value,'attend_shfout');" autocomplete="off"  class="form-control attend_shfout" name="attend_shfout" id="attend_shfout" value="<% if @selecMstShift %><%=isEndSatrt%><% end  %>"/>
+                </div>
+                 <div class="col-md-4 txt_cntr">
+                 Hrs<input type="text" placeholder="" required class="form-control" name="attend_shfhrs" id="attend_shfhrs" readonly="readonly" value="<% if @selecMstShift %><%=isStHrs%><% end  %>"/>
+               </div>
+              </div>
+                 </div>
+                              <br/>
+                            </div>
+                          <div class="col-md-4 box_shift1">
+                  <div id="center">
+<label class="cust_info1">Rest Time</label>
+ </div>
+                            <div class="row">
+             <div class="col-md-12 d-flex">
+                <div class="col-md-4">
+                 Out Time
+                 <input type="text" onchange="validate_in_out_time(this.value,'attend_outtime');" autocomplete="off"  class="form-control attend_starttime" name="attend_outtime" id="attend_outtime" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_outtime)%><% end  %>"/>
+                </div>
+
+                <div class="col-md-4 txt_cntr">
+                In Time
+                  <input type="text" onchange="validate_in_out_time(this.value,'attend_intime');" autocomplete="off"  class="form-control attend_endtime" name="attend_intime" id="attend_intime" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_intime)%><% end  %>"/>
+                </div>
+
+                <div class="col-md-4 txt_cntr">
+               Hours
+                 <input type="text" autocomplete="off" class="form-control" name="attend_runworking" id="attend_runworking" readonly="readonly" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_runworking)%><% end  %>"/>
+                </div>
+
+              </div>
+              </div>
+             <div id="center">
+             <label class="cust_info1">Half Day</label>
+              </div>
+              <div class="row ">
+             <div class="col-md-12 d-flex">
+                <div class="col-md-4 txt_cntr">
+                  Start
+                  <input type="text" onchange="validate_in_out_time(this.value,'attend_starttime');" autocomplete="off"   class="form-control attend_starttime" name="attend_starttime" id="attend_starttime" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_starttime)%><% end  %>"/>
+                </div>
+
+                <div class="col-md-4 txt_cntr">
+                 End Time
+                  <input type="text" onchange="validate_in_out_time(this.value,'attend_endtime');" autocomplete="off"   class="form-control attend_endtime m-b-5" name="attend_endtime" id="attend_endtime" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_endtime)%><% end  %>"/>
+                </div>
+
+                <div class="col-md-4 txt_cntr">
+                  Hours
+                   <input type="text" placeholder="" class="form-control" name="attend_endhours" id="attend_endhours" readonly="readonly" value="<% if @selecMstShift %><%=formatted_times(@selecMstShift.attend_endhours)%><% end  %>"/>
+                </div>
+
+             </div>
+              </div>
+                            </div>
+                            <div class="col-md-4 box_shift1">
+                    <div class="row  m-t-5">
+            <div class="col-md-9"> Mark as absent for working hours less</div>
+                <div class="col-md-3">  <input type="text" autocomplete="off"   class="form-control m-b-5" name="attend_absentforworking" value="<% if @selecMstShift %><%=@selecMstShift.attend_absentforworking%><% end  %>"/></div>
+
+               </div>
+              <div class="row">
+                 <div class="col-md-9">  Mark as HD Prest. for work hrs. < than</div>
+                <div class="col-md-3"> <input type="text" autocomplete="off"   class="form-control m-b-5" name="attend_presentforwork" value="<% if @selecMstShift %><%=@selecMstShift.attend_presentforwork%><% end  %>"/></div>
+
+              </div>
+              <div class="row">
+                 <div class="col-md-9">  Overtime hours allowed </div>
+                <div class="col-md-3">   <input type="text" autocomplete="off"    class="form-control m-b-5" name="attend_othhrsallowed" value="<% if @selecMstShift %><%=@selecMstShift.attend_othhrsallowed%><% end  %>"/></div>
+
+              </div>
+             <div class="row">
+                <div class="col-md-9"> Overtime deduction after hours</div>
+                <div class="col-md-3 m-b-5">  <input type="text" autocomplete="off"   class="form-control" name="attend_otdeductafterhrs" value="<% if @selecMstShift %><%=@selecMstShift.attend_otdeductafterhrs%><% end  %>"/></div>
+
+             </div>
+             <div class="row">
+
+               <div class="col-md-9"> Overtime deduction hours  </div>
+               <div class="col-md-3">    <input type="text" autocomplete="off"   class="form-control m-b-5" name="attend_otdeducthrs" value="<% if @selecMstShift %><%=@selecMstShift.attend_otdeducthrs%><% end  %>"/></div>
+
+             </div>
+                            </div>
+
+
+
+                          </div>
+
+
+
+                <div>
+
+                </div>
+                          <div class="row">
+                            <div class="col-md-4 box_shift1" >
+                            <div id="center">
+
+               <label class="cust_info1 mt10">Weekly Off </label>
+              </div>
+                              <div class="row">
+             <div class="col-md-12 d-flex">
+                <div class="col-md-2" >
+                  1st
+                </div>
+               <div class="col-md-4 ">
+                  <select class="form-control m-b-5" name="attend_ist">
+                 
+                  <option value="sun" <% if @selecMstShift && @selecMstShift.attend_ist =='sun' %>selected="selected"<% end  %>>Sun</option>
+                  <option value="mon" <% if @selecMstShift && @selecMstShift.attend_ist =='mon' %>selected="selected"<% end  %>>Mon</option>
+                  <option value="tue" <% if @selecMstShift && @selecMstShift.attend_ist =='tue' %>selected="selected"<% end  %>>Tue</option>
+                  <option value="wed" <% if @selecMstShift && @selecMstShift.attend_ist =='wed' %>selected="selected"<% end  %>>Wed</option>
+                  <option value="thu" <% if @selecMstShift && @selecMstShift.attend_ist =='thu' %>selected="selected"<% end  %>>Thu</option>
+                  <option value="fri" <% if @selecMstShift && @selecMstShift.attend_ist =='fri' %>selected="selected"<% end  %>>Fri</option>
+                  <option value="sat" <% if @selecMstShift && @selecMstShift.attend_ist =='sat' %>selected="selected"<% end  %>>Sat</option>
+                  </select>
+
+                </div>
+                  <div class="col-md-2" >
+                  2nd
+                </div>
+               <div class="col-md-4">
+                  <select class="form-control m-b-5" name="attend_2nd">
+                    <option value="sun" <% if @selecMstShift && @selecMstShift.attend_2nd =='sun' %>selected="selected"<% end  %>>Sun</option>
+                    <option value="mon" <% if @selecMstShift && @selecMstShift.attend_2nd =='mon' %>selected="selected"<% end  %>>Mon</option>
+                    <option value="tue" <% if @selecMstShift && @selecMstShift.attend_2nd =='tue' %>selected="selected"<% end  %>>Tue</option>
+                    <option value="wed" <% if @selecMstShift && @selecMstShift.attend_2nd =='wed' %>selected="selected"<% end  %>>Wed</option>
+                    <option value="thu" <% if @selecMstShift && @selecMstShift.attend_2nd =='thu' %>selected="selected"<% end  %>>Thu</option>
+                    <option value="fri" <% if @selecMstShift && @selecMstShift.attend_2nd =='fri' %>selected="selected"<% end  %>>Fri</option>
+                    <option value="sat" <% if @selecMstShift && @selecMstShift.attend_2nd =='sat' %>selected="selected"<% end  %>>Sat</option>
+                  </select>
+
+                </div>
+
+             </div>
+               </div>
+
+                            </div>
+
+
+
+                              <div class="col-md-4 box_shift1">
+                                
+                                         <div id="center">
+               <label class="cust_info1 mt10">Saturday Off </label>
+                 </div>
+                                  <div class="row">
+                 <div class="col-md-12 d-flex">
+
+
+                <div class="checkbox-list">
+                        <label class="checkbox-inline ml0">
+                        <input type="checkbox" name="attend_sat1st" <% if @selecMstShift && @selecMstShift.attend_sat1st =='Y' %>checked="checked"<% end  %> value="Y"/> 1st</label>
+                        <label class="checkbox-inline ml0">
+                        <input type="checkbox" name="attend_sat2nd" <% if @selecMstShift && @selecMstShift.attend_sat2nd =='Y' %>checked="checked"<% end  %> value="Y"/>2nd </label>
+                        <label class="checkbox-inline ml0">
+                        <input type="checkbox" name="attend_sat3rd" <% if @selecMstShift && @selecMstShift.attend_sat3rd =='Y' %>checked="checked"<% end  %> value="Y"/>3rd </label>
+                       <label class="checkbox-inline ml0">
+                       <input type="checkbox" name="attend_sat4th" <% if @selecMstShift && @selecMstShift.attend_sat4th =='Y' %>checked="checked"<% end  %> value="Y"/>4th </label>
+                       <label class="checkbox-inline ml0">
+                        <input type="checkbox" name="attend_sat5th" <% if @selecMstShift && @selecMstShift.attend_sat5th =='Y' %>checked="checked"<% end  %> value="Y"/>5th
+                       </label>
+                </div>
+                </div>
+                 </div>
+                                
+
+
+
+
+
+                              </div>
+
+                              <div class="col-md-4 box_shift1 ">
+                            
+             <div id="center">
+
+                  <label class="cust_info1 mt10">Saturday Half Day </label>
+                 </div>
+                <div class="row ">
+                  <div class="col-md-12">
+                    <div class="checkbox-list">
+                          <label class="checkbox-inline ml0">
+                          <input type="checkbox" name="attend_sathaf1st" <% if @selecMstShift && @selecMstShift.attend_sathaf1st =='Y' %>checked="checked"<% end  %>  value="Y"/> 1st</label>
+                          <label class="checkbox-inline ml0">
+                          <input type="checkbox" name="attend_sathaf2nd" <% if @selecMstShift && @selecMstShift.attend_sathaf2nd =='Y' %>checked="checked"<% end  %> value="Y"/>2nd </label>
+                          <label class="checkbox-inline ml0">
+                          <input type="checkbox" name="attend_sathaf3rd" <% if @selecMstShift && @selecMstShift.attend_sathaf3rd =='Y' %>checked="checked"<% end  %> value="Y"/>3rd </label>
+                          <label class="checkbox-inline ml0">
+                          <input type="checkbox" name="attend_sathaf4th" <% if @selecMstShift && @selecMstShift.attend_sathaf4th =='Y' %>checked="checked"<% end  %> value="Y"/>4th </label>
+                          <label class="checkbox-inline ml0">
+                          <input type="checkbox" name="attend_sathaf5th" <% if @selecMstShift && @selecMstShift.attend_sathaf5th =='Y' %>checked="checked"<% end  %> value="Y"/>5th </label>
+                       </div>
+                     </div>
+                    </div>
+                 
+                </div>
+                </div>
+<br/>
+ <input type="hidden"  class="form-control" name="compCode" value="<%=@compCodes%>"/>
+               <input type="hidden"  class="form-control" id="rootPath" value="<%=root_url%>"/>
+               
+                 <div class="submit-section m-b-5">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>attendance/shift_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+                   
+             
+           
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </div>
+                                         <!-- BEGIN PAGE CONTENT-->
+
+</div>
+                       </div>
+                       </div>
+                <% end %>
+		
+	</div>
+	<!-- /Page Content -->
+</div>

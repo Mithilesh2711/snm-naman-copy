@@ -1,0 +1,2 @@
+class TrnTempAdvanceLedger < ApplicationRecord
+end

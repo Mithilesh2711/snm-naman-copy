@@ -1,0 +1,2 @@
+class MstEducationalParameter < ApplicationRecord
+end

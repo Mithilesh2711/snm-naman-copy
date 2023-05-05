@@ -1,0 +1,208 @@
+<!-- BEGIN CONTAINER -->
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Setting
+			</h3-->
+			 <% if flash[:error] %>
+                             <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                               <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                               <%= flash[:error] %>
+                             </div>
+                            <% end %>
+			<%= render "layouts/breadcrumbs" %>
+				<div><a href="<%=root_url%>product/product_list"><img src="<%=root_url%>images/backtolist.png"/></a></div>
+
+				<div>&nbsp;</div>
+
+			<!------------------text Being-------------->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+				<div class="portlet">
+				<div class="portlet-body">
+				<div class="row">
+
+				    <div class="col-md-12">
+                                      <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+					<%= form_tag({:action=>'product_catalog_list'} ,:multipart=>true,:id=>'myForms' ) do  %>
+					<div class="row">
+					<div class="col-md-2">
+					Search
+					</div>
+					<div class="col-md-3">
+                                           <input type="text" class="form-control" placeholder="Enter product name or image title" name="searchproductname" id="searchproductname" value="<% if @tsearch %><%=@tsearch%><% end %>"/>
+                                        </div>					
+                                          <div class="col-md-1">
+					 <input type="image" src="<%=root_url%>images/search.png" class="search_new"/>
+					</div>
+                                          <div class="col-md-2">
+                                            <a href="javascript:;" title="Add Files/Images" data-toggle="modal" data-target="#myXCatlogModal">Attach File/Image</a>
+					</div>
+					</div>
+					<div>&nbsp;</div>
+					
+
+					
+
+					<% end %>
+
+  <div class="form-group clearfix"> &nbsp;</div> 
+  <hr></hr>
+  <div class="isotope-grid row">
+         <!-- Product Item Start -->
+            <%
+               if @ProductCatlog.length >0
+                   @ProductCatlog.each do |catalogs|
+              %>
+            <div class=" col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-50">
+                <div>
+                    <!-- Product Image -->
+                    <div class="product-img">
+                        <!-- Image -->
+                        <%
+                         if catalogs.pct_origin_img!=nil && catalogs.pct_origin_img!=''
+                        %>
+                        <a href="javascript:" data-lightbox="example-<%=catalogs.id%>" id="largeImgId_<%=catalogs.id%>">
+                          <img src="<%=root_url%>images/product/original/<%=catalogs.pct_origin_img%>" alt="<%=catalogs.pct_titles%>" title="<%=catalogs.pct_titles%>" width="100%"/>
+                        </a>
+                        <% else %>
+                        <a href="javascript:;" data-lightbox="example-<%=catalogs.id%>" id="largeImgId_<%=catalogs.id%>">
+                          <img src="<%=root_url%>images/product-no-image.jpg" alt="<%=catalogs.pct_titles%>" title="<%=catalogs.pct_titles%>" width="100%"/>
+                        </a>
+                        <% end %>
+                        
+                        <!-- Wishlist Button -->
+                        <a class="wishlist" href="javascript:;" title="Wishlist"><i class="pe-7s-like"></i></a>
+                        <!-- Action Button -->
+                    </div>
+                    <!-- Portfolio Info -->
+                    <div class="product-info text-left">
+                        <!-- Title -->
+                        <h5 class="title"><%=catalogs.pct_titles%></h5>
+                        <h5 class="title"><%=catalogs.pd_productname%></h5>
+                        
+                        <!-- Price Ratting -->
+                        <div class="price-ratting fix hidden">
+                            <span class="price float-left"><span class="new">INR<% if catalogs.pdmrps!=nil && catalogs.pdmrps!=''%> <%= '%.2f' % catalogs.pdmrps%><% else %>0.00<% end %></span></span>
+                            <span class="ratting float-right hidden">
+                                <i class="fa fa-star active"></i>
+                                <i class="fa fa-star active"></i>
+                                <i class="fa fa-star active"></i>
+                                <i class="fa fa-star active"></i>
+                                <i class="fa fa-star active"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+             <%
+              end
+              else
+            %>
+            <div class=" col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-50"><span class="hrms_flag"><strong>No Record(s) found.</strong></span></div>
+           <% end %>
+           
+	</div>
+        <div class="form-group clearfix">&nbsp;</div>
+        <div class="form-group clearfix" style="text-align:center;"><div><%= will_paginate(@ProductCatlog)%></div></div>
+        <div class="form-group clearfix">&nbsp;</div>
+        
+        
+       <!-- Product Item End -->
+          </div>
+       </div>
+
+     </div>
+     </div>
+  </div>
+  <!-- END SAMPLE TABLE PORTLET-->
+   </div>
+   </div>
+
+			<!------------------text End-------------->
+
+ </div>
+    
+
+
+ <!-- Modal  for Group-->
+  <div class="modal fade" id="myXCatlogModal" role="dialog">
+    <input type="hidden" id="productMasterId" value=""/>
+    <input type="hidden" id="productcatlogueId" value=""/>
+    <input type="hidden" id="prdcatlogstatus" value="Y"/>
+    <div class="modal-dialog">
+      <!-- Modal content-->
+       <div class="modal-content">
+         <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add File/Image</h4>
+          </div>
+        <div class="modal-body">
+          <div class="col-lg-12">
+                    <div class="form-group clearfix">
+                        <div class="col-md-4"><label>Product <span class="hrms_flag">[*]</span></label></div>
+                        <div class="col-md-6">
+                            <select class="form-control text_input_product" name="isproductId" id="isproductId">
+                              <option value="">-Select Product-</option>
+                              <%
+                               if @prdItems
+                                 @prdItems.each do |pditem|
+                              %>
+                              <option value="<%=pditem.id%>" <% if @prd_product.to_i ==pditem.id.to_i %> selected="selected"<% end %> ><%=pditem.pd_productname%></option>
+                              <% end end %>
+                            </select>
+                        </div>
+                      </div>
+                     <div class="form-group clearfix">
+                        <div class="col-md-4"><label>Upload Image <span class="hrms_flag">[*]</span></label></div>
+                        <div class="col-md-6">
+                            <input type="file" placeholder="" maxlength="60" required  id="datafile" name="datafile" class="datafile"/>
+                        </div>
+                      </div>
+                      
+                      <div class="form-group clearfix iscatalogueprev hidden">
+                        <div class="col-md-4 mrg-t-6">&nbsp;</div>
+                        <div class="col-md-6"><img src="" class="img-thumbnail" width="70px;" height="70px;" id="previewCompFile"/></div>
+                       </div>
+                       <div class="form-group clearfix">
+                        <div class="col-md-4"><label>Title <span class="hrms_flag">[*]</span></label></div>
+                        <div class="col-md-6">
+                            <input type="text" placeholder="" maxlength="60" required class="form-control"  id="fileTitles" name="fileTitles"/>
+                        </div>
+                      </div>
+                       <div class="form-group clearfix"> &nbsp;</div>
+			<div class="form-group clearfix">
+				<div class="col-md-10 col-xs-3 pull-left text-left hidden isproductXCatlog">Please wait..</div>
+                                <div class="col-md-3 col-xs-6 isNotproductXCatlog">
+                                  <a href="javascript:void(0);" onclick="createProductCatalogs();">
+					<img src="<%=root_url%>images/save.png"/>
+				   </a>
+                                </div>
+                                 <div class="col-md-3 col-xs-6">
+                                   <a href="javascript:void(0);" class="delete_items" data-dismiss="modal" onclick="isMasterProductCancel();">
+                                      <img src="<%=root_url%>images/cancel.png"/>
+				   </a>
+                                 </div>
+				</div>
+
+          </div>
+        </div>
+        <div class="form-group clearfix"> &nbsp;</div>
+        <div class="modal-footer">
+          &nbsp;
+        </div>
+      </div>
+
+    </div>
+  </div>
+<!-- End Modal-->

@@ -1,0 +1,293 @@
+<div id="facility" class="tab-pane fade">
+                                                  <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:facility ) do  %>
+							<div class="row">
+
+									<div class="col-md-12 d-flex">
+									<div class="card profile-box flex-fill">
+									<div class="card-body">
+											<h3 class="card-title">Office Information</h3>
+<div class="row d-flex">
+  <div class="col-md-6 hidden">
+   
+              <div class="form-group row ">
+          <label class="col-form-label col-md-6">LIC Group Saving Linked Insurance
+</label>
+          <div class="col-md-6">
+          <select class="form-control" name="so_licgroup" id="so_licgroup">
+            <option value="N" <%  if @empChecked && @empChecked.so_licgroup.to_s == 'N' %>selected="selected"<% end %>>N</option>
+            <option value="Y" <% if @empChecked && @empChecked.so_licgroup.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+            
+          </select>
+          </div>
+         
+
+
+                      </div>
+                          <div class="form-group row">
+        
+          <label class="col-form-label col-md-6">Group Health Insurance</label>
+          <div class="col-md-6">
+          <select class="form-control" name="so_healthinsurance" id="so_healthinsurance">
+            <option value="N" <% if @empChecked && @empChecked.so_healthinsurance.to_s == 'N' %>selected="selected"<% end %>>N</option>
+            <option value="Y" <% if @empChecked && @empChecked.so_healthinsurance.to_s == 'Y' %>selected="selected"<% end %>>Y</option>
+            
+          </select>
+          </div>
+          
+
+                      </div>
+                   
+                      
+  </div>
+  <div class="col-md-12 m-l-10">
+    <h3 class="m-l-10" >Aid</h3>
+     <div class="row form-group">
+
+ <div class="col-md-3 facility-box">
+                           <h3 class="box-title"> Education Aid</h3>
+                            <h3 class="box-title"></h3>
+                              <div class="row  m-t-5 d-flex">
+                        
+                            <div class="col-md-5">
+                              PF Y/N
+                            </div>
+                            <div class="col-sm-7">
+                               <input type="checkbox" placeholder=""  name="so_pf"  id="so_pf" value="Y" <%  if @empChecked && @empChecked.so_pf =='Y' %>checked="checked"<% end %>/>
+                            </div>
+                        
+                        </div>
+                        <div class="row d-flex m-t-5 ">
+                            <div class="col-md-5">
+                              PF No
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_pfno"  id="so_pfno"  value="<%  if @empChecked %><%=@empChecked.so_pfno%><% end %>"/>
+                            </div>
+                         
+                        </div>
+                         <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                            UAN
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" placeholder=""  class="form-control" name="so_uan"  id="so_uan"  maxlength="40" value="<%  if @empChecked %><%=@empChecked.so_uan%><% end %>"/>
+                            </div>
+                          </div>
+                        
+                         <div class="row m-t-5 d-flex">
+                          
+                            <div class="col-md-5">
+                              Extra PF
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="15" onkeypress="return isNumberFloatKey(event);" class="form-control" name="so_extrapf"  id="so_extrapf" value="<%  if @empChecked %><%=@empChecked.so_extrapf%><% end %>"/>
+                            </div>
+                     
+                        </div>
+                         <div class="row m-t-5 d-flex">
+                       
+                            <div class="col-md-5">
+                           Settlement Date
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="25" placeholder="" class="form-control" name="so_settmentdate"  id="so_settmentdate"   value="<%  if @empChecked %><%=format_oblig_date(@empChecked.so_settmentdate)%><% end %>"/>
+                            </div>
+                          </div>
+                     
+                          </div>
+                            <div class="col-md-3 facility-box m-t-10">
+                              <h3 class="box-title">Marriage Aid</h3>  
+                              <div class="row  m-t-5 d-flex">
+                        
+                            <div class="col-md-5">
+                              PF Y/N
+                            </div>
+                            <div class="col-sm-7">
+                               <input type="checkbox" placeholder=""  name="so_pf"  id="so_pf" value="Y" <%  if @empChecked && @empChecked.so_pf =='Y' %>checked="checked"<% end %>/>
+                            </div>
+                        
+                        </div>
+                        <div class="row d-flex m-t-5 ">
+                            <div class="col-md-5">
+                              PF No
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_pfno"  id="so_pfno"  value="<%  if @empChecked %><%=@empChecked.so_pfno%><% end %>"/>
+                            </div>
+                         
+                        </div>
+                         <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                            UAN
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" placeholder=""  class="form-control" name="so_uan"  id="so_uan"  maxlength="40" value="<%  if @empChecked %><%=@empChecked.so_uan%><% end %>"/>
+                            </div>
+                          </div>
+                        
+                         <div class="row m-t-5 d-flex">
+                          
+                            <div class="col-md-5">
+                              Extra PF
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="15" onkeypress="return isNumberFloatKey(event);" class="form-control" name="so_extrapf"  id="so_extrapf" value="<%  if @empChecked %><%=@empChecked.so_extrapf%><% end %>"/>
+                            </div>
+                     
+                        </div>
+                         <div class="row m-t-5 d-flex">
+                       
+                            <div class="col-md-5">
+                           Settlement Date
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="25" placeholder="" class="form-control" name="so_settmentdate"  id="so_settmentdate"   value="<%  if @empChecked %><%=format_oblig_date(@empChecked.so_settmentdate)%><% end %>"/>
+                            </div>
+                          </div>
+                     
+                          </div>
+     </div>
+    
+                         
+  </div>
+  <div class="col-md-12 m-l-10">
+    <h3>Facilities</h3>
+       <div class="row form-group">
+                         <div class="col-md-3 facility-box">
+                          <h3 class="box-title">LIC</h3>
+                              <div class="row  m-t-5 d-flex">
+                        
+                            <div class="col-md-5">
+                              PF Y/N
+                            </div>
+                            <div class="col-sm-7">
+                               <input type="checkbox" placeholder=""  name="so_pf"  id="so_pf" value="Y" <%  if @empChecked && @empChecked.so_pf =='Y' %>checked="checked"<% end %>/>
+                            </div>
+                        
+                        </div>
+                        <div class="row d-flex m-t-5 ">
+                            <div class="col-md-5">
+                              PF No
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_pfno"  id="so_pfno"  value="<%  if @empChecked %><%=@empChecked.so_pfno%><% end %>"/>
+                            </div>
+                         
+                        </div>
+                         <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                            UAN
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" placeholder=""  class="form-control" name="so_uan"  id="so_uan"  maxlength="40" value="<%  if @empChecked %><%=@empChecked.so_uan%><% end %>"/>
+                            </div>
+                          </div>
+                        
+                         <div class="row m-t-5 d-flex">
+                          
+                            <div class="col-md-5">
+                              Extra PF
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="15" onkeypress="return isNumberFloatKey(event);" class="form-control" name="so_extrapf"  id="so_extrapf" value="<%  if @empChecked %><%=@empChecked.so_extrapf%><% end %>"/>
+                            </div>
+                     
+                        </div>
+                         <div class="row m-t-5 d-flex">
+                       
+                            <div class="col-md-5">
+                           Settlement Date
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="25" placeholder="" class="form-control" name="so_settmentdate"  id="so_settmentdate"   value="<%  if @empChecked %><%=format_oblig_date(@empChecked.so_settmentdate)%><% end %>"/>
+                            </div>
+                          </div>
+                     
+                          </div>
+                           <div class="col-md-3 facility-box">
+                            <h3 class="box-title"> Group Insurance Policy</h3>
+                              <div class="row  m-t-5 d-flex">
+                        
+                            <div class="col-md-5">
+                              PF Y/N
+                            </div>
+                            <div class="col-sm-7">
+                               <input type="checkbox" placeholder=""  name="so_pf"  id="so_pf" value="Y" <%  if @empChecked && @empChecked.so_pf =='Y' %>checked="checked"<% end %>/>
+                            </div>
+                        
+                        </div>
+                        <div class="row d-flex m-t-5 ">
+                            <div class="col-md-5">
+                              PF No
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_pfno"  id="so_pfno"  value="<%  if @empChecked %><%=@empChecked.so_pfno%><% end %>"/>
+                            </div>
+                         
+                        </div>
+                         <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                            UAN
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" placeholder=""  class="form-control" name="so_uan"  id="so_uan"  maxlength="40" value="<%  if @empChecked %><%=@empChecked.so_uan%><% end %>"/>
+                            </div>
+                          </div>
+                        
+                         <div class="row m-t-5 d-flex">
+                          
+                            <div class="col-md-5">
+                              Extra PF
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="15" onkeypress="return isNumberFloatKey(event);" class="form-control" name="so_extrapf"  id="so_extrapf" value="<%  if @empChecked %><%=@empChecked.so_extrapf%><% end %>"/>
+                            </div>
+                     
+                        </div>
+                         <div class="row m-t-5 d-flex">
+                       
+                            <div class="col-md-5">
+                           Settlement Date
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="25" placeholder="" class="form-control" name="so_settmentdate"  id="so_settmentdate"   value="<%  if @empChecked %><%=format_oblig_date(@empChecked.so_settmentdate)%><% end %>"/>
+                            </div>
+                          </div>
+                     
+                          </div>
+                          
+                      </div>
+  </div>
+</div>
+
+
+
+
+
+					
+
+											
+									
+
+
+
+
+
+
+									
+												<div class="submit-section process_save">
+					<button onclick="process_sewadar_facility();" class="btn btn-primary submit-btn" type="button">Save & Next</button>
+                                        <button onclick="prvious_back_action('emp_kyc');" class="btn btn-success submit-btn m-l-5 " type="button">Previous</button>
+
+				</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+						<% end %>
+						</div>

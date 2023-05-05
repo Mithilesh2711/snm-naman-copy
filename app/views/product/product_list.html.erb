@@ -1,0 +1,357 @@
+<!-- BEGIN CONTAINER -->
+<div>
+	<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<!--h3 class="page-title">
+			Setting
+			</h3-->
+			<% if flash[:error] %>
+                             <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                               <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                               <%= flash[:error] %>
+                             </div>
+                            <% end %>
+			<%= render "layouts/breadcrumbs" %>
+			<%= form_tag({:action=>'product_list'} ,:multipart=>true,:id=>'myForms' ) do  %>
+                          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                          <input type="hidden" id="productServer" name="productServer" value=""/>
+                          <input type="hidden" name="prductparamId" id="prductparamId"/>
+                          <input type="hidden" id="itemsearchlength" value="<% if @psrchchar%><%=@psrchchar.schlength%><% end %>"/>
+                           <input type="hidden" name="productexeclurl" id="productexeclurl" value="<%=@newprintpath%>"/>
+			<!------------------text Being-------------->
+			  
+			
+
+
+			<!------------------text End-------------->
+
+
+
+<!-- BEGIN PAGE CONTENT-->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet">
+							<div class="portlet-body">
+
+							
+                                                          <div class="row">
+                                                              <div class="col-md-12">
+                                                                  <div class="col-md-1">
+                                                                   Search
+                                                                  </div>
+                                                                  <div class="col-md-3 myproductmasterboost">
+                                                                    <input type="text" placeholder="Enter Name or ProdCode" autocomplete="off" class="form-control text_input_product" name="searchproductcat" id="searchproductcat"  value="<% if @tsearches!='' %><%=@tsearches%><% end%>"/>
+                                                                    <span id="productSearched"></span>
+                                                                  </div>
+                                                                  <div class="col-md-3 myproductmasterboost">
+                                                                    <input type="text" placeholder="Enter Category Name" autocomplete="off" class="form-control" name="searchselproductcat" id="searchselproductcat"  value="<% if @tcatsrch!='' %><%=@tcatsrch%><% end%>"/>
+                                                                  </div>
+                                                                  <div class="col-md-2">
+                                                                    <select class="form-control"  name="pbbrandname" id="pbbrandname">
+                                                                      <option value="">-Brand-</option>
+                                                                      <%
+                                                                      if @isBrand.length >0
+                                                                       @isBrand.each do |brds|
+                                                                      %>
+                                                                      <option value="<%=brds.pb_brandname%>" <% if @pbbrandname!=nil && @pbbrandname == brds.pb_brandname %>selected<% end %>><%=brds.pb_brandname%></option>
+                                                                      <% end end %>
+                                                                    </select>
+                                                                  </div>
+                                                                <div class="col-md-1 col-xs-2">
+                                                                  <a href="javascript:;" onclick="product_master_searching();">
+                                                                     <img src="<%=root_url%>images/search.png" class="search_new"/>
+                                                                  </a>
+                                                                  </div>
+                                                                <div class="col-md-1 col-xs-4">
+                                                                  <a href="<%=root_url%>product/list_product_refresh" class="btn btn-xs btn-success">
+                                                                    View All
+                                                                 </a>
+                                                                </div>
+                                                             
+                                                                <div class="col-md-2 col-xs-2">
+                                                                  <a href="<%=root_url%>product/product_master">
+                                                                    <img src="<%=root_url%>images/addlist.png"/>
+                                                                 </a>
+                                                                </div>
+                                                               
+
+                                                              </div>
+				                         </div>
+                                                          <div class="row">
+                                                              <div class="col-md-12">
+                                                                <div class="col-md-1">&nbsp;</div>
+                                                                <div class="col-md-3">
+                                                                    <input type="text" placeholder="Enter model no" autocomplete="off" class="form-control text_input_product" name="modelnumvers" id="modelnumvers"  value="<% if @modelnumvers!='' %><%=@modelnumvers%><% end%>"/>
+                                                                   
+                                                                  </div>
+                                                                <div class="col-md-3">
+                                                                    <select class="form-control text_input_product" name="products_type" id="products_type">
+                                                                      <option value="">-Select Product Type-</option>
+                                                                      <%
+                                                                        if @prodTypeLst.length >0
+                                                                          @prodTypeLst.each do |newpdtype|
+                                                                      %>
+                                                                      <option value="<%=newpdtype.id%>" <% if @products_type && @products_type.to_i == newpdtype.id.to_i %>selected="selected"<% end %>><%=newpdtype.pt_description%></option>
+                                                                      <%
+                                                                        end
+                                                                      end
+                                                                     %>
+                                                                    </select>
+
+                                                                  </div>
+                                                                  <div class="col-md-3">
+                                                                    <input type="checkbox" name="mysuppliers" id="mysuppliers" <% if @mysuppliers!=nil && @mysuppliers!='' %>checked="checked" <% end %>   value="Y"/>No Updated Supplier
+                                                                  </div>
+                                                              </div>
+                                                          </div>
+                                                              <div class="row">
+              <div class="col-md-12 col-xs-12">
+                <div class="row">
+                  <div class="col-md-3  col-xs-5">
+                    <input type="radio" name="isBigImage" id="isBigImage3" value="SIMG" checked="checked"></input>&nbsp;<label>Small Images</label>
+                  </div>
+                      <div class="col-md-2  col-xs-7">
+                  <input type="radio" name="isBigImage" id="isBigImage2" value="BIMG"></input>&nbsp;<label>Big Images</label>
+                  </div>
+                   <div class="col-md-3  col-xs-4">
+                    <a href="javascript:void(0);" class="btn btn-xs btn-success"  onclick="get_product_image_pdf();">Show Catalogue</a>
+                </div>
+                  <%
+                   if @product.length >0
+                 %>
+                  
+                  <div class="col-md-2  col-xs-3">
+                    <a href="javascript:void(0);" class="btn btn-xs"  onclick="productlist_to_download_excel();"><img class="top_space_button" src="<%=root_url%>images/excel.png"/></a>
+                </div>
+                  <% end %>
+                </div>
+                
+                                                         
+							<div style="overflow-x: auto;">
+							
+								<table class="table table-hover col-md-12">
+								<thead>
+								<tr class="head_table">
+									<th>
+										SL. No.
+									</th>
+
+									<th>
+									       Prod. Model
+									</th>
+                                                                        <th>
+									       Prod. Code
+									</th>
+									<th>
+									      Product Name
+									</th>
+
+                                                                        <th>
+									       Category
+									</th>
+                                                                       
+                                                                        <th>
+									       Brand
+									</th>
+                                                                         <th>
+									       Product type
+									</th>
+                                                                         <th>
+										MRP
+									</th>
+                                                                        <th>
+									     Purchase Rate
+									</th>                                                                   
+                                                                        <th>
+									    Weight
+									</th>
+                                                                        <th>
+                                                                              Stock
+									</th>
+                                                                        
+                                                                        <th>
+										TAX Inc.
+									</th>
+                                                                        <th class="hidden">
+										Buyer RefNo.
+									</th>
+                                                                        <th class="hidden">
+										Supplier
+									</th>
+                                                                        <th class="hidden">
+										BarcodePrint
+									</th>
+                                                                        
+                                                                        <th>
+										Image
+									</th>
+
+                                                                        <th colspan="2">
+									Action
+									</th>
+								</tr>
+								</thead>
+								<tbody>
+								<%
+                                                                pagestart = params[:page] ? params[:page] : 1
+                                                                if pagestart.to_i <=1
+                                                                  i = 1
+                                                                else
+                                                                  i = ((pagestart.to_i-1)*10)+1
+                                                                  i = i.to_i
+                                                                end
+                                                                
+                                                                if @product.length >0
+                                                                 @product.each do | pds |
+                                                                %>
+									<tr>
+									<td id="center" width="5%">
+									<%=i%>
+									</td>
+                                                                        <td width="7%">
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=pds.pd_modelno%>
+                                                                          </a>
+									</td>
+                                                                        <td width="7%">
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=pds.pd_productcode%>
+                                                                          </a>
+									</td>
+                                                                        <td>
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=pds.pd_productname.to_s.capitalize%>
+                                                                          </a>
+									</td>
+                                                                        <td>
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=pds.pc_categoryname.to_s.capitalize%>
+                                                                          </a>
+									</td>
+                                                                        <td>
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=pds.pb_brandname.to_s.capitalize%>
+                                                                          </a>
+									</td>
+                                                                          <%
+                                                                          prodtypesnm = ""
+                                                                          prdobjsx = get_product_types(pds.pd_compcode,pds.pd_prodtype)
+                                                                          if prdobjsx
+                                                                            prodtypesnm = prdobjsx.pt_description
+                                                                          end
+                                                                         %>
+                                                                        <td>
+                                                                          <a href="<%=root_url%>product/product_master/<%=pds.id%>">
+									     <%=prodtypesnm%>
+                                                                          </a>
+									</td>
+                                                                       <td align="right">
+									<%="%.2f" % pds.pd_mrps.to_f%>
+									</td>
+                                                                        <td align="right">
+									    <%="%.2f" % pds.pd_purchaserate.to_f%>
+									 </td>                                                                    
+                                                                        <td align="right">
+									    <%=pds.pd_weight%>
+									 </td>
+                                                                        <td>
+                                                                          <%
+                                                                          pds.cb_closing_bal!=nil && pds.cb_closing_bal!='' ? pds.cb_closing_bal  : 0
+                                                                          %>
+									<%=currency_formatted(pds.cb_closing_bal)%>
+                                                                        
+									</td>
+                                                                        
+                                                                        <td id="center" >
+									<%=pds.pd_taxtincyesno%>
+									</td>
+                                                                        <td id="center" class="hidden">
+									<%=pds.pd_refer_no%>
+									</td>
+                                                                        <td id="center" class="hidden">
+                                                                          <%
+                                                                          supname =''
+                                                                           custobj =  get_supplier_name(@compcodes,pds.pd_po_supplier)
+                                                                           if custobj
+                                                                             supname = custobj.cs_customername
+                                                                           end
+                                                                         %>
+									<%=supname%>
+									</td>
+                                                                        
+                                                                        <td id="center" class="hidden">
+                                                                          <%
+                                                                            if pds.pd_barcode !=nil && pds.pd_barcode != ''
+                                                                          %>
+									<a href="javascript:;" onclick="print_product_barcode_detail('<%=pds.id%>','<%=@paths%>');">Print</a>
+                                                                        <% else %>
+                                                                        ----
+                                                                        <% end %>
+									</td>
+
+									<td id="productCatalogs_<%=pds.id%>" id="center">
+									 <% if pds.images!='' && pds.images!=nil %>
+                                                                          <a   class="example-image-link" data-lightbox="example-1" href="<%=root_url%>images/product/original/<%=pds.images%>" >
+                                                                            <img src="<%=root_url%>images/product/thumb/<%=pds.images%>" title="<%=pds.pd_productname%>"/>
+                                                                          </a>
+                                                                        <% else %>
+                                                                         NA
+                                                                        <% end %>
+									</td>
+
+									<td id="center">
+                                                                          <%
+                                                                        if   session[:autherizedUserType] !='sales' &&  session[:autherizedUserType]!='user'
+                                                                       %>
+									<a href="<%=root_url%>product/product_master/<%=pds.id%>"><i class="fa fa-pencil-square-o edit hrmsfonts_size" aria-hidden="true"></i></a>
+                                                                       <% end %>
+                                                                        </td>
+                                                            <td>
+                                                               <%
+                                                                if   session[:autherizedUserType] !='sales' &&  session[:autherizedUserType]!='user'
+                                                               %>
+                                                              <a href="javascript:void(0);" rel="<%=root_url%>product/product_master/<%=pds.id%>/deletes" onclick="confirmDeletion(this);"><i class="fa fa-trash-o delete hrmsfonts_size" aria-hidden="true"></i></a>
+                                                              <% end %>
+                                                            </td>
+
+								</tr>
+								<%
+                                                                i +=1
+                                                                end
+                                                                else
+                                                                %>
+                                                                <tr><td>No Records Found</td>
+									</tr>
+									<% end %>
+								</tbody>
+								</table>
+							     <div align="center"><%= will_paginate(@product)%></div>
+                                                          <!-- END SAMPLE TABLE PORTLET-->
+                                                        
+                                                           </div>
+							  </div>
+							</div>
+						     </div>
+					         </div>
+
+				    </div>
+                        <% end %>
+			</div>
+
+			<!-- END PAGE CONTENT-->
+		</div>
+	</div>
+        </div>
+</div>
+	<!-- END CONTENT -->
+
+

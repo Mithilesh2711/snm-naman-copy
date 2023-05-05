@@ -1,0 +1,435 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Apply Advance/ MA Advance  </h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="al_sewdarname" id="al_sewdarname" value=""/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                 <input type="hidden"  id="workingyears" value=""/>
+                 <input type="hidden" id="checkcategory" name="checkcategory" value="<% if @reqcategory %><%=@reqcategory%><% end %>"/>
+                <input type="hidden"  id="al_requestno" name="al_requestno" value="<% if @LoanRequest %><%=@LoanRequest.al_requestno%><% end %>"/>
+                
+                <input type="hidden" name="oldadvance" id="oldadvance" value="<% if @LoanRequest %><%=@LoanRequest.al_advanceamt%><% end %>"/>
+                <input type="hidden" name="oldloanamt" id="oldloanamt" value="<% if @LoanRequest %><%=@LoanRequest.al_loanamount%><% end %>"/>
+                 <input type="hidden" name="mid" id="mid" value="<% if @LoanRequest %><%=@LoanRequest.id%><% end %>"/>
+
+                 <input type="hidden" name="currfilefirst" id="currfilefirst" value="<% if @LoanRequest %><%=@LoanRequest.al_attachfirst%><% end %>"/>
+                 <input type="hidden" name="currfilesecond" id="currfilesecond" value="<% if @LoanRequest %><%=@LoanRequest.al_attchsec%><% end %>"/>
+                 <input type="hidden" name="currfilethird" id="currfilethird" value="<% if @LoanRequest %><%=@LoanRequest.al_attachthird%><% end %>"/>
+                 <input type="hidden" name="currfilefour" id="currfilefour" value="<% if @LoanRequest %><%=@LoanRequest.al_guarantorattach%><% end %>"/>
+                  <input type="hidden" name="esstypes" id="esstypes" value="<% if session[:requestuser_loggedintp] %><%=session[:requestuser_loggedintp]%><% end %>"/>
+              <input type="hidden" class="form-control blue_bg " autocomplete="off" onkeypress="return isNumberFloatKey(event);"   name="al_loanamount" id="al_loanamount" value="<% if @LoanRequest %><%=@LoanRequest.al_loanamount%><% end %>"/>
+    <%
+        mygurantor      = "hidden"
+        isrequired      = ""
+        rqfile          = ""
+        chkextpurp      = "hidden"
+        chkexgtext      = ""
+        displaystatus   = "none"
+        nodisplaystatus = ""
+        if @LoanRequest
+            if @LoanRequest.al_requesttype.to_s == 'Advance Above 60k' || @LoanRequest.al_requesttype.to_s == 'Loan'
+                  sewdobjs   = get_mysewdar_list_details(@LoanRequest.al_sewadarcode)
+                  if sewdobjs
+                      if sewdobjs.sw_catcode=='VIT'
+                        mygurantor = ""
+                        isrequired = "required"  
+                        rqfile     = "required"                        
+                      end
+                  end
+                  if @LoanRequest.al_guarantorattach !=nil && @LoanRequest.al_guarantorattach !=''
+                    rqfile =""                   
+                  end 
+                  displaystatus   = ""
+                  nodisplaystatus = "none"
+            end 
+            if @LoanRequest.al_requesttype.to_s == 'Ex-gratia'
+               chkextpurp = ""
+               chkexgtext = "hiiden"
+            end
+             if @LoanRequest.al_requesttype.to_s == 'Wheat Advance'
+                  displaystatus   = ""
+                  nodisplaystatus = "none"
+             end
+        end
+        if @LoanRequest
+            if @LoanRequest.al_installpermonth.to_f >0
+                   displaystatus   = ""
+            end
+
+        end
+    %>
+    <div class="row">
+      <div class="col-md-12 d-flex">
+      
+       <div class="col-md-9">
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">Sewadar Department <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required name="al_depcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+              <%
+              if @sewDepart && @sewDepart.length >1
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @LoanRequest && @LoanRequest.al_depcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+                     </div>
+          
+           <label class="col-form-label col-md-3">Request Type<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required onchange="process_chekout_loans(this.value);<% if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'%>get_all_sewadar_by_department();<% end %>" name="al_requesttype" id="al_requesttype">
+              <option value="">Select</option>
+              <option value="Loan" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Loan'%>selected="selected"<% end %>>Advance upto 60k </option>
+              <option value="Advance" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Advance'%>selected="selected"<% end %>>MA Advance</option>
+              <%
+                if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+              %>
+              <option value="Advance Above 60k" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Advance Above 60k'%>selected="selected"<% end %>>Advance Above 60k</option>
+              <option value="Ex-gratia" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Ex-gratia'%>selected="selected"<% end %>>Ex-gratia</option>
+              <option value="Special Advance" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Special Advance'%>selected="selected"<% end %>>Special Advance</option>
+              <option value="Wheat Advance" <% if @LoanRequest && @LoanRequest.al_requesttype.to_s == 'Wheat Advance'%>selected="selected"<% end %>>Wheat Advance</option>
+              
+              <% end %>
+            
+            
+            </select> </div>
+        
+        </div>
+          <div class="form-group row">
+          <label class="col-form-label col-md-3">Sewadar Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" required name="al_sewadarcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+             
+              <%
+               if @Allsewobj && @Allsewobj.length >1
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+                     </div>
+          <label class="col-form-label col-md-3">Sewadar Name <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                           <select required class="form-control" name="sewdarname" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+              <%
+              if @Allsewobj && @Allsewobj.length >0
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+            </select> </div>
+        
+        </div>
+
+        <% 
+        advanceamt = 0
+          if @LoanRequest
+            advanceamt = @LoanRequest.al_advanceamt.to_f+@LoanRequest.al_loanamount.to_f
+          end 
+        %>
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">Request Date <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <input type="text" required class="form-control" autocomplete="off" readonly name="al_requestdate" id="al_requestdate" value="<% if @LoanRequest %><%=format_oblig_date(@LoanRequest.al_requestdate)%><% else %><%=format_oblig_date(Date.today)%><% end %>"/>
+                     </div>
+        </div>
+                <div class="form-group row">
+          <label class="col-form-label col-md-3">Amount <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <input type="text" class="form-control blue_bg" required onkeypress="return isNumberFloatKey(event);" autocomplete="off"  name="al_advanceamt" id="al_advanceamt" value="<% if @LoanRequest %><%=@LoanRequest.al_advanceamt%><% end %>"/>
+                     </div>
+                <label class="col-form-label col-md-3 my_loanamt" style="display:<%=displaystatus%>;">Installment Per Month <span class="mandatory">*</span></label>
+          <div class="col-md-3 my_loanamt" style="display:<%=displaystatus%>;">
+            <input type="text" class="form-control" autocomplete="off" onkeypress="return isNumberFloatKey(event);"   name="al_installpermonth" id="al_installpermonth" value="<% if @LoanRequest %><%=@LoanRequest.al_installpermonth%><% end %>"/>
+                     </div>                          
+        
+        </div>  
+          
+                        <div class="form-group row">
+                        <%
+                          if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr'
+                        %>
+                      <label class="col-form-label col-md-3">Remarks</label>
+                        <div class="col-md-3">
+                          <textarea class="form-control" maxlength="255" rows="2" cols="2" name="al_remark" id="al_remark"><% if @LoanRequest %><%=@LoanRequest.al_remark%><% end %></textarea>
+                        </div>
+                        <%
+                         else
+                        %>
+                        <input type="hidden" name="al_remark" id="al_remark" value="<% if @LoanRequest %><%=@LoanRequest.al_remark%><% end %>"/>
+                        <% end %>
+          <label class="col-form-label col-md-3">Purpose <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <input type="text" class="form-control <%=chkexgtext%>" required  maxlength="120"  name="al_purpose" id="al_purpose" value="<% if @LoanRequest %><%=@LoanRequest.al_purpose%><% end %>"/>
+               
+               <select class="form-control <%=chkextpurp%>" id="other_purpose" name="other_purpose">
+                    <option value="">-Select-</option>
+                    <option value="Purchase of plot/built up house for residential use" <% if  @LoanRequest && @LoanRequest.al_purpose.to_s =='Purchase of plot/built up house for residential use'%>seelcted<% end%> >Purchase of plot/built up house for residential use</option>
+                    <option value="Construction of residential house" <% if  @LoanRequest && @LoanRequest.al_purpose.to_s =='Construction of residential house'%>seelcted<% end%>>Construction of residential house</option>
+                    <option value="Marriage/Remarriage of children" <% if  @LoanRequest && @LoanRequest.al_purpose.to_s =='Marriage/Remarriage of children'%>seelcted<% end%>>Marriage/Remarriage of children</option>
+                    <option value="Higher Education of Children" <% if  @LoanRequest && @LoanRequest.al_purpose.to_s =='Higher Education of Children'%>seelcted<% end%>>Higher Education of Children</option>
+                    <option value="Major Operation/Surgery of self or family member" <% if  @LoanRequest && @LoanRequest.al_purpose.to_s =='Major Operation/Surgery of self or family member'%>seelcted<% end%>>Major Operation/Surgery of self or family member</option>
+              </select>
+            </div>
+        </div> 
+      <div class="form-group row">
+           <label class="col-form-label info col-md-3">Attachment 1<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Upload School Verification Form" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-3">
+						<input type="file" name="ama_attachfirst" id="ama_attachfirst"/>
+              <% if  @LoanRequest &&  @LoanRequest.al_attachfirst != nil &&  @LoanRequest.al_attachfirst != '' %>
+                &nbsp;<a href="<%=root_url%>images/advance/a1/<%= @LoanRequest.al_attachfirst%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3">
+					 	<input type="text" class="form-control" placeholder="attach1" name="ama_titlefirst" id="ama_titlefirst" value="<% if @LoanRequest%><%=@LoanRequest.al_atttitlefirst%><% end %>"/>
+					 </div>
+            <div class="col-md-3 m-l-5">
+            
+					 	   
+	          </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-3">Attachment 2<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Fee Receipt For Higher Education" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-3">
+						<input type="file" name="ama_attachsecond" id="ama_attachsecond"/>
+            <% if @LoanRequest && @LoanRequest.al_attchsec != nil && @LoanRequest.al_attchsec != '' %>
+                &nbsp;<a href="<%=root_url%>images/advance/a2/<%=@LoanRequest.al_attchsec%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3">
+					 	<input type="text" class="form-control" placeholder="attach2" name="ama_tiitlesec" id="ama_tiitlesec" value="<% if @LoanRequest%><%=@LoanRequest.al_attachtilesec%><% end %>"/>
+					 </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-3">Attachment 3<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Add other documents" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-3">
+						<input type="file" name="ama_attachthird" id="ama_attachthird"/>
+            <% if @LoanRequest && @LoanRequest.al_attachthird != nil && @LoanRequest.al_attachthird != '' %>
+                &nbsp;<a href="<%=root_url%>images/advance/a3/<%=@LoanRequest.al_attachthird%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3">
+					 	<input type="text" class="form-control" placeholder="Add other documents" name="ama_titlethird" id="ama_titlethird" value="<% if @LoanRequest%><%=@LoanRequest.al_attachtitlethird%><% end %>"/>
+					 </div>
+					 </div>
+
+           <div class="form-group row myguarantor <%=mygurantor%>">
+           <label class="col-form-label info col-md-2">Attach. Guarantor<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Add other documents" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" <%=rqfile%> name="al_guarantorattach" id="al_guarantorattach"/>
+            <% if @LoanRequest && @LoanRequest.al_guarantorattach != nil && @LoanRequest.al_guarantorattach != '' %>
+                &nbsp;<a href="<%=root_url%>images/advance/a4/<%=@LoanRequest.al_guarantorattach%>" target="_blank">View Attached</a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Add Guarantor" name="al_guarantortitle" id="al_guarantortitle" value="<% if @LoanRequest%><%=@LoanRequest.al_guarantortitle%><% end %>"/>
+					 </div>
+
+            <div class="col-md-3 m-l-5">
+					 	<a href="<%=root_url%>images/guarantor_form.pdf" target="_blank" >Download Guarantor Form</a>
+					 </div>
+
+					 </div>
+          <div class="form-group row myguarantor <%=mygurantor%>">
+           <label class="col-form-label info col-md-2">Guarantor Department</label>
+					<div class="col-md-3">
+               <select class="form-control" <%=isrequired%> name="al_guarantordept" id="al_guarantordept" onchange="get_all_sewadar_by_guarantor();">
+              <%
+              if @GuarantDepart && @GuarantDepart.length >1
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @GuarantDepart && @GuarantDepart.length >0
+                @GuarantDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @LoanRequest && @LoanRequest.al_depcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	Guarantor Name
+					 </div>
+
+            <div class="col-md-3 m-l-5">
+              <select <%=isrequired%> class="form-control" name="al_guarantorname" id="al_guarantorname">
+              <%
+              if @AllGuarnt && @AllGuarnt.length >0
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @AllGuarnt && @AllGuarnt.length >0
+                @AllGuarnt.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+					 </div>
+
+					 </div>
+
+       </div>  
+       
+       <div class="col-md-3">
+         <div class="card flex-fill">
+                  
+                  <div class="card-body" style="background:azure;">
+                  <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Category
+</div>
+<div class="col-md-5 lbl_value my_category">
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Department
+</div>
+<div class="col-md-5 lbl_value my_dpeartmentname">
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">Date of Joining
+</div>
+<div class="col-md-5 lbl_value myjoining_dated">
+</div>
+
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name ">Total Year of Working
+</div>
+<div class="col-md-5 lbl_value mytotalworking_year">
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">Total Outstanding
+</div>
+<div class="col-md-5 lbl_value mytotalout_standing">
+</div>
+                    </div>
+<div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">EMI
+</div>
+<div class="col-md-5 lbl_value mytotalemi_standing">
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">Date of Regularization
+</div>
+<div class="col-md-5 lbl_value mydate_regularization">
+</div>
+                    </div>
+                    <div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">Date of Superannuation
+</div>
+<div class="col-md-5 lbl_value dateof_superannuation">
+</div>
+                    </div>
+<div class="row m-b-5">
+                      <div class="col-md-7 lbl_name">No. of Sewa years remaining
+</div>
+<div class="col-md-5 lbl_value my_superannuation">
+</div>
+                    </div>
+
+                    
+
+  
+                  
+                  </div>
+                  
+                </div>
+       </div> 
+          
+         
+
+        </div>
+          <% 
+          processapproived = ""
+          button = "Save"
+            if  @LoanRequest
+            button ="Update"
+               if  @LoanRequest.al_hod_status == 'A' || @LoanRequest.al_approvestatus == 'A'  || @LoanRequest.al_approvestatus == 'C' || @LoanRequest.al_approvestatus == 'R'  || @LoanRequest.al_approvestatus == 'H' 
+                   processapproived ="hidden"
+                end
+              end
+              hideshowexemption = "hidden"
+              if @LoanRequest && ( @LoanRequest.al_exmpaccomodation.to_s == 'Y' || @LoanRequest.al_exmptotalsewa.to_s == 'Y' )
+                hideshowexemption = ""
+              end
+          %>
+          <div class="form-group row process_exgratiadata <%=hideshowexemption%>">
+          <div class="col-md-12 d-flex">
+            <div class="col-md-5">
+                <input type="checkbox" onclick="check_loan_advan_skip();" <% if @LoanRequest && @LoanRequest.al_exmpaccomodation.to_s == 'Y'%>checked<% end %> name="myexemptionexgratia" id="myexemptionexgratia" value="Y"/>&nbsp; Exemption for manadal accomodation
+            </div>
+             <div class="col-md-3">
+                   <input type="checkbox" onclick="check_loan_advan_skip();" <% if @LoanRequest && @LoanRequest.al_exmptotalsewa.to_s == 'Y'%>checked<% end %>  name="myexemptionsewa" id="myexemptionsewa" value="Y"/>&nbsp; Exemption for total sewa
+                 </div>
+                 <div class="col-md-3">
+                     Exemption Remark 
+                 </div>
+                   <div class="col-md-3">
+                   <input type="text" class="form-control"  name="exemptionremark" id="exemptionremark" value="<% if @LoanRequest%><%=@LoanRequest.al_exmpreamrk%><% end %>">
+                 </div>
+           </div> 
+       </div>
+       
+        <div class="submit-section col-md-12 process_save ">
+          <button class="btn btn-primary submit-btn <%=processapproived%>" onclick="check_validities();"><%=button%></button>
+          <a href="<%=root_url%>loans_advance/loans_advance_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+        </div>
+      </div>
+                <% end %>
+    </div>
+  </div>
+  <!-- /Page Content -->

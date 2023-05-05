@@ -1,0 +1,2 @@
+module AccomodationHelper
+end

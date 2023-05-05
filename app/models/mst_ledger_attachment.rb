@@ -1,0 +1,2 @@
+class MstLedgerAttachment < ApplicationRecord
+end

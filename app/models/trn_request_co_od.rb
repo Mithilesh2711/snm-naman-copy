@@ -1,0 +1,2 @@
+class TrnRequestCoOd < ApplicationRecord
+end

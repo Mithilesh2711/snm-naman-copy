@@ -1,0 +1,349 @@
+<div id="maintain" class="tab-pane fade">
+<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:maintain ) do  %>
+<div class="row">
+<div class="col-md-12 d-flex">
+<div class="card profile-box flex-fill">
+<div class="card-body">
+<div class="row">
+
+	<div class="form-group row m-t-10">
+                          <div class="col-md-12 d-flex ">
+                          	 <div class="col-md-4">
+                          <div class="table-responsive">
+                    <table class="table new_table table-bordered mb-0">
+
+                        <tr>
+                          <th width="130px">M.A/Basic</th>
+                                                                                                        <th><input type="text" style="text-align:right;"  onkeypress="return isNumberFloatKey(event);" onkeyup="basic_hra_calculation();" class="form-control-sm" name="so_basic" id="so_basic" value="<%  if @empChecked %><%=currency_formatted(@empChecked.so_basic)%><% end %>"/></th>
+
+                        </tr>
+                      <tr>
+                          <th>HRA</th>
+                          <th><input type="text" style="text-align:right;" onkeypress="return isNumberFloatKey(event);" onkeyup="basic_hra_calculation();" class="form-control-sm" name="so_hra" id="so_hra" value="<%  if @empChecked %><%=currency_formatted(@empChecked.so_hra)%><% end %>"/></th>
+
+                        </tr>
+                        <tr>
+                          <th>Conveyance</th>
+                          <th><input type="text" style="text-align:right;" onkeypress="return isNumberFloatKey(event);" onkeyup="basic_hra_calculation();" class="form-control-sm" name="so_conveyance" id="so_conveyance" value="<%  if @empChecked %><%=currency_formatted(@empChecked.so_conveyance)%><% end %>"/></th>
+
+                        </tr>
+                    <tr>
+                          <th>Total Gross</th>
+                          <th><input readonly="" style="text-align:right;" type="text"  class="form-control-sm" name="so_totalgross" id="so_totalgross" style="background: #ffff002b;" value="<%  if @empChecked %><%=currency_formatted(@empChecked.so_totalgross)%><% end %>"/></th>
+
+                        </tr>
+                    </table>
+                  </div>
+                        </div>
+                             <div class="col-md-3 box2">
+                              <div class="row  m-t-5 d-flex">
+                        
+                            <div class="col-md-5">
+                              PF Y/N
+                            </div>
+                            <div class="col-sm-7">
+                               <input type="checkbox" placeholder=""  name="so_pf"  id="so_pf" value="Y" <%  if @empChecked && @empChecked.so_pf =='Y' %>checked="checked"<% end %>/>
+                            </div>
+                        
+                        </div>
+                        <div class="row d-flex m-t-5 ">
+                            <div class="col-md-5">
+                              PF No
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_pfno"  id="so_pfno"  value="<%  if @empChecked %><%=@empChecked.so_pfno%><% end %>"/>
+                            </div>
+                         
+                        </div>
+                         <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                            UAN
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" placeholder=""  class="form-control" name="so_uan"  id="so_uan"  maxlength="40" value="<%  if @empChecked %><%=@empChecked.so_uan%><% end %>"/>
+                            </div>
+                          </div>
+                        
+                         <div class="row m-t-5 d-flex">
+                          
+                            <div class="col-md-5">
+                              Extra PF
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="15" onkeypress="return isNumberFloatKey(event);" class="form-control" name="so_extrapf"  id="so_extrapf" value="<%  if @empChecked %><%=@empChecked.so_extrapf%><% end %>"/>
+                            </div>
+                     
+                        </div>
+                         <div class="row m-t-5 d-flex">
+                       
+                            <div class="col-md-5">
+                           Settlement Date
+                            </div>
+                            <div class="col-sm-7">
+                              <input type="text" maxlength="25" placeholder="" class="form-control" name="so_settmentdate"  id="so_settmentdate"   value="<%  if @empChecked %><%=format_oblig_date(@empChecked.so_settmentdate)%><% end %>"/>
+                            </div>
+                          </div>
+                     
+                          </div>
+                           <div class="col-md-3 box3">
+                            <div class="row d-flex m-t-5">
+                        
+                            <div class="col-md-5 ">
+                            ESI Y/N
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="checkbox"  placeholder=""  name="so_esi"  id="so_esi" value="Y" <%  if @empChecked && @empChecked.so_esi =='Y' %>checked="checked"<% end %> />
+                            </div>
+                          </div>
+                       
+                        <div class="row d-flex m-t-5">
+                        
+                            <div class="col-md-5">
+                           ESI No
+                            </div>
+                            <div class="col-sm-7">
+                                <input type="text" maxlength="40" placeholder=""  class="form-control" name="so_esino"  id="so_esino" value="<%  if @empChecked %><%=@empChecked.so_esino%><% end %>"/>
+                            </div>
+                          </div>
+                   
+
+                         <div class="row d-flex m-t-5">
+                        
+                            <div class="col-md-5">
+                           ESI Dispensary
+                            </div>
+                            <div class="col-sm-7">
+                                 <input type="text" maxlength="40" class="form-control" name="so_dispensary" id="so_dispensary" value="<%  if @empChecked %><%=@empChecked.so_dispensary%><% end %>"/>
+                            </div>
+                          </div>
+                       
+                        <div class="row d-flex m-t-5">
+                          
+                            <div class="col-md-5">
+                           OT
+                            </div>
+                            <div class="col-sm-7">
+                                 <select class="form-control" name="so_ot" id="so_ot">
+                                   <option value="">-Select-</option>
+                                    <option value="Y" <%  if @empChecked && @empChecked.so_ot.to_s =='Y'%>selected="selected"<% end %>>Yes</option>
+                                    <option value="N" <%  if @empChecked && @empChecked.so_ot.to_s =='N'%>selected="selected"<% end %>>No</option>
+                                 </select>
+                            </div>
+                         
+                        </div>
+                          </div>
+         
+                          </div>
+                         
+
+</div>
+  <div class="col-md-12">
+  <div class="row form-group">
+
+<div class="col-md-2">LIC Group </div>
+<div class="col-md-2">
+<select class="form-control"  id="so_licgroups">
+<option value="">-select-</option>
+<option value="Y" <% if @empChecked && @empChecked.so_licgroup == 'Y'%>selected="selected"<% end %>>Yes</option>
+<option value="N" <% if @empChecked && @empChecked.so_licgroup == 'N'%>selected="selected"<% end %>>No</option>
+
+</select>
+</div>
+<div class="col-md-2">Health Policy </div>
+<div class="col-md-2">
+<select  class="form-control" id="so_healthinsurances" onchange="change_selected_health_policy();">
+<option value="">-select-</option>
+<option value="Y" <% if @empChecked && @empChecked.so_healthinsurance == 'Y'%>selected="selected"<% end %>>Yes</option>
+<option value="N" <% if @empChecked && @empChecked.so_healthinsurance == 'N'%>selected="selected"<% end %>>No</option>
+</select>
+</div>
+<div class="col-md-2">Health Slab </div>
+<div class="col-md-2">
+<select  class="form-control" id="so_healthslab">
+<option value="">-select-</option>
+<%
+  if @Hrsobj
+%>
+<%
+ if @Hrsobj.hph_suminsured.to_f >0
+%>
+<option value="<%=@Hrsobj.hph_suminsured%>" <% if @empChecked && @empChecked.so_healthslab.to_i == @Hrsobj.hph_suminsured.to_i%>selected="selected"<% end %>><%=currency_formatted(@Hrsobj.hph_suminsured)%></option>
+<%
+end
+%>
+<%
+ if @Hrsobj.hph_policyslabtwo_sumins.to_f >0
+%>
+<option value="<%=@Hrsobj.hph_policyslabtwo_sumins%>" <% if @empChecked && @empChecked.so_healthslab.to_i == @Hrsobj.hph_policyslabtwo_sumins.to_i%>selected="selected"<% end %>><%=currency_formatted(@Hrsobj.hph_policyslabtwo_sumins)%></option>
+<%
+end
+%>
+
+<%
+ if @Hrsobj.hph_policythree_sumins.to_f >0
+%>
+<option value="<%=@Hrsobj.hph_policythree_sumins%>" <% if @empChecked && @empChecked.so_healthslab.to_i == @Hrsobj.hph_policythree_sumins.to_i%>selected="selected"<% end %>><%=currency_formatted(@Hrsobj.hph_policythree_sumins)%></option>
+<%
+end
+%>
+
+<%
+   end
+%>
+</select>
+</div>
+
+</div>
+<%
+  allowedelectricity = "hidden"
+  allowaccommodatype = "hidden"
+  accomotypereq      = ""
+  if @seawdarsobj && @seawdarsobj.sw_iselectricconsump.to_s =='Y'
+     allowedelectricity = ""
+  end
+  if @seawdarsobj && @seawdarsobj.sw_iselectricconsump.to_s =='Y'
+    allowaccommodatype =""
+    accomotypereq = "required"
+  end
+%>
+<div class="row form-group">
+
+<div class="col-md-2">Electric Consumption </div>
+<div class="col-md-2">
+    <select class="form-control" name="sk_electricconsumption"  id="sk_electricconsumption" onchange="check_electric_meters();">
+<option value="">-select-</option>
+<<option value="Y" <% if @seawdarsobj && @seawdarsobj.sw_iselectricconsump.to_s =='Y'%>selected="selected"<% end %>>YES</option>
+<option value="N"  <% if @seawdarsobj && @seawdarsobj.sw_iselectricconsump.to_s =='N'%>selected="selected"<% end %>>NO</option>
+</select>
+</div>
+<input type="hidden" id="previous_meterno" value="<% if @seawdarsobj !=nil %><%=@seawdarsobj.sw_meterno%><% end %>"/>
+<div class="col-md-2 process_electric_meter <%=allowedelectricity%>">Meter No </div>
+<div class="col-md-2 process_electric_meter <%=allowedelectricity%>" style="color:green">
+ <input type="text" class="form-control" name="sw_meterno" maxlength="20"  id="sw_meterno" value="<% if @seawdarsobj !=nil %><%=@seawdarsobj.sw_meterno%><% end %>"/>
+ <input type="checkbox" placeholder=""  <% if @seawdarsobj && @seawdarsobj.sw_electricexemption.to_s =='Y'%>checked<% end %> name="sw_electricexemption"  id="sw_electricexemption" value="Y" /> Exempted
+</div>
+<div class="col-md-2">Accommodation </div>
+<div class="col-md-2" style="color:green">
+<select class="form-control" name="sk_accomodations"  id="sk_accomodations" onchange="get_accomodation_addresstype();">
+<option value="">-Select-</option>
+<option value="Y" <% if @seawdarsobj && @seawdarsobj.sw_isaccommodation.to_s =='Y'%>selected="selected"<% end %>>YES</option>
+<option value="N" <% if @seawdarsobj && @seawdarsobj.sw_isaccommodation.to_s =='N'%>selected="selected"<% end %> >NO</option>
+</select>
+<input type="checkbox" placeholder="" <% if @seawdarsobj && @seawdarsobj.sw_accomodexemption.to_s =='Y'%>checked<% end %>  name="sw_accomodexemption"  id="sw_accomodexemption" value="Y" /> Exempted
+</div>
+
+
+
+
+</div>
+
+<div class="row form-group allowaccommodatype <%=allowaccommodatype%>">
+
+
+<div class="col-md-2">Accommodation Type</div>
+    <div class="col-md-2" style="color:green">
+    <select class="form-control" name="sk_accomotype"  id="sk_accomotype" <%=accomotypereq%>>
+    <option value="">-Select-</option>
+    <%
+    if @accomodType && @accomodType.length >0
+      @accomodType.each do |accomotype|
+    %>
+    <option value="<%=accomotype.id%>" <% if @seawdarsobj && @seawdarsobj.sw_accomodationtype.to_i ==accomotype.id.to_i%>selected="selected"<% end %>><%=accomotype.at_description%></option>
+    <%
+      end
+    end  
+    %>
+    
+    </select>
+
+    </div>
+
+
+
+
+</div>
+
+</div>
+</div>
+
+
+
+
+
+                                            <div class="col-md-12">
+<h3 class="card-title">PF Related </h3>
+<div class="form-group row">
+<div class="col-md-2">Previous Member ID </div>
+<div class="col-md-2">
+<input type="text" placeholder=""  class="form-control" name="sk_prevemployeeid"  id="sk_prevemployeeid" value="<% if @EmpKyc %><%=@EmpKyc.sk_prevemployeeid%><% end %>"/>
+</div>
+<div class="col-md-2">Language </div>
+<div class="col-md-2">
+<input type="text" placeholder=""  class="form-control" name="sk_language"  id="sk_language" value="<% if @EmpKyc %><%=@EmpKyc.sk_language%><% end %>" />
+</div>
+<div class="col-md-2">International Worker </div>
+<div class="col-md-2">
+<select  class="form-control" name="sk_internwork" id="sk_internwork">
+<option value="">-select-</option>
+<option value="Y" <% if @EmpKyc && @EmpKyc.sk_internwork == 'Y'%>selected="selected"<% end %>>Y-YES</option>
+<option value="N" <% if @EmpKyc && @EmpKyc.sk_internwork == 'N'%>selected="selected"<% end %>>N-NO</option>
+</select>
+</div>
+
+</div>
+
+
+
+
+<div class="row form-group">
+
+<div class="col-md-2">Category </div>
+<div class="col-md-2">
+<select class="form-control" name="sk_category"  id="sk_category">
+<option value="">-select-</option>
+<option value="L" <% if @EmpKyc && @EmpKyc.sk_category == 'L'%>selected="selected"<% end %>>L-Locomotive disability</option>
+<option value="V" <% if @EmpKyc && @EmpKyc.sk_category == 'V'%>selected="selected"<% end %>>V-Visual</option>
+<option value="H" <% if @EmpKyc && @EmpKyc.sk_category == 'H'%>selected="selected"<% end %>>H-Hearing</option>
+<option value="N" <% if @EmpKyc && @EmpKyc.sk_category == 'N'%>selected="selected"<% end %>>NA</option>
+</select>
+</div>
+<div class="col-md-2">Physically Handicap </div>
+<div class="col-md-2">
+<select name="sk_physicalissue" class="form-control" id="sk_physicalissue">
+<option value="">-select-</option>
+<option value="Y" <% if @EmpKyc && @EmpKyc.sk_physicalissue == 'Y'%>selected="selected"<% end %>>Y-YES</option>
+<option value="N" <% if @EmpKyc && @EmpKyc.sk_physicalissue == 'N'%>selected="selected"<% end %>>N-NO</option>
+</select>
+</div>
+
+
+
+
+</div>
+</div>
+
+
+</div>
+
+
+
+
+
+ <div class="submit-section process_save">
+                                                                               <button onclick="process_sewadar_maintaince();" class="btn btn-primary submit-btn process_save" type="button">Save & Quit</button>
+<button onclick="prvious_back_action('emp_kyc');" class="btn btn-danger submit-btn m-l-5 " type="button">Previous</button>
+
+                                                         </div>
+</div>
+</div>
+</div>
+
+
+
+
+
+</div>
+<% end %>
+
+</div>

@@ -1,0 +1,112 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Department</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_depart_code" id="cur_depart_code" value="<% if @ListDepart %><%=@ListDepart.departCode%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDepart %><%=@ListDepart.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Department Code  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly  autocomplete="off"  maxlength="4"  required class="form-control" name="departCode"id="departCode" value="<% if @ListDepart %><%=@ListDepart.departCode%><% elsif @lastcode %><%=@lastcode%><% end %>" tabindex="-1"/> </div>
+						<label class="col-form-label col-md-2">Department Name  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" autocomplete="off" maxlength="60"  required class="form-control" name="departDescription" id="departDescription" tabindex="1" value="<% if @ListDepart %><%=@ListDepart.departDescription%><% end %>" autofocus/> </div>
+					</div>
+					
+				
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Department HOD  <span class="mandatory"></span></label>
+					<div class="col-md-3">
+						
+							<select class="form-control" name="departHod" id="departHod">
+								<option value="" >-Select-</option>
+                                                                <%
+                                                                 if @HeadofDpt && @HeadofDpt.length >0
+                                                                  @HeadofDpt.each do |newmemb|
+                                                                %>
+                                                                <option value="<%=newmemb.lds_membno%>" <% if @ListDepart && @ListDepart.departHod.to_s.downcase ==newmemb.lds_membno.to_s.downcase %>selected="selected"<% end %>><%=newmemb.lds_name%></option>
+                                                                <%
+                                                                 end
+                                                               end
+                                                               %>
+							</select>
+						 </div>
+
+						<label class="col-form-label col-md-2">Strength Req. </label>
+					<div class="col-md-3">
+                                          <input type="text" autocomplete="off" maxlength="4" onkeypress="return isNumberKeys(event);"  class="form-control" name="departNumberofemp" id="departNumberofemp" tabindex="3" value="<% if @ListDepart %><%=@ListDepart.departNumberofemp%><% end %>"/> </div>
+				</div>
+                          <div class="form-group row">
+					<label class="col-form-label col-md-2">Type  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select required class="form-control" tabindex="4" name="departType" id="departType">
+                                                   <option value="">-Select-</option>
+                                                   <option value="Cell" <% if @ListDepart && @ListDepart.departType.to_s == 'Cell'%>selected="selected"<% end %>>Cell</option>
+                                                   <option value="Department" <% if @ListDepart && @ListDepart.departType.to_s == 'Department'%>selected="selected"<% end %>>Department</option>
+                                                </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                        	<input type="checkbox" name="helpdesk" id="helpdesk" value="Y" <% if @ListDepart && @ListDepart.helpdesk.to_s == 'Y'%>checked="checked"<% end %> /> Helpdesk
+                                        </div>
+
+					
+					
+				</div>
+                          <%
+                            cordinate = "hidden"
+                            if @ListDepart && @ListDepart.cordinate.to_s == 'Y'
+                              cordinate = ""
+                            end
+                         %>
+				   <div class="form-group row">
+                                          <label class="col-form-label col-md-2">Co-Ordinators  <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<input type="checkbox" onclick="check_dpeartment_coordinate();" name="cordinate" id="cordinate" value="Y" <% if @ListDepart && @ListDepart.cordinate.to_s == 'Y'%>checked="checked"<% end %>/>&nbsp;
+						<select  class="form-control cordinatevalue <%=cordinate%>" tabindex="4" name="cordinatevalue" id="cordinatevalue">
+                                                   <option value="" <% if @ListDepart && @ListDepart.departType.to_s == 'ssssss'%><% end %>>-Select-</option>
+                                                    <%
+                                                         if @cordiNator && @cordiNator.length >0
+                                                          @cordiNator.each do |cordnator|
+                                                        %>
+                                                        <option value="<%=cordnator.lds_membno%>" <% if @ListDepart && @ListDepart.cordinatevalue.to_s.downcase ==cordnator.lds_membno.to_s.downcase %>selected="selected"<% end %>><%=cordnator.lds_name%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+                                                  
+                                                </select>
+                                        </div>
+                                       
+
+					
+					
+				</div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>department"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

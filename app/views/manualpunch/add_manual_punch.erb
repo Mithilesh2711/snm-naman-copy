@@ -1,0 +1,104 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Manual Punch Entry </h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>                
+                <input type="hidden" name="mid" id="mid" value="<% if @selectedPunches %><%=@selectedPunches.id%><% end %>"/>
+                <input type="hidden" name="rootXPath" id="rootXPath" value="<%=root_url%>"/>
+                <!-- Search Filter -->
+          
+            
+                
+      <div class="row">
+<div class="col-md-12 ">
+
+
+<div class="form-group row">
+  
+        <div class="col-md-3">
+         Sewadar Code
+        </div>
+          <div class="col-md-3">
+          <select class="form-control" name="empcodes" id="empcodes" onchange="get_employee_punchdt(this.value);" >
+            <option value="">-Select-</option>
+           <%
+           if @empDetail.length >0
+             @empDetail.each do |emp|
+           %>
+           <option value="<%=emp.sw_sewcode%>" <% if @selectedPunches && @selectedPunches.gc_user_id.to_s == emp.sw_sewcode.to_s%>selected="selected" <% end %>><%=emp.sw_sewcode%></option>
+           <% end end %>
+          </select>
+        </div>
+         <div class="col-md-2">
+        Name
+         </div>
+          <div class="col-md-4">
+           <select class="form-control" name="manual_empname" id="manual_empname">
+           <option value="">-Select-</option>
+           <%
+           if @empDetail.length >0
+             @empDetail.each do |emp|
+           %>
+           <option value="<%=emp.sw_sewcode%>" <% if @selectedPunches && @selectedPunches.gc_user_id.to_s == emp.sw_sewcode.to_s%>selected="selected" <% end %>><%=emp.sw_sewadar_name.split(/ |\_|\-/).map(&:capitalize).join(" ") %></option>
+           <% end end %>
+         </select>
+         </div>
+
+
+       
+
+        </div>
+      
+<div class="form-group row">
+          
+              <div class="col-md-3">
+                Date
+              </div>
+              <div class="col-md-3">
+
+          <input type="text" placeholder=""  maxlength="10" class="form-control" name="indates" id="indates" value="<% if @selectedPunches %><%=formatted_date(@selectedPunches.gc_date)%><% end %>"/>
+         </div>
+                <div class="col-md-2">
+               Time
+              </div>
+              <div class="col-md-3">
+
+              <input type="text" placeholder="" onchange="common_time_formatted(this.value,'intimes');" maxlength="5" class="form-control" name="intimes" id="intimes" value="<% if @selectedPunches %><%=@selectedPunches.gc_local_time%><% end %>"/>
+         </div>
+            </div>
+              <div class="row">
+            <div class="col-md-12">
+              <div class="submit-section">
+          <button class="btn btn-primary submit-btn" type="button" onclick="add_manual_punches();">Save</button>
+          <a href="<%=root_url%>manualpunch"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+        </div>
+                    
+                   
+            </div>
+            </div>
+   
+
+</div>
+</div>
+
+                <% end %>
+		</div>
+	</div>
+	<!-- /Page Content -->

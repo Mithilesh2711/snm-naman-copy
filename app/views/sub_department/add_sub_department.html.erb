@@ -1,0 +1,67 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Sub Department</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_depart_code" id="cur_depart_code" value="<% if @ListDepart %><%=@ListDepart.departCode%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDepart %><%=@ListDepart.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Department  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select required class="form-control" autofocus tabindex="1" name="subdepartment" id="subdepartment">
+                                                   <option value="">-Select-</option>
+                                                   <%
+                                                   if @ListAllDepart.length >0
+                                                     @ListAllDepart.each do |nedpt|
+                                                   %>
+                                                   <option value="<%=nedpt.departCode%>" <% if @ListDepart && @ListDepart.subdepartment.to_s.downcase == nedpt.departCode.to_s.downcase  %>selected="selected"<% end %> ><%=nedpt.departDescription%></option>
+                                                   <%
+                                                    end
+                                                  end
+                                                  %>
+                                                  
+                                                </select>
+
+                                        </div>
+						
+                                </div>
+				
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required readonly  autocomplete="off" maxlength="50"   class="form-control" name="departCode" id="departCode" value="<% if @ListDepart %><%=@ListDepart.departCode%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/>
+                                        </div>
+						<label class="col-form-label col-md-3">Sub Department Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+                                          <input type="text" autocomplete="off" maxlength="60"  required class="form-control" tabindex="2" name="departDescription" id="departDescription" value="<% if @ListDepart %><%=@ListDepart.departDescription%><% end %>"/>
+                                        </div>
+				</div>
+                          
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>department"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

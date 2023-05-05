@@ -1,0 +1,128 @@
+<!-- Main Wrapper -->
+        <div class="main-wrapper">
+            	<div class="account-content">
+				
+				<div class="container">
+				
+					
+				
+					<div class=" side_img">
+						<img src="<%=root_url%>images/login_left.png" style="width: 100%;">
+					</div>
+                                     
+				</div>
+			</div>
+			<div class="account-content">
+				
+				<div class="container">
+				
+					
+					<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+					<input type="hidden" id="globalrootaccess" value="<%=root_url%>">
+					<div class="account-box">
+						<div class="account-wrapper">
+							<h3 class="account-title"><img src="<%=root_url%>images/naman.png" width="80%" alt=""/></h3>
+
+							<p class="account-subtitle hidden"><span>N</span>IRANKARI <span>A</span>UTOMATION  <span>MAN</span>AGEMENT</p>
+							<hr/>
+							<p class="account-subtitle">LOG IN</p>
+							<% if flash[:error] %>
+		 <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" id="successXMessage">
+		   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+		   <%= flash[:error] %>
+        </div>
+		 <% end %>
+							<!-- Account Form -->
+							
+								<div class="form-group">
+									<label>User Name</label>
+									<input class="form-control" autocompelete="off" type="text" required name="userName" id="userName" value=""/>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col">
+											<label>Password</label>
+										</div>
+										<div class="col-auto">
+											<a class="text-muted" href="javascript:;"  data-toggle="modal" data-target="#exampleModal">
+												Forgot password?
+											</a>
+										</div>
+									</div>
+									<input class="form-control" autocompelete="off" required name="userPassword" id="userPassword" type="password" value=""/>
+								</div>
+								<div class="form-group text-center">
+									<button class="btn btn-primary account-btn" type="submit">Login</button>
+								</div>
+								
+								<div class="account-footer ">
+									<p class="text-muted">&#169; 2021-<script>document.write(new Date().getFullYear())</script> All rights reserved | Sant Nirankari Mandal</p>
+								</div>
+									<hr/>
+							<!-- Account Logo -->
+					<div class="account-logo">
+						<a href="javascript:;"><img src="<%=root_url%>assets/img/newlogo.png" alt=""/><span>SANT NIRANKARI MISSION</span></a>
+						<p class="text-muted"><a class="text-muted" href="https://www.nirankari.org/" target="_blank">www.nirankari.org</a></p>
+					</div>
+						<!-- /Account Logo -->
+							<!-- /Account Form -->
+							
+						</div>
+					</div>
+                                        <% end %>
+				</div>
+			</div>
+				<div class="account-content">
+				
+				<div class="container">
+				
+					
+				
+					<div class="side_img">
+						<img src="<%=root_url%>images/login_right.png" style="width: 100%;">
+					</div>
+                                     
+				</div>
+			</div>
+        </div>
+		<!-- /Main Wrapper -->
+		<!-- forgot password modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header p-b-0">
+        <h5 class="modal-title account-title" id="exampleModalLabel">Forgot Password ?</h5>
+        <button type="button" class="close nmt-20" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="">
+							<div class="form-group">
+									<label>Enter User ID/Sewadar ID</label>
+									<input class="form-control" autocompelete="off" type="text" required  id="otp_userid" value=""/>
+								</div>
+								<div class="form-group text-center">
+									<button class="btn btn-primary account-btn" onclick="send_user_otp_detail();" type="button">Generate OTP</button>
+								</div>
+									<div class="form-group">
+									<label>Enter OTP</label>
+									<input class="form-control" autocompelete="off" type="text" required  id="otp_number" value=""/>
+								</div>	
+							
+									<div class="form-group text-center">
+									<button class="btn btn-primary account-btn" onclick="validate_user_otp_detail();" type="button">Submit</button>
+								</div>
+							<p class="account-subtitle">In case you have any other IT related queries, please contact NAMAN Support Team at <a href="mailto:ithelpdesk@nirankari.org">ithelpdesk@nirankari.org</a></p>
+							
+							<!-- Account Form -->
+							
+							<!-- /Account Form -->
+							
+						
+					</div>
+      </div>
+      
+    </div>
+  </div>
+</div>

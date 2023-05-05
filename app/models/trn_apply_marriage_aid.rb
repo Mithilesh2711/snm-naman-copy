@@ -1,0 +1,2 @@
+class TrnApplyMarriageAid < ApplicationRecord
+end

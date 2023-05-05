@@ -1,0 +1,2 @@
+class OutletmasterQcController < ApplicationController
+end

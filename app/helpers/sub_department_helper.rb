@@ -1,0 +1,2 @@
+module SubDepartmentHelper
+end

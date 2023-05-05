@@ -1,0 +1,231 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="row">
+              <h3 class="page-title col-md-10">Apply leave</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>leave" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>
+          
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>                
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                 <input type="hidden" name="mid" id="mid" value="<% if @ListDist %><%=@ListDist.id%><% end %>"/>
+                 <input type="hidden"  id="firsthalfsec" name="firsthalfsec" value="<% if @ListDist %><%=@ListDist.ls_avail%><% end %>"/>
+                 <input type="hidden"  id="firstperiodsec" name="firstperiodsec" value="<% if @ListDist %><%=@ListDist.ls_period%><% end %>"/>
+                 <input type="hidden"  id="allowedleave" value="<% if @ListDist %><%=@ListDist.ls_number%><% end %>"/>
+                 <input type="hidden"  id="ls_category" name="ls_category" value="<% if @ListDist %><%=@ListDist.ls_category%><% else %><%=@LeaveCategory%><% end %>"/>
+                 <input type="hidden"  id="halfdayallowed" name="halfdayallowed" value=""/>
+                 <% if !@lockEdited %>
+                 <input type="hidden"  name="ls_depcode" id="al_depcode" value="<% if @ListDist %><%=@ListDist.ls_depcode%><% end %>"/>
+                 <input type="hidden"  name="ls_empcode" id="alsewdarname" value="<% if @ListDist %><%=@ListDist.ls_empcode%><% end %>"/>
+                 <% end %>
+                <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          
+          <label class="col-form-label col-md-2">Department <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+         <select class="form-control" required <% if @lockEdited %> name="ls_depcode"  id="al_depcode" <%  else %>disabled<% end %>  onchange="get_all_sewadar_by_department();">
+               <%
+                if @markedAllowed
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @ListDist && @ListDist.ls_depcode.to_s.downcase == newdp.departCode.to_s.downcase %>selected="selected" <% end %>><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+            
+          </div>
+         <label class="col-form-label col-md-2">Sewadar Code<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+            <select class="form-control" required  <% if @lockEdited %> name="al_sewadarcode"  id="al_sewadarcode" <% else %>disabled<% end %> onchange="fill_from_sewadar_listed('code');">
+               <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @newsewdarList && @newsewdarList.length >0
+                @newsewdarList.each do |newswd|
+              %>
+              <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewcode%></option>
+              <%
+              end
+             end
+             %>
+
+            </select>
+          </div>
+          
+
+      </div>
+        <div class="form-group row">
+
+          
+
+
+            
+          <label class="col-form-label col-md-2">Sewadar<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+                  <select class="form-control" autofocus="" required <% if @lockEdited %> name="ls_empcode" id="alsewdarname"<% else %>disabled<% end %>  onchange="fill_from_sewadar_listed('sewadar');">
+                     <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+                    <%
+                     if @newsewdarList && @newsewdarList.length >0
+                      @newsewdarList.each do |newswd|
+                    %>
+                    <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewadar_name%></option>
+                    <%
+                    end
+                   end
+                   %>
+                    </select>
+
+          </div>
+          
+         
+          <label class="col-form-label col-md-2">Leave Type<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+            <select class="form-control" autofocus="" required name="ls_leave_code" id="ls_leave_code" onchange="get_remaining_leave_balance();">
+               <option value="">-Select-</option>
+                  <%
+                   if @MstLeave && @MstLeave.length >0
+                    @MstLeave.each do |newlsvs|
+                  %>
+               <option value="<%=newlsvs.attend_leaveCode%>" <% if @ListDist && @ListDist.ls_leave_code.to_s.downcase ==newlsvs.attend_leaveCode.to_s.downcase %>selected="selected" <% end %>><%=newlsvs.attend_leavetype%></option>
+               <%
+               end
+              end
+
+              %>
+                    </select>
+          </div>
+      </div>
+        <%
+        allowedavail   = "hidden"
+        sechalfallowed = "hidden"
+        if @ListDist
+            if @ListDist.ls_avail == 'F' || @ListDist.ls_avail == 'H'
+              allowedavail = ""
+            end
+        end
+        if @ListDist
+            if @ListDist.ls_period == 'F' || @ListDist.ls_period == 'S'
+              sechalfallowed = ""
+            end
+        end
+        if @LeavePermit 
+            if @LeavePermit == 'N'
+              allowedavail   = "hidden"
+              sechalfallowed = "hidden"
+            end
+        end
+      %>
+    <div class="row">
+      <div class="col-md-12">
+        
+        
+          <div class="form-group row leave_day <%=allowedavail%>">
+         
+            <div class="col-md-2">
+              Avail<span class="mandatory">*</span>
+            </div>
+            <!--<div class="col-md-2">-->
+            <!--    &nbsp;-->
+            <!--</div>-->
+              <div class="col-md-4">
+                 <input <% if @ListDist && @ListDist.ls_avail == 'F'  %> checked="checked"<% elsif !@ListDist%>checked="checked"<% end %>  onclick="check_half_fuldays();"  autocomplete="off" name="ls_halffull" id="ls_halffull_1" value="F" type="radio"/> Full Day
+                  <input  <% if @ListDist && @ListDist.ls_avail == 'H'  %> checked="checked"<% end %>  autocomplete="off" onclick="check_half_fuldays();" name="ls_halffull" id="ls_halffull_2" value="H" type="radio"/> Half Day
+              </div>
+
+          </div>
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">From Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+             <input class="form-control" onchange="checkValidate(this.value,'ls_fromdate');" required autocomplete="off" name="ls_fromdate" id="ls_fromdate" value="<% if @ListDist %><%=format_oblig_date(@ListDist.ls_fromdate)%><% elsif session[:request_ls_fromdate] %><%=format_oblig_date(session[:request_ls_fromdate])%><% end%>" type="text"/>
+                    </div> </div>
+          <label class="col-form-label col-md-2">Upto Date <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+                      <input class="form-control " onchange="checkValidate(this.value,'ls_todate');" required autocomplete="off" name="ls_todate" id="ls_todate"  value="<% if @ListDist %><%=format_oblig_date(@ListDist.ls_todate)%><% elsif session[:request_ls_todate] %><%=format_oblig_date(session[:request_ls_todate])%><% end%>" type="text"/>
+                    </div> </div>
+                  </div>
+         <div class="form-group row new_leave_day <%=sechalfallowed%>">
+             <div class="col-md-2">
+                 </div>
+             <div class="col-md-4">
+              <input  autocomplete="off" <% if @ListDist && @ListDist.ls_period == 'F'  %> checked="checked"<% elsif @ListDist &&( @ListDist.ls_period == nil ||  @ListDist.ls_period == '')%>checked="checked"<% elsif !@ListDist%>checked="checked"<% end %>  name="ls_firsthalfsec" id="ls_firsthalfsec_1" value="F" type="radio"/> First Half
+                  <input   autocomplete="off" <% if @ListDist && @ListDist.ls_period == 'S'  %> checked="checked"<% end %> name="ls_firsthalfsec" id="ls_firsthalfsec_2" value="S" type="radio"/> Second Half
+        </div></div>
+        <div class="form-group row">
+         
+            <label class="col-form-label col-md-2">No of Days </label>
+          <div class="col-md-3">
+           <input class="form-control" required onchange="get_avail_leavevalidate();" readonly name="ls_days" id="ls_days" type="text" value="<% if @ListDist %><%=@ListDist.ls_nodays%><% elsif session[:request_ls_days] %><%=session[:request_ls_days]%><% end %>"/></div>
+              <label class="col-form-label col-md-2">Remaining Leaves</label>
+          <div class="col-md-3">
+         
+                      <input class="form-control " name="ls_remainleave" id="ls_remainleave" readonly="" value="<% if @ListDist %><%=@ListDist.ls_remainleave%><% elsif  session[:request_ls_remainleave] %><%=session[:request_ls_remainleave]%><% end %>" type="text"/>
+                   </div>
+        </div>
+            <div class="form-group row">
+       
+            <label class="col-form-label col-md-2">Leave Reason <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <textarea rows="2" required maxlength="150" class="form-control" name="ls_leavereson" id="ls_leavereson"><% if @ListDist %><%=@ListDist.ls_leavereson%><% elsif  session[:request_ls_leavereson] %><%=session[:request_ls_leavereson]%><% end %></textarea>
+           </div>
+          <label class="col-form-label col-md-2">Reference Code<span class="mandatory"></span></label>
+          <div class="col-md-3">
+            <input class="form-control "  id="ls_referencecode" readonly="" value="<% if @myReferenceCode %><%=@myReferenceCode%><% end %>" type="text"/>
+          </div>
+        </div>
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn processleave" onclick="return check_all_leave_ruled();">Save</button>
+          <a href="<%=root_url%>leave"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+        </div>
+          
+        
+      </div>
+        <div class="avail_remarks <%=sechalfallowed%>">
+         <!-- Avail Days can be either .25 for 1/4th day leave or 0.50 for half day leave or 0.75 for 1/3rd leave.-->
+        </div>
+                <% end %>
+    </div>
+  </div>
+  </div>
+</div>
+  <!-- /Page Content -->

@@ -1,0 +1,145 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Allowances</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+		<div class="row">
+			<div class="col-md-12">
+			<div class="form-group row">
+					<div class="col-md-6">
+					<div class="form-group form-focus">
+								<div class="cal-icon">
+									<select class="form-control" id="hph_years" name="hph_years" required>
+                                                                          <option value="">-Select-</option>
+                                                                           <%
+                                                                           prevdate = @nbegindate
+                                                                           newprvs  = @nbegindate.to_i+2
+                                                                           while prevdate.to_i <=newprvs.to_i do
+                                                                          %>
+                                                                           <option value="<%=prevdate.to_i%>" <% if @HeadHrp && @HeadHrp.hph_years.to_i == prevdate.to_i  %>selected="selected" <% elsif prevdate.to_i == @nbegindate.to_i%> selected="selected"<% end %>><%=prevdate.to_i%></option>
+                                                                           <%
+                                                                           prevdate= prevdate.to_i+1
+                                                                           end
+                                                                           %>
+
+                                                                      </select>
+								</div>
+								<label class="focus-label">From</label>
+							</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group form-focus">
+								<div class="cal-icon">
+									<select class="form-control" name="hph_months" id="hph_months" required>
+                                                                          <option value="">-Select-</option>
+                                                                          <option value="1"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 1%> selected="selected" <% end %> >Jan</option>
+                                                                         <option value="2"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 2%> selected="selected" <% end %>>Feb</option>
+                                                                         <option value="3"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 3%> selected="selected" <% end %>>Mar</option>
+                                                                         <option value="4"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 4%> selected="selected" <% end %>>Apr</option>
+                                                                         <option value="5"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 5%> selected="selected" <% end %>>May</option>
+                                                                         <option value="6"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 6%> selected="selected" <% end %>>Jun</option>
+                                                                         <option value="7"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 7%> selected="selected" <% end %>>Jul</option>
+                                                                         <option value="8"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 8%> selected="selected" <% end %>>Aug</option>
+                                                                         <option value="9"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 9%> selected="selected" <% end %>>Sep</option>
+                                                                         <option value="10"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 10%> selected="selected" <% end %>>Oct</option>
+                                                                         <option value="11"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 11%> selected="selected" <% end %>>Nov</option>
+                                                                         <option value="12"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 12%> selected="selected" <% end %>>Dec</option>
+                                                                    </select>
+								</div>
+								<label class="focus-label">To</label>
+							</div>
+				</div>
+				</div>
+				<div class="form-group row">
+
+					<label class="col-form-label col-md-2"> Select Department </label>
+					<div class="col-md-3">
+					<select class="form-control" name="sewadar_departments" id="sewadar_departments">
+                                        <option value="">-Select -</option>
+                                        <%
+                                          mydepartlist = get_sewa_all_department()
+                                          if mydepartlist.length >0
+                                           mydepartlist.each do |nedpts|
+                                        %>
+                                        <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+                                        <%
+                                           end
+                                         end
+
+                                         %>
+
+                                        </select>
+				</div>
+				<label class="col-form-label col-md-2"> Select Category </label>
+					<div class="col-md-3">
+						<select class="form-control" name="sewadar_categories" id="sewadar_categories">
+                                                <option value="">-Select-</option>
+                                                <%
+                                                if @sewadarCategory.length >0
+                                                @sewadarCategory.each do |newcats|
+                                                %>
+                                                <option value="<%=newcats.sc_name%>" <% if @sewadar_categories && @sewadar_categories.to_s.strip == newcats.sc_name.to_s.strip %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+                                                <%
+                                                end
+                                                end
+                                                %>
+
+</select></div>
+				</div>
+				<div class="form-group row">
+
+					<label class="col-form-label col-md-2"> Search according</label>
+					<div class="col-md-3">
+						<select class="form-control" name="sewadar_codetype" id="sewadar_codetype">
+                                              <option value="mycode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mycode' %>selected="selected"<% end %> >Sewadar Code</option>
+                                              <option value="myrefcode" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myrefcode' %>selected="selected"<% end %> >Reference/Old Code</option>
+                                              <option value="myname" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myname' %>selected="selected"<% end %>>Name</option>
+                                              <option value="myemail" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'myemail' %>selected="selected"<% end %>>Email</option>
+                                              <option value="mymobile" <% if @sewadar_codetype && @sewadar_codetype.to_s == 'mymobile' %>selected="selected"<% end %>>Mobile</option>
+
+                                              </select>
+</div>
+
+					<div class="col-md-3">
+							<input type="text" placeholder="Code,Old Code,Name,Email" class="form-control floating" name="sewadar_string" id="sewadar_string" value="<% if @sewadar_string %><%=@sewadar_string%><% end %>"/>
+    </div>
+
+                          <div class="col-md-8 hidden">
+                                <input type="radio" checked name="monthly_deduction"  value="arrear"/>
+                                
+                              </div>
+
+				</div>
+				<div class="submit-section">
+                                
+
+                              <a href="javascript:;" rel="<%=@printPath%>" id="printexceled" onclick="print_others_register();">
+                                <button class="btn btn-success submit-btn m-l-5 " type="button">Print</button>
+                              </a>
+
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

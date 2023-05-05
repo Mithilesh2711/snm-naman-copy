@@ -1,0 +1,297 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Leave Summary MI</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+            <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+              <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+              <%= flash[:error] %>
+            </div>
+          <% end %>
+          <!-- Leave Statistics -->          
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                        
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+          <div class="form-group row">
+          <label class="col-form-label col-md-2">From Date <span class="mandatory">*</span></label>
+          <div class="col-md-2">
+          <input type="text" class="form-control" autocomplete="off" name="from_date" id="from_date" value="<% if @from_date %><%=@from_date%><% else %><%=@nbegindate%><% end %>"/>
+            
+                     </div>
+          <label class="col-form-label col-md-2">Upto Date <span class="mandatory">*</span></label>
+          <div class="col-md-2">
+            <input type="text" class="form-control" autocomplete="off"  name="upto_date" id="upto_date" value="<% if @upto_date %><%=@upto_date%><% else %><%=@upto_date%><% end %>"/>
+            
+            </div>
+            <label class="col-form-label col-md-2 hidden">Leave Type <span class="mandatory"></span></label>
+            <div class="col-md-2 hidden">
+            <select required class="form-control" name="leave_type" id="leave_type">
+                <option value="">-Select-</option>               
+            </select> </div>
+        
+        </div>
+          <div class="form-group row">
+          
+          <label class="col-form-label col-md-1">Department<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+         <select class="form-control" required name="ls_depcode"  id="al_depcode" onchange="get_all_sewadar_by_department();">
+               <%
+                if @markedAllowed
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @departments && @departments.to_s.downcase == newdp.departCode.to_s.downcase %>selected="selected" <% end %>><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+            
+          </div>
+         
+         
+<label class="col-form-label col-md-1">Sewadar<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+                  <select class="form-control" autofocus="" required name="ls_empcode" id="alsewdarname">
+                     <%
+                     if @newsewdarList && @newsewdarList.length >0
+                  %>
+              <option value="">-Select-</option>
+              <% end %>
+                    <%
+                     if @newsewdarList && @newsewdarList.length >0
+                      @newsewdarList.each do |newswd|
+                    %>
+                    <option value="<%=newswd.sw_sewcode%>" <% if @sewadar_code && @sewadar_code.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewadar_name%> (<%=newswd.sw_sewcode%>)</option>
+                    <%
+                    end
+                   end
+                   %>
+                    </select>
+
+          </div>
+          <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+          <a href="javascript:;" onclick="filter_listed_leaves();" class="btn btn-success btn-block"> <i class="fa fa-search"></i> Search </a>
+         </div>
+          <div class="col-auto float-right ml-auto">
+               <div class="btn-group btn-group-sm">
+                  <a class="btn btn-white" href="javascript:;" onclick="exportDataToExcel('mymiselectedreport','');"><img src="<%=root_url%>images/excel.png" width="40" height="40"></a>
+                  
+                  
+                </div>
+              </div>
+
+
+          </div>
+          
+<% end %>
+     
+          <!-- /Leave Statistics -->
+          
+          <div class="row m-t-20">
+            
+              <div class="col-md-12">
+
+                 
+                  <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd" id="mymiselectedreport">
+                  <thead class="new_tblhead">
+                  <tr>
+                  <th colspan="8"></th>   
+                  <th colspan="4"style="background: lightgray;">EL-Unavaliability for Sewa- for Personal Reason</th>                   
+                  <th colspan="4">CL-Unavaliability for Sewa- for Social Reason</th>
+                  <th colspan="4"style="background: lightgray;">CO-Sewa Bakshis</th>
+                  <th colspan="4">Maternity Leave</th>
+                  <th colspan="4"style="background: lightgray;">LWM- Leave Without M.A</th>
+                
+                  <th colspan="4">OD- Sewa Kripa</th>
+                  <th colspan="4"style="background: lightgray;">SPL-Unavaliability for Sewa- for Special Reason</th>
+                  <th colspan="2">Total</th>
+                
+                 </tr>
+                    <tr>
+                      <th>S.No.</th>   
+                      <th >Sewadar Category</th>                   
+                      <th >Sewadar Code</th>
+                      <th >Name Of Sewadar</th>
+                      <th >Department</th>
+                      <th >Member Incharge</th>
+                      <th >Date Of Joining</th>
+                      <th >Date Of Superannuation</th>
+                      <th style="background: lightgray;">Opening Balance</th>
+                      <th style="background: lightgray;">Credited</th>
+                     <th style="background: lightgray;">Availed</th>
+                     <th style="background: lightgray;">Balance</th>
+                     <th >Opening Balance</th>
+                     <th >Credited</th>
+                    <th >Availed</th>
+                    <th >Balance</th>
+                    <th style="background: lightgray;">Opening Balance</th>
+                      <th style="background: lightgray;">Credited</th>
+                     <th style="background: lightgray;">Availed</th>
+                     <th style="background: lightgray;">Balance</th>
+                     <th >Opening Balance</th>
+                      <th >Credited</th>
+                     <th >Availed</th>
+                     <th >Balance</th>
+                     <th style="background: lightgray;">Opening Balance</th>
+                      <th style="background: lightgray;">Credited</th>
+                     <th style="background: lightgray;">Availed</th>
+                     <th style="background: lightgray;">Balance</th>
+                     <th >Opening Balance</th>
+                      <th >Credited</th>
+                     <th >Availed</th>
+                     <th >Balance</th>
+                     <th style="background: lightgray;">Opening Balance</th>
+                      <th style="background: lightgray;">Credited</th>
+                     <th style="background: lightgray;">Availed</th>
+                     <th style="background: lightgray;">Balance</th>
+                     <th>Paid Leave Availed (EL & CL)</th>
+                     <th >LWM Availed</th>
+                     </tr>
+                  </thead>
+                  <tbody id="myleavesummary">
+                     <%
+                     i = 1
+                      if @ListLeaveSummary && @ListLeaveSummary.length >0
+                         @ListLeaveSummary.each do |newmeb|
+                         departname     = ""
+                         memberinchrge  = ""
+                         superannuation = ""
+                         joiningdate    = ""
+                         depobj  =  get_department_detail(newmeb.sw_depcode)
+                         if depobj
+                              departname = depobj.departDescription
+                              hodcode    = depobj.departHod
+                               hodobjs = get_first_my_sewadar(hodcode)
+                               if hodobjs
+                                  memberinchrge = hodobjs.lds_name
+                               end
+                         end
+                         officeobj = get_global_office_detail(newmeb.sw_sewcode)
+                         if officeobj
+                             superannuation  = officeobj.so_superannuationdate
+                             joiningdate     = officeobj.so_joiningdate
+                         end
+                         elob     = get_opening_balance(newmeb.sw_sewcode,'EL',@from_date,@upto_date)
+                         elcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'EL')
+                         eldebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'EL')
+                         elbal    = (elob.to_f+elcredit.to_f).to_f-eldebit.to_f
+                         ######## FOR CL ###########
+                         clob     = get_opening_balance(newmeb.sw_sewcode,'CL',@from_date,@upto_date)
+                         clcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'CL')
+                         cldebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'CL')
+                         clbal    = (clob.to_f+clcredit.to_f).to_f-cldebit.to_f
+
+                        ######## FOR CO###########
+                         coob     = get_opening_balance(newmeb.sw_sewcode,'CO',@from_date,@upto_date)
+                         cocredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'CO')
+                         codebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'CO')
+                         cobal    = (coob.to_f+cocredit.to_f).to_f-codebit.to_f
+                         ######## FOR ML( Maternity Leave ) ###########
+                         mlob     = get_opening_balance(newmeb.sw_sewcode,'ML',@from_date,@upto_date)
+                         mlcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'ML')
+                         mldebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'ML')
+                         mlbal    = (mlob.to_f+mlcredit.to_f).to_f-mldebit.to_f
+                         ######## FOR LWM###########
+                         lwmob     = get_opening_balance(newmeb.sw_sewcode,'LWM',@from_date,@upto_date)
+                         lwmcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'LWM')
+                         lwmdebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'LWM')
+                         lwmbal    = (lwmob.to_f+lwmcredit.to_f).to_f-lwmdebit.to_f
+                         ######## FOR OD ###########
+                         odob     = get_opening_balance(newmeb.sw_sewcode,'OD',@from_date,@upto_date)
+                         odcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'OD')
+                         oddebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'OD')
+                         odbal    = (odob.to_f+odcredit.to_f).to_f-oddebit.to_f
+
+                         ######## FOR SPL ###########
+                         splob     = get_opening_balance(newmeb.sw_sewcode,'SPL',@from_date,@upto_date)
+                         splcredit = get_credited_leave_listed(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'SPL')
+                         spldebit  = get_user_availed_listings(@compCodes,newmeb.sw_sewcode,@from_date,@upto_date,'SPL')
+                         splbal    = (splob.to_f+splcredit.to_f).to_f-spldebit.to_f
+                         totalelcl = eldebit.to_f+cldebit.to_f
+                     %>
+                    <tr>
+                    <td><%=i%></td>
+                    <td><%=newmeb.sw_catgeory%></td> 
+                    <td><%=newmeb.sw_sewcode%></td> 
+                    <td><%=newmeb.sw_sewadar_name%></td>
+                    <td><%=departname%></td>
+                    <td><%=memberinchrge%></td>
+                    <td><%=formatted_date(joiningdate)%></td>
+                    <td><%=formatted_date(superannuation)%></td>
+                    <td><%=elob%></td>
+                    <td><%=elcredit%></td> 
+                    <td><%=eldebit%></td> 
+                    <td><%=elbal%></td>
+                    <td><%=clob%></td>
+                    <td><%=clcredit%></td> 
+                    <td><%=cldebit%></td> 
+                    <td><%=clbal%></td> 
+                    <td><%=coob%></td>
+                    <td><%=cocredit%></td> 
+                    <td><%=codebit%></td> 
+                    <td><%=cobal%></td> 
+                    <td><%=mlob%></td>
+                    <td><%=mlcredit%></td> 
+                    <td><%=mldebit%></td> 
+                    <td><%=mlbal%></td> 
+                   
+                    <td><%=lwmob%></td>
+                    <td><%=lwmcredit%></td> 
+                    <td><%=lwmdebit%></td> 
+                    <td><%=lwmbal%></td> 
+                    <td>--</td>
+                    <td>--</td> 
+                    <td><%=oddebit%></td> 
+                    <td>--</td> 
+                    <td><%=splob%></td>
+                    <td><%=splcredit%></td> 
+                    <td><%=spldebit%></td> 
+                    <td><%=splbal%></td> 
+                    <td><%=totalelcl%></td>
+                    <td><%=lwmdebit%></td>
+
+
+                    </tr>
+                    <%
+                     i +=1
+                        end
+                      end  
+                    %>
+                    </tbody>
+                </table>
+              
+              </div>
+               
+              </div>
+              
+            
+          </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

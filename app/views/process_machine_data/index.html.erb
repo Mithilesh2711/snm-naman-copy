@@ -1,0 +1,60 @@
+	<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<h3 class="page-title">Process Machine Data</h3>
+								 <%=render'layouts/breadcrumbs'%>
+							</div>
+							
+						</div>
+					</div>
+					<!-- /Page Header -->
+			             <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+					<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+					  <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                      <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+						<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row ">
+					   <label class="col-form-label col-md-2">Process for Date <span class="mandatory">*</span></label>
+					   <div class="col-md-3 info ">
+						<input type="text" autocomplete="off" class="form-control  " required maxlength="3" name="from_date" id="from_date" value="<% if @from_date %><%=formatted_date(@from_date)%><% end %>"/>
+						</div>
+
+					<label class="col-form-label col-md-2 hidden">Upto Date  <span class="mandatory">*</span></label>
+					   <div class="col-md-3 hidden">
+					   	<input type="hidden" autocomplete="off" class="form-control" required maxlength="50" name="sts_description" id="sts_description" value=""/> 
+						</div>
+				    </div>
+					<div id="process_dailyattd" class="process_dailyattd hidden" style="text-align:center"><img src="<%=root_url%>images/spining_loader.gif"/></div>
+					<div class="submit-section">
+					<button class="btn btn-primary submit-btn noprocess_dailyattd" onclick="process_biomatric_data();" type="button">Process Biomatric Data</button>
+					
+				</div>
+				<div class="submit-section hidden">
+					*** Process will be run auto 
+				</div>
+				</div>
+			
+
+				</div>
+					
+                          
+					<!-- Search Filter -->
+					
+					 
+				
+            </div>
+			  <% end %>
+			<!-- /Page Wrapper -->

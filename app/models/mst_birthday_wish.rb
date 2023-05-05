@@ -1,0 +1,2 @@
+class MstBirthdayWish < ApplicationRecord
+end

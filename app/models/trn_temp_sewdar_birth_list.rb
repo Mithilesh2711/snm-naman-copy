@@ -1,0 +1,2 @@
+class TrnTempSewdarBirthList < ApplicationRecord
+end

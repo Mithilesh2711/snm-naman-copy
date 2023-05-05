@@ -1,0 +1,148 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">HR Announcements List</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+          
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+          
+                         <div class="row filter-row" style="background:#87ceeb38;padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+
+          <div class="col-sm-6 col-md-2">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments">
+            <%
+          if @markedAllowed
+          %>
+          <option value="">-Select -</option>
+          <% end %>
+          <%
+            
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+          <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          <label class="focus-label">Department</label>
+          </div>
+          </div>
+
+
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+          <select class="form-control" name="sewadar_codetype" id="sewadar_codetype" >
+            <option value="">-Select-</option>
+          <option value="Y" <% if @sewadar_codetype !=nil && @sewadar_codetype.to_s == 'Y'%> selected="selected"<% end %>  >Active</option>
+          <option value="N" <% if @sewadar_codetype !=nil && @sewadar_codetype.to_s == 'N'%> selected="selected"<% end %>>In-Active</option>
+
+          </select>
+          <label class="focus-label">Active/In-active</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-1 m-t-5" >
+          <a href="javascript:;" style="padding: 14px;" onclick="filter_announcement();" class="btn btn-success btn-sm"  > Search </a>
+          </div>
+
+          <div class="col-sm-6 col-md-1 m-t-5" >
+             <a href="<%=root_url%>ec_announcement/ec_announcement_refresh" style="padding: 14px;" class="btn btn-success btn-sm"> Reset </a>
+          </div>
+          </div>
+<% end %>
+               
+          
+          <!-- /Leave Statistics -->
+          
+          <div class="row">
+            <div class="col-md-12">
+                <div >
+                                    <a href="<%=root_url%>ec_announcement/add_announcement" class="btn add-btn float-left">Add EC Announcement</a>
+
+                                  </div>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      
+                      <th>Sl. No.</th>
+                      <th>Publish Date</th>
+                      <th>Publish Time</th>
+                      
+                      <th class="text-center">Department</th>
+                      <th>Announcement</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%
+                    i = 1
+                     if @announcementListed && @announcementListed.length >0
+                      @announcementListed.each do |newanc|
+                          departmt = ""
+                          deprtsobj = get_department_detail(newanc.ans_posteddashboard)
+                          if deprtsobj
+                            departmt = deprtsobj.departDescription
+                          else
+                            departmt = "All"
+                          end
+                      %>
+                    <tr>
+                      <td><%=i%></td>
+                      <td class="wrap-txt"><%=format_oblig_date(newanc.ans_publishdate)%></td>
+                      <td><%=newanc.ans_publishtime%></td>
+                      <td class="text-center"><%=departmt%></td>
+                      <td><%=newanc.ans_announcment%></td>
+                      <td><%=newanc.ans_status%></td>
+                       <td class="text-center">
+                         <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                           <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>ec_announcement/add_announcement/<%=newanc.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item"  onclick="alertChecked('<%=root_url%>ec_announcement/<%=newanc.id%>/cancel')" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                         </div>
+                       </td>
+                       
+                       </tr>
+                       <%
+                         i +=1
+                         end
+                       end
+                       %>
+                   </tbody>
+                </table>
+               
+              </div>
+            </div>
+          </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

@@ -1,0 +1,52 @@
+	<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                <div class="content container-fluid">
+				
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<h3 class="page-title">Process Machine Data</h3>
+								 <%=render'layouts/breadcrumbs'%>
+							</div>
+							
+						</div>
+					</div>
+					<!-- /Page Header -->
+					
+						<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row hidden">
+					<label class="col-form-label col-md-2">From Date <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<input type="text" autocomplete="off" class="form-control  " required maxlength="3" name="sts_code" id="sts_code" value=""/></div>
+
+					<label class="col-form-label col-md-2">Upto Date  <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" autocomplete="off" class="form-control" required maxlength="50" name="sts_description" id="sts_description" value=""/> </div>
+				</div>
+					<div class="submit-section hidden">
+					<button class="btn btn-primary submit-btn" type="submit">Submit</button>
+					
+				</div>
+				</div>
+			
+
+				</div>
+					 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+					<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                            <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                            <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+					<!-- Search Filter -->
+					
+					   <% end %>
+				
+            </div>
+			<!-- /Page Wrapper -->

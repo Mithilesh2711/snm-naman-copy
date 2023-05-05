@@ -1,0 +1,204 @@
+<div class="page-wrapper">
+<input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+<input type="hidden" id="mid" name="mid" value="<% if @seawdarsobj %><%=@seawdarsobj.id%><% end %>"/>
+<input type="hidden" name="currentimg" id="currentimg" value="<% if @seawdarsobj %><%=@seawdarsobj.sw_image%><% end %>"/>
+<input type="hidden" name="myattachpropfile" id="myattachpropfile" value=""/>
+
+<input type="hidden" name="authorizeduser" id="authorizeduser" value="<% if session[:autherizedUserType] %><%=session[:autherizedUserType]%><% end %>"/>
+
+<div class="content container-fluid">
+
+<!-- Page Header -->
+<div class="page-header">
+<div class="row align-items-center">
+<div class="col">
+<div class="row">
+<h3 class="page-title col-md-10">Add Sewadar</h3>
+<%
+     if session[:autherizedUserType] && session[:autherizedUserType].to_s != 'swd'
+   %>
+<div class="col-md-2 m-b-5 ">
+<a href="<%=root_url%>sewadar_information" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+</div>
+<% end %>
+</div>
+<%=render'layouts/breadcrumbs'%>
+</div>
+</div>					</div>
+<!-- /Page Header -->
+
+<div class="card mb-0">
+<div class="card-body">
+<div class="row m-t-10">
+
+<%
+myimages = "https://user.gadjian.com/static/images/personnel_boy.png"
+if @seawdarsobj
+if @seawdarsobj.sw_image !=nil && @seawdarsobj.sw_image !=''
+chekpath = "#{Rails.root}/public/images/sewadar/"+@seawdarsobj.sw_image.to_s
+if File.file?(chekpath)
+myimages = "#{root_url}images/sewadar/"+@seawdarsobj.sw_image.to_s
+end
+
+end
+end
+
+%>
+<div class="col-md-2">
+<div class="profile-img-wrap edit-img">
+<img src="<%=myimages%>" class=" img-responsive img-thumbnail" id="item-img-output" />
+
+<div class="fileupload btn">
+<span class="btn-text">Upload</span>
+<input type="file" class="upload item-img file center-block" name="sw_image" id="sw_image"/>
+</div>
+</div>
+
+</div>
+<div class="col-md-10">
+
+
+
+
+
+<div class="form-group row">
+
+<label class="col-form-label col-md-2">Category <span class="mandatory">*</span></label>
+<div class="col-md-4">
+  <%
+  if @seawdarsobj == nil
+%>
+<select class="form-control" required name="sw_catgeory" id="sw_catgeory" onchange="get_sewadar_series_bycategory();">
+<option value="">-Select-</option>
+
+<%
+if @sewadarCategory.length >0
+@sewadarCategory.each do |newcats|
+%>
+<option value="<%=newcats.sc_name%>" <% if @seawdarsobj && @seawdarsobj.sw_catgeory.to_s.delete(" ") == newcats.sc_name.to_s.delete(" ") %>selected="selected"<% end %> ><%=newcats.sc_name%></option>
+<%
+end
+end
+%>
+
+</select>
+  <%
+   else
+  %>
+  <input type="text" required autocomplete="off" placeholder="sewadar code" readonly="" class="form-control " name="sw_catgeory" id="sw_catgeory" value="<% if @seawdarsobj %><%=@seawdarsobj.sw_catgeory%><% end %>"/>
+  <% end %>
+
+</div>
+
+<label class="col-form-label col-md-2">Sewadar Code <span class="mandatory">*</span></label>
+
+<div class="col-md-2">
+
+<input type="text" required autocomplete="off" placeholder="sewadar code" readonly="" class="form-control " name="sw_sewcode" id="sw_sewcode" value="<% if @seawdarsobj %><%=@seawdarsobj.sw_sewcode%><% end %>"/>
+</div>
+</div>
+
+<div class="form-group row">
+<label class="col-form-label col-md-2">Sewadar Name <span class="mandatory">*</span></label>
+
+<div class="col-md-4 info">
+
+<select class="form-control wd100" name="sw_sewadar_prefix" id="sw_sewadar_prefix">
+<option value="Mr" <% if @seawdarsobj && @seawdarsobj.sw_sewadar_prefix.to_s =='Mr'%>selected="selected"<% end %>>Mr.</option>
+<option value="Mrs" <% if @seawdarsobj && @seawdarsobj.sw_sewadar_prefix.to_s =='Mrs'%>selected="selected"<% end %>>Ms.</option>
+<!--<option value="Miss" <% if @seawdarsobj && @seawdarsobj.sw_sewadar_prefix.to_s =='Miss'%>selected="selected"<% end %>>Miss</option>-->
+<option>Dr.</option>
+</select>
+
+<input type="text" class="form-control" name="sw_sewadar_name" id="sw_sewadar_name" value="<% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %>"/>
+
+</div>
+	<label class="col-form-label col-md-2">Gender</label>
+					<div class="col-md-3">
+				<select class="form-control wd100" name="sw_gender" id="sw_gender" onchange="check_father_husband();">
+                        <option value="">-Select-</option>
+<option value="M" <% if @seawdarsobj && @seawdarsobj.sw_gender.to_s =='M'%>selected="selected"<% end %>>MALE</option>
+<option value="F" <% if @seawdarsobj && @seawdarsobj.sw_gender.to_s =='F'%>selected="selected"<% end %>>FEMALE</option>
+
+</select></div>
+
+
+</div>
+<div class="form-group row"> 
+	<label class="col-form-label col-md-2">Date of Birth<span class="mandatory">*</span></label>
+<div class="col-md-4 ">
+<div class="cal-icon">
+<input class="form-control " onchange="process_on_changed();" autocomplete="off" type="text" name="sw_date_of_birth" id="sw_date_of_birth" value="<% if @seawdarsobj %><%=formatted_date(@seawdarsobj.sw_date_of_birth)%><% end %>"/>
+</div> </div>
+<label class="col-form-label col-md-3 age_calcualted" style="color:#018de4">Age: <% if @seawdarsobj %><%=get_dob_calculate(format_oblig_date(@seawdarsobj.sw_date_of_birth))%><% end %></label>
+
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+
+<div class="card tab-box">
+<div class="row user-tabs">
+<div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+<ul class="nav nav-tabs nav-tabs-bottom">
+<li class="nav-item"><a href="#emp_profile" data-toggle="tab" class="nav-link active presonalinfo">Personal Info</a></li>
+<li class="nav-item"><a href="#emp_office" data-toggle="tab" class="nav-link emp_office">Office</a></li>
+<li class="nav-item"><a href="#emp_kyc" data-toggle="tab" class="nav-link emp_kyc">KYC</a></li>
+  <%
+    if @ManageActionList !=nil && @ManageActionList.to_s=='MA'
+  %>
+<li class="nav-item"><a href="#maintain" data-toggle="tab" class="nav-link maintain">Maintainence Allowance</a></li>
+<% end %>
+
+
+
+</ul>
+</div>
+</div>
+</div>
+
+<div class="tab-content">
+
+<!-- Profile Info Tab -->
+<%=render'layouts/sewatool/personal_info'%>				
+
+<!-- /Profile Info Tab -->
+
+<!-- Office Info Tab -->
+<%=render'layouts/sewatool/office_info'%>
+<!-- office Info Tab -->
+
+<!-- KYC Info Tab -->                                                 
+<%=render'layouts/sewatool/kyc_info'%>						
+<!-- /KYC Info Tab -->
+
+
+<%=render'layouts/sewatool/maintainence'%>
+</div>
+</div>
+<!-- /Page Content -->
+</div>
+
+<%=render'layouts/popupmessage'%>
+<div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<h4 class="modal-title" id="myModalLabel">
+<?=multiLanguage( "Edit Foto" , "Edit Photo" )?></h4>
+</div>
+<div class="modal-body">
+<div id="upload-demo" class="center-block"></div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+</div>
+</div>
+</div>
+</div>

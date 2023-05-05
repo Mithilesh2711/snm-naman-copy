@@ -1,0 +1,136 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Generate Issue Slip</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+    <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+    <input type="hidden" name="server_request" id="server_request" value="Y"/>
+    <input type="hidden"  id="userXRoot" value="<%=root_url%>"/>
+               <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department">
+                                                                  <option value=""> -- Select -- </option>
+                                                                    <%
+                                                                     if @sewDepart && @sewDepart.length >0
+                                                                     @sewDepart.each do |depts|
+                                                                  %>
+                                                                    <option value="<%=depts.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == depts.departCode.to_s.downcase%>selected="selected"<% end %>><%=depts.departDescription%></option>
+                                                                  <%
+                                                                   end
+                                                                 end
+                                                                 %>
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_category" id="voucher_category">
+                     <option value="">--Select--</option>
+                         <%
+                             if @sewadarCategory && @sewadarCategory.length >0
+                             @sewadarCategory.each do |secats|
+                          %>
+                            <option value="<%=secats.sc_name%>" <% if @voucher_category && @voucher_category.to_s.downcase == secats.sc_name.to_s.downcase%>selected="selected"<% end %> ><%=secats.sc_name%></option>
+                          <%
+                           end
+                         end
+                         %>
+                </select>
+                <label class="focus-label">Sewadar </label>
+              </div>
+             </div>
+               <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_loantype" id="sewadar_loantype">
+                  <option value="">-Select-</option>
+                   
+                </select>
+                <label class="focus-label">Product</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" name="sewadar_reqtype" id="sewadar_reqtype">
+                  <option value=""> --Select --</option>
+                  <option value="A" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'A'%>selected="selected"<% end %> >Approve</option>
+                  <option value="N" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'N'%>selected="selected"<% end %> >Hold </option>
+                  <option value="R" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'R'%>selected="selected"<% end %> >Reject</option>
+
+                                                                           
+                </select>
+                <label class="focus-label">Status</label>
+              </div>
+             </div>
+             
+            
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div>
+    <% end %>
+    <div class="row m-t-15">
+      <div class="col-md-12">
+      
+        <div class="table-responsive">
+<table class="table table-striped  mb-0 ">
+<thead class="new_tblhead">
+<tr>
+      <th>SNo</th>
+
+<th>Department</th>
+<th >Sewadar Code</th>
+<th>Sewadar Name </th>
+<th>Product Name</th>
+                      <th class="text-center">Quantity</th>
+                      <th>Status</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+    <td>1</td>
+<td>Accounts</td>
+<td>SD0001</td>
+<td>Narinder Pal</td>
+<td>Pens</td>
+<td>50</td>
+
+    <td class="text-center">
+     <a href="#
+" class="btn btn-success btn-sm" title="Generate">Generate Issue Slip</a>
+                      </td>
+
+</td>
+
+</tr>
+
+
+</tbody>
+</table>
+                                
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+</div>
+</div>

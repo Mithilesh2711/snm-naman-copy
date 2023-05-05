@@ -1,0 +1,130 @@
+
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Manage Ticket</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+				
+		</div>
+		<!-- /Page Header -->
+		<!-- Search Filter -->
+					<div class="row filter-row">
+					    <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating datetimepicker" type="text">
+								</div>
+								<label class="focus-label">From Date</label>
+							</div>
+						</div>
+					   <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+							<div class="form-group form-focus">
+								<div class="cal-icon">
+									<input class="form-control floating datetimepicker" type="text">
+								</div>
+								<label class="focus-label">Upto Date</label>
+							</div>
+						</div>
+					   <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+							<div class="form-group form-focus select-focus">
+								<select class="form-control"> 
+									<option> -- Select -- </option>
+									
+								</select>
+								<label class="focus-label">Support Staff</label>
+							</div>
+					   </div>
+					   <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+							<div class="form-group form-focus select-focus">
+								<select class="form-control"> 
+									<option> -- Select -- </option>
+									
+								</select>
+								<label class="focus-label">Department</label>
+							</div>
+					   </div>
+					 	 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+							<div class="form-group form-focus select-focus">
+								<select class="form-control"> 
+									<option> -- Select -- </option>
+									<option>Open</option>
+									<option>Close</option>
+									<option>Completed</option>
+									
+								</select>
+								<label class="focus-label">Status</label>
+							</div>
+					   </div>
+					   <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+							<a href="#" class="btn btn-success btn-sm"><i class="la la-search"></i> Search </a>  
+					   </div>     
+                    </div>
+					<!-- /Search Filter -->
+					
+					<div class="row">
+						<div class="col-md-12">
+							<div class="table-responsive">
+								<table class="table   mb-0 ">
+									<thead>
+										<tr>
+											<th>Ticket No</th>
+											<th>Ticket Date</th>
+											<th>Query Raised By</th>
+											
+											<th>Dept</th>
+											<th>Query</th>
+											<th>Priority</th>
+											<th>Assign Support Staff</th>
+											<th>Final Remarks</th>
+
+											<th class="text-center">Status</th>
+											
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>
+												001
+											</td>
+											<td>08-09-2021</td>
+											<td>XYZ</td>
+											
+											<td>Accounts</td>
+											<td>Repairing</td>
+												<td>Level 1</td>
+											<td><select class="form-control">
+												<option>select</option>
+											</select></td>
+
+											<td><textarea  rows="2" class="form-control" placeholder="Enter text here"></textarea></td>
+											<td class="text-center">
+												<div class="dropdown action-label">
+														<a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-toggle="dropdown" aria-expanded="false">
+														<i class="fa fa-dot-circle-o text-purple"></i> Open
+													</a>
+													<div class="dropdown-menu dropdown-menu-right">
+														<a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-purple"></i> Open</a>
+														<a class="dropdown-item" href="#"><i class="fa fa-dot-circle-o text-info"></i> Close</a>
+														<a class="dropdown-item" href="#" ><i class="fa fa-dot-circle-o text-success"></i> Completed</a>
+													
+													</div>
+												</div>
+											</td>
+											
+										</tr>
+									
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+               
+	</div>
+	<!-- /Page Content -->
+</div>

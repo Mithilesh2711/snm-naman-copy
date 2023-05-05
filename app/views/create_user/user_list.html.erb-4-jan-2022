@@ -1,0 +1,170 @@
+<div class="page-wrapper">
+
+				<!-- Page Content -->
+                <div class="content container-fluid">
+
+					<!-- Page Header -->
+					<div class="page-header">
+						<div class="row align-items-center">
+							<div class="col">
+								<h3 class="page-title">Users</h3>
+								<ul class="breadcrumb">
+									<%=render'layouts/breadcrumbs'%>
+								</ul>
+							</div>
+
+						</div>
+					</div>
+					<!-- /Page Header -->
+
+					<!-- Search Filter -->
+                                         <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                            <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                            <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                            <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+					<div class="row filter-row">
+						<div class="col-sm-6 col-md-3">
+							<div class="form-group form-focus">
+								<input type="text" class="form-control floating" name="search_username" id="search_username" value="<% if @search_username %><%=@search_username%><% end %>"/>
+								<label class="focus-label">User Name</label>
+							</div>
+						</div>
+
+						<div class="col-sm-6 col-md-3">
+							<div class="form-group form-focus select-focus">
+								<select class="form-control" name="search_department" id="search_department">
+									<option value="">Select Department</option>
+									<%
+                                                                             if @ListDepart && @ListDepart.length >0
+                                                                               @ListDepart.each do |newdpt|
+                                                                            %>
+                                                                            <option value="<%=newdpt.departCode%>" <% if @search_department && @search_department.to_s.downcase == newdpt.departCode.to_s.downcase %>selected="selected"<% end %> ><%=newdpt.departDescription%></option>
+                                                                            <%
+                                                                              end
+                                                                            end
+                                                                            %>
+								</select>
+								
+							</div>
+						</div>
+						<div class="col-sm-6 col-md-4">
+								<a href="javascript:;" style="padding: 14px;" class="btn btn-success btn-sm" onclick="filter_users();" ><i class="la la-search"></i> Search </a>
+						</div>
+						<div class="col-md-2">
+							<a  href="<%=root_url%>create_user" class="btn add-btn" ><i class="fa fa-plus"></i> Add User</a>
+						</div>
+                    </div>
+                            <% end %>
+					<!-- /Search Filter -->
+
+					<div class="row">
+						<div class="col-md-12">
+
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<thead class="new_tblhead">
+										<tr>
+											<th>Sewadar Name</th>
+											<th>User Name</th>											
+											<th>User Type</th>
+                                                                                        <th>Created Date</th>
+											<th class="text-right">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+                                                                          <%
+                                                                            if @AllUsers && @AllUsers.length >0
+                                                                             @AllUsers.each do |newusers|
+                                                                              sewobjs     = get_sewdar_listed_detail(newusers.sewadarcode)
+                                                                              sewdarname  = ""
+                                                                              department = ""
+                                                                             
+                                                                              if sewobjs
+                                                                                sewdarname =  sewobjs.sw_sewadar_name
+                                                                                sewimg     =  sewobjs.sw_image
+                                                                                depcode    =  sewobjs.sw_depcode
+                                                                                myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                                                                                if sewimg
+                                                                                    if sewimg !=nil && sewimg !=''
+                                                                                        chekpath = "#{Rails.root}/public/images/sewadar/"+sewimg.to_s
+                                                                                        if File.file?(chekpath)
+                                                                                          myimages = "#{root_url}images/sewadar/"+sewimg.to_s
+                                                                                        end
+
+                                                                                    end
+                                                                                end
+                                                                                 deprtobj = get_all_department_detail(depcode)
+                                                                                  if deprtobj
+                                                                                    department = deprtobj.departDescription
+                                                                                  end
+                                                                                
+                                                                              end
+                                                                            %>
+										<tr>
+											<td>
+												<h2 class="table-avatar">
+													<a href="<%=root_url%>create_user/<%=newusers.id%>" class="avatar"><img src="<%=myimages%>" alt="<%=sewdarname%>"/></a>
+													<a href="<%=root_url%>create_user/<%=newusers.id%>"><%=sewdarname%> <span><%=department%></span></a>
+												</h2>
+											</td>
+											<td><%=newusers.username%></td>
+
+											<td>
+                                                                                          <%
+                                                                                          usertype = ""
+                                                                                          if newusers.usertype == 'adm'
+                                                                                            usertype = "Admin"
+                                                                                          elsif newusers.usertype == 'swd'
+                                                                                            usertype = "Sewadar"
+                                                                                          elsif newusers.usertype == 'spt'
+                                                                                            usertype = "Support Staff"
+                                                                                          end
+                                                                                         %>
+                                                                                        <%=usertype%>
+
+                                                                                        </td>
+											<td>
+                                                                                         
+												<%=formatted_date(newusers.created_at)%>
+											</td>
+											<td class="text-right">
+												<div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                                                                  <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>create_user/<%=newusers.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>create_user/<%=newusers.id%>/deletes');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                                                                                                </div>
+											</td>
+										</tr>
+                                                                                <%
+                                                                                 end
+                                                                                else
+                                                                               %>
+                                                                                <tr>
+                                                                                  <td colspan="4">No record(s) found.</td>
+                                                                                </tr>
+                                                                                <%
+                                                                                 end
+                                                                               %>
+										
+
+
+
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+                </div>
+				<!-- /Page Content -->
+
+
+
+
+
+
+            </div>
+			<!-- /Page Wrapper -->

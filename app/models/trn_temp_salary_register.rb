@@ -1,0 +1,2 @@
+class TrnTempSalaryRegister < ApplicationRecord
+end

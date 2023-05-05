@@ -1,0 +1,202 @@
+<div id="emp_profile" class="pro-overview tab-pane fade show active">
+                                                  <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:emp_profile_forms ) do  %>
+							<div class="row">
+								<div class="col-md-12 d-flex">
+									<div class="card profile-box flex-fill">
+										<div class="card-body">
+										<div class="row">
+												<div class="col-md-6 ">
+												<h3 class="card-title">Permanent Address</h3>
+											<div class="form-group row">
+					<label class="col-form-label col-md-5">House Address </label>
+					<div class="col-md-7">
+						<input type="text" required autocomplete="off"  class="form-control" name="sp_perma_houseaddress" id="sp_perma_houseaddress" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_perma_houseaddress%><% end %>"/> </div>
+
+											</div>
+											<div class="form-group row">
+					<label class="col-form-label col-md-5">District/City </label>
+					<div class="col-md-7">
+						<select class="form-control" name="sp_perma_distcity" id="sp_perma_distcity">
+							<option value="">-Select-</option>
+                                                        <%
+                                                         if @sewadarDist.length >0
+                                                           @sewadarDist.each do |newdist|
+                                                        %>
+                                                        <option value="<%=newdist.dts_districtcode%>" <% if @sewadarpersonal && @sewadarpersonal.sp_perma_distcity.to_s== newdist.dts_districtcode.to_s%>selected="selected"<% end %>><%=newdist.dts_description%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+						</select>
+                                        </div>
+
+											</div>
+												<div class="form-group row">
+					<label class="col-form-label col-md-5">-State/UT-</label>
+					<div class="col-md-7">
+						<select class="form-control" name="sp_perma_state" id="sp_perma_state">
+							<option value="">-Select-</option>
+                                                         <%
+                                                         if @sewadarState.length >0
+                                                           @sewadarState.each do |snewdist|
+                                                        %>
+                                                        <option value="<%=snewdist.sts_code%>" <% if @sewadarpersonal && @sewadarpersonal.sp_perma_state.to_s== snewdist.sts_code.to_s%>selected="selected"<% end %>><%=snewdist.sts_description%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+						</select></div>
+
+											</div>
+												<div class="form-group row">
+					<label class="col-form-label col-md-5">Pincode</label>
+					<div class="col-md-7">
+						<input type="text" required maxlength="12" autocomplete="off"  class="form-control wd100" name="sp_perma_pincode" id="sp_perma_pincode" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_perma_pincode%><% end %>"/>
+					</div>
+
+											</div>
+											</div>
+											<div class="col-md-6">
+												<h3 class="card-title">Present Address</h3>
+											<div class="form-group row">
+					<label class="col-form-label col-md-5">Resident Type </label>
+					<div class="col-md-7">
+					<select class="form-control" name="sp_pres_residenttype" id="sp_pres_residenttype" onchange="change_mandal_residencial_type(this.value);">
+						<option value="self-Owned" <% if @sewadarpersonal && @sewadarpersonal.sp_pres_residenttype.to_s == 'self-Owned'%>selected="selected"<% end %>>self-Owned</option>
+						<option value="Rented" <% if @sewadarpersonal && @sewadarpersonal.sp_pres_residenttype.to_s == 'Rented'%>selected="selected"<% end %>>Rented</option>
+                                                <option value="Mandal" <% if @sewadarpersonal && @sewadarpersonal.sp_pres_residenttype.to_s == 'Mandal'%>selected="selected"<% end %>>Mandal</option>
+					</select>
+					</div>
+
+											</div>
+
+                                        <%
+                                        nomandal    = "hidden"
+                                        allowmandal = ""
+                                          if @sewadarpersonal && @sewadarpersonal.sp_pres_residenttype.to_s == 'Mandal'
+                                            nomandal    = ""
+                                           allowmandal = "hidden"
+                                          end
+                                       %>
+											<div class="form-group row mandal_code <%=allowmandal%>">
+					<label class="col-form-label col-md-5">House Address </label>
+					<div class="col-md-7">
+						<input type="text"  autocomplete="off" maxlength="250"  class="form-control" name="sp_pres_houseaddress" id="sp_pres_houseaddress" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_pres_houseaddress%><% end %>"/> </div>
+
+											</div>
+											<div class="form-group row mandal_code <%=allowmandal%>">
+					<label class="col-form-label col-md-5">District/City </label>
+					<div class="col-md-7">
+						<select class="form-control" name="sp_pres_distcity" id="sp_pres_distcity">
+							<option value="">-Select-</option>
+                                                        <%
+                                                         if @sewadarDist.length >0
+                                                           @sewadarDist.each do |newdist|
+                                                        %>
+                                                        <option value="<%=newdist.dts_districtcode%>" <% if @sewadarpersonal && @sewadarpersonal.sp_pres_distcity.to_s== newdist.dts_districtcode.to_s%>selected="selected"<% end %>><%=newdist.dts_description%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+						</select></div>
+
+											</div>
+												<div class="form-group row mandal_code <%=allowmandal%>">
+					<label class="col-form-label col-md-5">State/UT</label>
+					<div class="col-md-7">
+						<select class="form-control" name="sp_pres_state" id="sp_pres_state">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @sewadarState.length >0
+                                                           @sewadarState.each do |snewdist|
+                                                        %>
+                                                        <option value="<%=snewdist.sts_code%>" <% if @sewadarpersonal && @sewadarpersonal.sp_pres_state.to_s== snewdist.sts_code.to_s%>selected="selected"<% end %>><%=snewdist.sts_description%></option>
+                                                        <%
+                                                         end
+                                                       end
+                                                       %>
+						</select></div>
+
+											</div>
+												<div class="form-group row mandal_code <%=allowmandal%>">
+					<label class="col-form-label col-md-5">Pincode</label>
+					<div class="col-md-7">
+						<input type="text" onkeypress="return isNumberKeys(event);" required autocomplete="off"  class="form-control wd100" name="sp_pres_pincode" id="sp_pres_pincode" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_pres_pincode%><% end %>"/>
+					</div>
+
+											</div>
+
+                                                                                      <div class="form-group row nomandal_code <%=nomandal%>">
+                                                                                              <label class="col-form-label col-md-5">Mandal Code</label>
+                                                                                              <div class="col-md-7">
+                                                                                                      <input type="text" maxlength="10"  required autocomplete="off"  class="form-control wd100" name="sp_mandalcode" id="sp_mandalcode" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_mandalcode%><% end %>"/>
+                                                                                              </div>
+
+											</div>
+                                                                                                
+											</div>
+										</div>
+										</div>
+									</div>
+								</div>
+
+
+									<div class="col-md-12 d-flex">
+									<div class="card profile-box flex-fill">
+									<div class="card-body">
+											<h3 class="card-title">Contact Info</h3>
+											<div class="form-group row">
+					<label class="col-form-label col-md-2">Mobile No</label>
+					<div class="col-md-2">
+                                          <input type="text" onkeypress="return isNumberKeys(event);" required autocomplete="off" maxlength="10" class="form-control " name="sp_mobileno" id="sp_mobileno" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_mobileno%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Office Mobile No</label>
+					<div class="col-md-2">
+					<input type="text" onkeypress="return isNumberKeys(event);" required autocomplete="off"  maxlength="10" class="form-control" name="sp_officemobno" id="sp_officemobno" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_officemobno%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Landline No</label>
+					<div class="col-md-2">
+					<input type="text" onkeypress="return isNumberKeys(event);" required autocomplete="off" maxlength="12"  class="form-control " name="sp_landlineno" id="sp_landlineno" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_landlineno%><% end %>"/>
+					</div>
+
+											</div>
+											<div class="form-group row">
+					<label class="col-form-label col-md-2">Personal Email</label>
+					<div class="col-md-2">
+					<input type="text" required autocomplete="off" maxlength="60"  class="form-control " name="sp_personal_email" id="sp_personal_email" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_personal_email%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Official Email</label>
+					<div class="col-md-2">
+					<input type="text" required autocomplete="off" maxlength="60"  class="form-control " name="sp_officialmail" id="sp_officialmail" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_officialmail%><% end %>"/>
+					</div>
+
+
+											</div>
+											<h3 class="card-title">Emergency Info</h3>
+											<div class="form-group row">
+					<label class="col-form-label col-md-2">Name</label>
+					<div class="col-md-2">
+					<input type="text" required autocomplete="off" maxlength="50" class="form-control " name="sp_emergency_name" id="sp_emergency_name" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_name%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Relation</label>
+					<div class="col-md-2">
+					<input type="text" required autocomplete="off" maxlength="50" class="form-control " name="sp_emergency_relation" id="sp_emergency_relation" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_relation%><% end %>"/>
+					</div>
+					<label class="col-form-label col-md-2">Mobile No</label>
+					<div class="col-md-2">
+					<input type="text" onkeypress="return isNumberKeys(event);" required autocomplete="off" maxlength="10" class="form-control " name="sp_emergency_mobno" id="sp_emergency_mobno" value="<% if @sewadarpersonal %><%=@sewadarpersonal.sp_emergency_mobno%><% end %>"/>
+					</div>
+
+											</div>
+                                        <div class="submit-section process_save">
+                                           <a href="javascript:;" onclick="create_sewdar_header();"><button class="btn btn-primary submit-btn" type="button">Save & Next</button></a>
+                                       </div>
+										</div>
+									</div>
+								</div>
+                                                           <% end %>
+							</div>
+
+
+
+						</div>

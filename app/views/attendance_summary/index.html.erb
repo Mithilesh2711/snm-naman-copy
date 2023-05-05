@@ -1,0 +1,422 @@
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+            <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+     
+         <%= render "layouts/breadcrumbs" %>
+        
+          <!-- Page Header -->
+          <div class = "portlet">
+          <div class = "portlet-body">
+          <div class="page-header">
+            <div class="row align-items-center">
+              
+              <div class="col-md-12">
+              <label class="cust_info">Attendance Summary</label>
+            </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+       
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+           <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+           <input type="hidden" id="server_request" name="server_request" value="Y"/>
+           <input type="hidden" name="postdata" id="postdata"  value=""/>
+              <div class="form-group row">
+        
+          <label class="col-md-2 lbl_name1 ">
+           Year
+                     </label>
+                  
+            <div class="col-md-2">
+          <select class="form-control" id="hph_years" name="hph_years"  onchange="get_selected_months_year();">
+              <option value="">-Select-</option>
+               <%
+               prevdate = @nbegindate
+               newprvs  = @nbegindate.to_i+2
+               while prevdate.to_i <=newprvs.to_i do
+              %>
+               <option value="<%=prevdate.to_i%>" <% if @HeadHrp && @HeadHrp.hph_years.to_i == prevdate.to_i  %>selected="selected" <% elsif prevdate.to_i == @nbegindate.to_i%> selected="selected"<% end %>><%=prevdate.to_i%></option>
+               <%
+               prevdate= prevdate.to_i+1
+               end
+               %>
+               
+          </select>
+              
+           </div>
+                  <label class="col-md-2 lbl_name1 ">
+                          Month
+                     </label>
+                  
+            <div class="col-md-2">
+          <select class="form-control" name="hph_months" id="hph_months" onchange="get_selected_months_year();">
+                <option value="">-Select-</option>
+                <option value="1"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 1%> selected="selected" <% end %> >Jan</option>
+               <option value="2"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 2%> selected="selected" <% end %>>Feb</option>
+               <option value="3"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 3%> selected="selected" <% end %>>Mar</option>
+               <option value="4"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 4%> selected="selected" <% end %>>Apr</option>
+               <option value="5"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 5%> selected="selected" <% end %>>May</option>
+               <option value="6"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 6%> selected="selected" <% end %>>Jun</option>
+               <option value="7"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 7%> selected="selected" <% end %>>Jul</option>
+               <option value="8"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 8%> selected="selected" <% end %>>Aug</option>
+               <option value="9"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 9%> selected="selected" <% end %>>Sep</option>
+               <option value="10"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 10%> selected="selected" <% end %>>Oct</option>
+               <option value="11"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 11%> selected="selected" <% end %>>Nov</option>
+               <option value="12"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 12%> selected="selected" <% end %>>Dec</option>
+          
+          </select>                              
+           </div>
+        </div>          
+          <div class="row filter-row" style="padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+          <div class = "row">
+           <div class ="col-md-12 d-flex">
+        
+            <div class ="col-md-1">
+             <label class="focus-label">Department</label>
+            </div>
+           <div class="col-sm-6 col-md-2">
+          <div class="form-group">
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments" onchange="get_all_sewadar_by_department();" >
+          <%
+          if @sewDepart && @sewDepart.length >1
+          %>
+          <option value="">-Select -</option> 
+          <% end %> 
+          <%            
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+          <option value="<%=nedpts.departCode%>" <% if @department && @department.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          
+          </div>
+          </div>
+                
+          <div class ="col-md-1">
+             <label class="focus-label">Sewadar</label>
+            </div>
+          <div class="col-sm-2 col-md-2">
+         <select class="form-control" name="myemployee" id="myemployee">
+         <%
+          if  @Allsewobj &&  @Allsewobj.length >1
+         %>
+           <option value="">-Select-</option>
+           <% end %>
+           <%
+            if  @Allsewobj &&  @Allsewobj.length >0
+               @Allsewobj.each do |swds|
+           %>           
+           <option value="<%=swds.sw_sewcode%>" <% if @myemployee && @myemployee.to_s == swds.sw_sewcode.to_s %>selected="selected"<% end %>><%=swds.sw_sewadar_name%> (<%=swds.sw_sewcode.to_s%>)</option>
+           <%
+               end
+             end
+           %>
+         </select>
+          </div>
+          
+          <div class ="col-md-1">
+             <label class="focus-label">From Date</label>
+            </div>
+          <div class="col-sm-3 col-md-2 ">
+         <input type="text" autocomplete="false" readonly class="form-control" name="fromdate" id="fromdate" value="<% if @fromdate!=nil %><%=formatted_date(@fromdate)%><% else %><%=formatted_date(@nbegindates)%><% end %>"/>
+          </div>
+
+          <div class ="col-md-1">
+             <label class="focus-label">Upto Date</label>
+            </div>
+          <div class="col-sm-3 col-md-2  md-14">
+          <input type="text" autocomplete="false"  readonly class="form-control" name="uptodate" id="uptodate" value="<% if @uptodate!=nil %><%=formatted_date(@uptodate)%><% else %><%=formatted_date(@enddates)%><% end %>"/>
+          </div>
+           
+          </div>
+         
+
+          
+          </div>
+          <br/>
+          <div>&nbsp;</div>
+          <div tyle="padding-left:808px;">&nbsp;</div>
+          <div class="notprocessdone hidden">Processing...</div>
+           <div style="padding-left:808px; " class="processdone">
+           <br/>
+           <a href="javascript:;" class="btn btn-success btn-sm"  title="Press for search" onclick="filter_attendance_summary();"><i class="la la-search"></i> Search </a> 
+             
+                                       
+          </div>
+
+         
+          <!-- /Leave Statistics -->
+          
+         
+                </div>
+                <%
+                if @AttendanceList && @AttendanceList.length >0
+                %>
+                <div style="text-align:right">
+                <%
+                if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] != 'ec' && session[:requestuser_loggedintp] != 'cod' )
+                %>
+                    <a href="javascript:;" class="btn btn-success btn-sm"  title="Press for posting data" onclick="posting_attendance_summary();">Post Data </a> 
+                    <% end %>
+                    <a href="javascript:;"  class="btn btn-white" onclick="printToExcel('printperformance');">
+                       <img src="<%=root_url%>/images/excel.png" width="40px">
+                    </a>
+                     <a href="<%=root_url%>attendance_summary/1_prt_attendance_summary.pdf" target="_blank" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</a>
+                </div>
+                <% end %>
+                 <div class="row" >
+
+           
+           <div  class="table-responsive  col-md-12 mt10" style="overflow-x: scroll;" id="">
+                <table class="table newtable" id="printperformance">
+                <thead class="head_table">
+                
+                <tr>
+                <th>SL.No.</th>
+                   <th>Code</th>
+                   <th>Name</th>
+                   <th>Department</th>                  
+                   <th>Present</th>
+                   <th>Absent+LWP</th>                   
+                   <th>Holiday</th>
+                   <th>Weekly Off</th>
+                   <th>Leave</th>
+                   <th>Paid Days</th>
+                  
+                   <th>Late</th>
+                   <th>Early</th>
+                    <th>Total Days</th>
+                   <th>Mis Punch</th>
+                </tr>
+                </thead>
+                
+                
+                <tbody>
+                
+                   
+                 <!----repeating row starts-->
+
+
+   
+                    <%
+                    i = 1
+                     if @AttendanceList && @AttendanceList.length >0
+                       @AttendanceList.each do |newattd|                    
+                            sewdar      = ""
+                            lds_profile = ""
+                            desicode    = ""
+                            department  = ""
+                            oldsewadar  = ""
+                            sw_catgeory = ""
+                            location    = ""
+                            catcode     = ""
+                            sewnmaesobj = get_mysewdar_list_details(newattd.al_empcode)
+                            if sewnmaesobj                                                                                  
+                              lds_profile   = sewnmaesobj.sw_image
+                              sewdar        = sewnmaesobj.sw_sewadar_name
+                              desicode      = sewnmaesobj.sw_desigcode
+                              oldsewadar    = sewnmaesobj.sw_oldsewdarcode
+                              sw_gender     = sewnmaesobj.sw_gender
+                              sw_catgeory   = sewnmaesobj.sw_catgeory
+                              catcode       = sewnmaesobj.sw_catcode
+                              dobs          = sewnmaesobj.sw_date_of_birth
+                             
+                              deprtobj      = get_all_department_detail(sewnmaesobj.sw_depcode)
+                              if deprtobj
+                                department  = deprtobj.departDescription
+                              end
+                              locobj        = get_location_detail(sewnmaesobj.sw_location)
+                              if locobj
+                                  location  = locobj.hof_description
+                              end
+
+                            end
+                            desiname  = ""
+                            sewdesobj = get_sewdar_designation_detail(desicode)
+                            if sewdesobj
+                              desiname = sewdesobj.ds_description
+                            end 
+                            
+                    %>
+
+                    <%
+                       whrsfirst     = 0
+                       whrsmnsfirst  = 0
+                       ovhrsfirst    = 0
+                       ovhrsmnsfirst = 0
+                       presents      = 0 
+                       absent        = 0  
+                       wo            = 0 ## weekly off
+                       hl            = 0 ## holiday
+                       lwp           = 0 ## leave withoy pay
+                       lp            = 0 ## leave with pay 
+                       hlfd          = 0 ## half days
+                       nebsents      = 0
+                       tholidy       = 0
+                       latecount     = 0
+                       earlycount    = 0
+                       mispuchcount  = 0
+                       mypaiddays    = 0
+                      adysobj        = get_perday_attendance(newattd.al_empcode,'',@fromdate,@uptodate)
+                       for c in 1..31 do
+                     
+                        if adysobj && adysobj.length >0
+
+
+                        adysobj.each do |newitem|
+                          if newitem.al_empcode.to_s == newattd.al_empcode && newitem.days.to_i==c
+                              shift     = newitem.al_shift
+                              timein    = newitem.al_arrtime
+                              timeout   = newitem.all_deptime
+                              othrs     = newitem.al_overtime
+                              ppstatus  = newitem.al_presabsent
+                              workhrs   = newitem.al_workhrs
+                              mystatus  = ppstatus.to_s
+                              presents  += newitem.al_present.to_f
+                              absent    += newitem.al_absent.to_f
+                              lp        += newitem.al_paidleave.to_f
+                              lwp       += newitem.al_unpaidleave.to_f
+                              
+                              if newitem.al_arrtime.to_s.gsub(":",".").to_f >0 && newitem.all_deptime.to_s.gsub(":",".").to_f <=0
+                                mispuchcount +=1
+                              end
+
+                              if newitem.al_latehrs.to_s.gsub(":",".").to_f >0
+                                  latecount +=1    
+                              end
+                              if newitem.al_earlhrs.to_s.gsub(":",".").to_f >0
+                                  earlycount +=1    
+                              end  
+                              if ppstatus.to_s=='WO'
+                                wo +=1
+                              end
+                              if ppstatus.to_s=='AP' || ppstatus.to_s=='PA' || ppstatus.to_s=='LP' || ppstatus.to_s=='PL'
+                                hlfd +=1
+                              end
+                              if ppstatus.to_s=='HL'
+                                hl +=1
+                              end
+                              
+                              ######## HRS & MNS & OVT SUM #########
+                                  whrsfirst     += get_calculated_hours_minute(workhrs,'H').to_f
+                                  whrsmnsfirst  += get_calculated_hours_minute(workhrs,'M').to_f
+                                  ovhrsfirst    += get_calculated_hours_minute(othrs,'H').to_f
+                                  ovhrsmnsfirst += get_calculated_hours_minute(othrs,'M').to_f                           
+                              ######### END HRMS ######################
+                             
+                              end                    
+                            end
+                         end
+                      end
+                     %>
+
+                     
+                      <%
+                     
+                       tholidy   = hl.to_i
+                       nebsents  = absent.to_f+lwp.to_f
+                       mypaiddays = presents.to_f+hl.to_f+wo.to_f+lp.to_f
+                       totaldays  = mypaiddays.to_f+nebsents.to_f
+                       workhrs   = find_actual_hours_minuts(whrsfirst,whrsmnsfirst)
+                       ovhrs     = find_actual_hours_minuts(ovhrsfirst,ovhrsmnsfirst)
+                     %>
+                      
+                    <tr>
+                    <input type="hidden" name="myempcode[]" id="myempcode" value="<%=newattd.al_empcode%>"/>
+                    <input type="hidden" name="mypresent[]" id="mypresent" value=" <%=presents%>"/>
+                    <input type="hidden" name="myabsent[]"  id="myabsent" value="<%=nebsents%>"/>
+                    <input type="hidden" name="myholiday[]"  id="myholiday" value="<%=tholidy%>"/>
+                    <input type="hidden" name="myweeklyoff[]" id="myweeklyoff" value="<%=wo%>"/>
+                    <input type="hidden" name="myleave[]"    id="myleave" value="  <%=lp%>"/>
+                    <input type="hidden" name="mypaiddays[]" id="mypaiddays" value="<%=mypaiddays%>"/>
+                    <input type="hidden" name="mytotaldays[]" id="mytotaldays" value="<%=totaldays%>"/>
+                    <input type="hidden" name="mymycatcode[]" id="mymycatcode" value="<%=catcode%>"/>
+                   
+                    
+                      <td><%=i%></td>
+                      <td><%=newattd.al_empcode%></td>
+                      <td>
+                        <%=sewdar%>
+                     </td>
+                     <td>
+                        <%=department%>
+                     </td>
+                     
+                      
+                     <td>
+                       <%=presents%>
+                     </td>
+                     <td>
+                       <%=nebsents%>
+                     </td>
+                     <td>
+                         <%=tholidy%>
+                     </td>
+                      <td>
+                        <%=wo%>
+                     </td>
+                     <td>
+                       <%=lp%>
+                     </td>
+                      <td>
+                        <%=mypaiddays%>
+                     </td>
+                     <td>
+                     <%=latecount%>
+                     </td>
+                     <td>
+                     <%=earlycount%>
+                     </td>
+                     <td>
+                     <%=totaldays%>
+                     </td>
+                      <td>
+                     <%=mispuchcount%>
+                     </td>
+                     
+                                             
+
+
+</tr>
+<%
+i +=1
+end
+else
+%>
+<tr>
+  <td colspan="8">
+  No record(s) found.
+  </td>
+</tr>
+<% end %>
+                 <!---repEATING ROW END-->
+               
+                </tbody>
+                </table>
+              </div>
+            <% end %>
+          </div>
+                </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

@@ -1,0 +1,2 @@
+class MstAccomodationType < ApplicationRecord
+end

@@ -1,0 +1,71 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<div class="row">
+						<h3 class="page-title col-md-10">Add District</h3>
+					 	<div class="col-md-2 m-b-5 ">
+						 		<a href="<%=root_url%>district" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+						 	</div>
+					</div>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_dist_code" id="cur_dist_code" value="<% if @ListDist %><%=@ListDist.dts_districtcode%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDist %><%=@ListDist.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">State Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="dts_statecode" id="dts_statecode" tabindex="
+						1" required>
+							<option value="">--Select--</option>
+                                                        <%
+                                                         if @ListSate.length >0
+                                                          @ListSate.each do |newsts|
+                                                        %>
+                                                        <option value="<%=newsts.sts_code%>" <% if @ListDist && @ListDist.dts_statecode.to_s.downcase == newsts.sts_code.to_s.downcase %>selected="selected"<% end %>><%=newsts.sts_description%></option>
+                                                        <%
+                                                         end
+                                                         end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">State Name <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<select class="form-control" tabindex="2">
+							<option>select</option>
+						</select> </div>
+				</div>
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">District Code <span class="mandatory">*</span></label>
+					<div class="col-md-3 info">
+						<input type="text" required autocomplete="off" maxlength="4" tabindex="3" class="form-control" name="dts_districtcode" id="dts_districtcode" value="<% if @ListDist %><%=@ListDist.dts_districtcode%><% end %>"/><a href="#"  data-container="body" data-toggle="popover" data-placement="right" data-content="District code allowed 4 Character" data-trigger="focus" ><i class="la la-question-circle-o"></i></a>  </div>
+					<label class="col-form-label col-md-2">District Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required autocomplete="off" maxlength="50" tabindex="4" class="form-control" name="dts_description" id="dts_description" value="<% if @ListDist %><%=@ListDist.dts_description%><% end %>"/> </div>
+				</div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn" type="submit">Save</button>
+					<a href="<%=root_url%>district"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

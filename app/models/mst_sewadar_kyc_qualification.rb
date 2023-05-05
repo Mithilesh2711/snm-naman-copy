@@ -1,0 +1,2 @@
+class MstSewadarKycQualification < ApplicationRecord
+end

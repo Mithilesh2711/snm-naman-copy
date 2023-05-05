@@ -1,0 +1,209 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Generate Ticket</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="currfile" id="currfile" value="<% if @ListTicket %><%=@ListTicket.rt_attachment%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListTicket %><%=@ListTicket.id%><% end %>"/>
+               
+                
+               
+		<div class="row">
+			<div class="col-md-12">
+			
+					
+					<div class="form-group row">
+						<label class="col-md-2">Ticket No</label>
+						<div class="col-md-3">
+							<input type="text" required maxlength="11" readonly autocomplete="off" class="form-control" name="rt_ticketno" id="rt_ticketno" value="<% if @ListTicket %><%=@ListTicket.rt_ticketno%><% elsif @LastNo%><%=@LastNo%><% end %>"/>
+						</div>
+						<label class="col-md-2">Ticket Date & Time</label>
+						<div class="col-md-3 info">
+							<input type="text" required maxlength="15"   autocomplete="off" class="form-control" name="rt_ticketdate" id="rt_ticketdate" value="<% if @ListTicket %><%=formatted_date(@ListTicket.rt_ticketdate)%><% elsif @cDated %><%=@cDated%><% end %>"/>
+                                                        <input type="text" required maxlength="11"  autocomplete="off" class="form-control" name="rt_tickettime" id="rt_tickettime" value="<% if @ListTicket %><%=@ListTicket.rt_tickettime%><%  elsif @Localtimes%><%=@Localtimes%><% end %>"/>
+						</div>
+					</div>
+
+							<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Department</label>
+					<div class="col-md-3">
+							
+                                                        <select required class="form-control"  name="rt_department" id="al_depcode" onchange="get_all_sewadar_by_department();">
+							<%
+                                                      if @markedAllowed || @markedXAllowed
+                                                      %>
+                                                      <option value="">-Select -</option>
+                                                      <% end %>
+                                                        <%
+                                                         if @ListDepart.length >0
+                                                          @ListDepart.each do |newdept|
+                                                        %>
+							<option value="<%=newdept.departCode%>" <% if @ListTicket && @ListTicket.rt_department.to_s == newdept.departCode.to_s  %>selected="selected"<% end %>><%=newdept.departDescription%></option>
+
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+							
+						</select> 
+					</div>
+						<label class="col-form-label col-md-2">Sewadar Code</label>
+					<div class="col-md-3">
+					 <select class="form-control"  required  name="rt_sewadar"  id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+                                            <%
+                                              if @allowedCaseduser
+                                            %>
+                                            <option value="">-Select-</option>
+                                            <% end %>
+                                            <%
+                                             if @newsewdarList && @newsewdarList.length >0
+                                              @newsewdarList.each do |newswd|
+                                            %>
+                                            <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewcode%></option>
+                                            <%
+                                            end
+                                           end
+                                           %>
+
+                                          </select>
+                                        </div>
+							
+			
+						
+				</div>
+
+                          <div class="form-group row">
+
+					<label class="col-form-label col-md-2">Sewadar Name</label>
+					<div class="col-md-3">
+
+                                                        <select class="form-control" required name="ls_empcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                                                      <%
+                                                      if @allowedCaseduser
+                                                    %>
+                                                    <option value="">-Select-</option>
+                                                    <% end %>
+                                                          <%
+                                                           if @newsewdarList && @newsewdarList.length >0
+                                                            @newsewdarList.each do |newswd|
+                                                          %>
+                                                          <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewadar_name%></option>
+                                                          <%
+                                                          end
+                                                         end
+                                                         %>
+
+                                          </select>
+					</div>
+                                        <%
+                                        raisedhide = ""
+                                      if session[:sec_x_dashboard] && session[:sec_x_dashboard].to_s == 'swd'
+                                        raisedhide = "hidden"
+                                      end
+
+                                      %>
+						<label class="col-form-label col-md-2 <%=raisedhide%>">Issue Raised By</label>
+					<div class="col-md-3 <%=raisedhide%>">
+					<input type="text" required maxlength="55" readonly autocomplete="off" class="form-control" name="rt_issueraisedby" id="rt_issueraisedby" value="<% if session[:loggedusername] %><%=session[:loggedusername]%><% end %>"/>
+                                        </div>
+
+
+
+				</div>
+                          <div class="form-group row">
+
+					<label class="col-form-label col-md-2">Raise department</label>
+					<div class="col-md-3">
+
+                                                        <select required class="form-control"  name="rt_raiseddep" id="rt_raiseddep">
+							 <%
+                                              if @rasedAllowed
+                                            %>
+                                            <option value="">-Select-</option>
+                                            <% end %>
+                                                        <%
+                                                         if @ListAllDepart.length >0
+                                                          @ListAllDepart.each do |newdepts|
+                                                        %>
+							<option value="<%=newdepts.departCode%>" <% if @ListTicket && @ListTicket.rt_raiseddep.to_s == newdepts.departCode.to_s  %>selected="selected"<% end %>><%=newdepts.departDescription%></option>
+
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+
+						</select>
+					</div>
+						
+
+
+
+				</div>
+				
+					<div class="form-group row">
+								
+				
+						
+						
+						<label class="col-form-label col-md-2 ">Support Type</label>
+					<div class="col-md-3">
+						<select class="form-control" required  name="rt_supporttype" id="rt_supporttype">
+							<option value="Complaint/Query/Help">Complaint/Query/Help</option>
+							<option value="Service Request">Service Request</option>
+							<option value="Requisition(Material/Items)">Requisition(Material/Items)</option>
+							<option value="Suggestion/Feedback">Suggestion/Feedback</option>
+						</select>  </div>
+						<label class="col-form-label col-md-2">Query/Issue</label>
+					<div class="col-md-4">
+						<textarea rows="3" cols="5" required maxlength="250" class="form-control" placeholder="Enter text here" name="rt_queryissue" id="rt_queryissue"><% if @ListTicket %><%=@ListTicket.rt_queryissue%><% end %></textarea>
+                                        </div>
+						
+				</div>
+				<div class="form-group row">
+						<label class="col-form-label info col-md-2">Attachment<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="errors screens,pdf,screenshots etc," data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-3">
+						<input type="file" name="rt_attachment" id="rt_attachment"/>
+					 </div>
+				
+				
+					
+				</div>
+				<div class="form-group row ">
+						<label class="col-form-label info col-md-2"> </label>
+					<div class="col-md-3">
+						<input type="text" class="form-control" placeholder="Attachment Description" name="rt_titles" id="rt_titles"/>
+					 </div>
+					
+				
+					
+				</div>
+						
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>generate_ticket/ticket_list"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <%
+                 end
+               %>
+	</div>
+	<!-- /Page Content -->
+</div>

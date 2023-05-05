@@ -1,0 +1,259 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Subscription</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cursubcode" id="cursubcode" value="<% if @ListSubscription %><%=@ListSubscription.sub_code%><% end %>"/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListSubscription %><%=@ListSubscription.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="sub_code" id="sub_code" value="<% if @ListSubscription %><%=@ListSubscription.sub_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> 
+                    </div>
+                        <label class="col-form-label col-md-2"> Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="sub_name" id="sub_name" value="<% if @ListSubscription %><%=@ListSubscription.sub_name%><% end %>"/> 
+				    </div>
+                </div>
+                <div class="form-group row">
+					<label class="col-form-label col-md-2">Member <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="sub_member" autofocus="" tabindex="1" id="sub_member">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListMember.length >0
+                                                          @ListMember.each do |newmbr|
+                                                        %>
+                                                        <option value="<%=newmbr.mbr_code%>" <% if @ListSubscription && @ListSubscription.sub_member.to_s.downcase == newmbr.mbr_code.to_s.downcase %>selected="selected"<% end %>><%=newmbr.mbr_name%> (<%= newmbr.mbr_code%>)</option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">Magazine <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="sub_magazine" id="sub_magazine">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListMagazine && @ListMagazine.length >0
+                                                          @ListMagazine.each do |newmag|
+                                                        %>
+                                                        <option value="<%=newmag.mag_code%>" <% if @ListSubscription && @ListSubscription.sub_magazine.to_s.downcase == newmag.mag_code.to_s.downcase %>selected="selected"<% end %>><%=newmag.mag_name%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+            <div class="form-group row">
+					<label class="col-form-label col-md-2">Subscription Type <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="sub_subtyp" autofocus="" tabindex="1" id="sub_subtyp">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListSubTyp.length >0
+                                                          @ListSubTyp.each do |newsubtyp|
+                                                        %>
+                                                        <option value="<%=newsubtyp.subtyp_code%>" <% if @ListSubscription && @ListSubscription.sub_subtyp.to_s.downcase == newsubtyp.subtyp_code.to_s.downcase %>selected="selected"<% end %>><%=newsubtyp.subtyp_name%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">Currency <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="sub_currency" id="sub_currency">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListCur && @ListCur.length >0
+                                                          @ListCur.each do |newcur|
+                                                        %>
+                                                        <option value="<%=newcur.cur_code%>" <% if @ListSubscription && @ListSubscription.sub_currency.to_s.downcase == newcur.cur_code.to_s.downcase %>selected="selected"<% end %>><%=newcur.cur_name%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+            
+
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  ROE <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="number" maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_roe" id="sub_roe" value="<% if @ListSubscription %><%=@ListSubscription.sub_roe%><% else %>1<% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Quantity <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="number" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_quantity" id="sub_quantity" value="<% if @ListSubscription %><%=@ListSubscription.sub_quantity%><% end %>" onchange="handle_subscription_amount();"/> </div>
+				</div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2"> Amount <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="number" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_amount" id="sub_amount" value="<% if @ListSubscription %><%=@ListSubscription.sub_amount%><% end %>" > </div>
+                    <label class="col-form-label col-md-2">Dispatch Mode <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="sub_dispatchmode" id="sub_dispatchmode">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListDM && @ListDM.length >0
+                                                          @ListDM.each do |newdm|
+                                                        %>
+                                                        <option value="<%=newdm.dm_code%>" <% if @ListSubscription && @ListSubscription.sub_dispatchmode.to_s.downcase == newdm.dm_code.to_s.downcase %>selected="selected"<% end %>><%=newdm.dm_name%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+                </div>
+                <div class="form-group row">
+					<label class="col-form-label col-md-2">Dispatch Type <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="sub_dispatchtype" autofocus="" tabindex="1" id="sub_dispatchtype" onchange="get_dispatchto_by_type();">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListDT.length >0
+                                                          @ListDT.each do |newdt|
+                                                        %>
+                                                        <option value="<%=newdt.dt_code%>" <% if @ListSubscription && @ListSubscription.sub_dispatchtype.to_s.downcase == newdt.dt_code.to_s.downcase %>selected="selected"<% end %>><%=newdt.dt_name%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">Dispatch To </label>
+					<div class="col-md-3">
+                    <select class="form-control" tabindex="2" name="sub_dispatchto" id="sub_dispatchto">
+                    <option value="">Select</option>
+                    </select>
+				</div>
+			</div>
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Payment Mode <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_paymentmode" id="sub_paymentmode" value="<% if @ListSubscription %><%=@ListSubscription.sub_paymentmode%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Bank Name <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_bankname" id="sub_bankname" value="<% if @ListSubscription %><%=@ListSubscription.sub_bankname%><% end %>"/> </div>
+				</div>
+
+            <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">  Document No. <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_docnum" id="sub_docnum" value="<% if @ListSubscription %><%=@ListSubscription.sub_docnum%><% end %>"/> </div>
+                <label class="col-form-label col-md-2"> Document Date <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="date" autocomplete="off" name="sub_docdate" id="sub_docdate" autocomplete="off" class="form-control" value="<% if @ListSubscription %><%=@ListSubscription.sub_docdate%><% end %>"/> </div>
+            </div>
+
+            <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">  Amount Received <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="number" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_amountrcv" id="sub_amountrcv" value="<% if @ListSubscription %><%=@ListSubscription.sub_amountrcv%><% end %>"/> </div>
+                <label class="col-form-label col-md-2"> INR Amount <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="number" autocomplete="off" name="sub_inramount" id="sub_inramount" autocomplete="off" class="form-control" value="<% if @ListSubscription %><%=@ListSubscription.sub_inramount%><% end %>"/> </div>
+            </div>
+
+            <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">  Start Date <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="date" autocomplete="off" name="sub_startdate" id="sub_startdate" autocomplete="off" class="form-control" value="<% if @ListSubscription %><%=@ListSubscription.sub_startdate%><% end %>"/> </div>
+                <label class="col-form-label col-md-2"> End Date <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="date" autocomplete="off" name="sub_enddate" id="sub_enddate" autocomplete="off" class="form-control" value="<% if @ListSubscription %><%=@ListSubscription.sub_enddate%><% end %>"/> </div>
+            </div>
+
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Remarks <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_remarks" id="sub_remarks" value="<% if @ListSubscription %><%=@ListSubscription.sub_remarks%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Receipt No. <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_receiptno" id="sub_receiptno" value="<% if @ListSubscription %><%=@ListSubscription.sub_receiptno%><% end %>"/> </div>
+				</div>
+
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Receipt Date <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="date" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="sub_receiptdate" id="sub_receiptdate" value="<% if @ListSubscription %><%=@ListSubscription.sub_receiptdate%><% end %>"/> </div>
+                    <label class="col-form-label col-md-2">Issuing Branch <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <select class="form-control" name="sub_branch" autofocus="" tabindex="1" id="sub_branch">
+                            <option value="">Select</option>
+                                                        <%
+                                                            if @ListBranch.length >0
+                                                            @ListBranch.each do |newbr|
+                                                        %>
+                                                        <option value="<%=newbr.bch_branchcode%>" <% if @ListSubscription && @ListSubscription.sub_branch.to_s.downcase == newbr.bch_branchcode.to_s.downcase %>selected="selected"<% end %>><%=newbr.bch_branchname%></option>
+                                                        <%
+                                                            end
+                                                        end
+                                                        %>
+                        </select>
+                    </div>
+				</div>
+
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="sub_status" id="sub_status">
+                                            <option value="">-Select</option>
+                                            <option value="Y" <% if @ListSubscription && @ListSubscription.sub_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                            <option value="N" <% if @ListSubscription && @ListSubscription.sub_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                    </select>
+                </div>
+			</div>
+
+
+            <% if @ListSubscription %>
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-3"> Reason For Change <span class="mandatory">*</span></label>
+					<div class="col-md-8">
+						<input required type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="sub_reason_change" id="sub_reason_change" /> </div>
+					</div>
+            
+            <% end %>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>subscription"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

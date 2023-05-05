@@ -1,0 +1,2 @@
+class MstHrParameterHead < ApplicationRecord
+end

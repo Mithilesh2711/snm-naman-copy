@@ -1,0 +1,2 @@
+class TrnDiscipline < ApplicationRecord
+end

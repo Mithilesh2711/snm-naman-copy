@@ -1,0 +1,153 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">All Formats</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+               
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+		<div class="row">
+			<div class="col-md-12">
+			
+			
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Select Department </label>
+					<div class="col-md-3">
+					<select class="form-control" name="sewadar_departments" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                        <option value="">-Select -</option>
+                                        <%
+                                          mydepartlist = get_sewa_all_department()
+                                          if mydepartlist.length >0
+                                           mydepartlist.each do |nedpts|
+                                        %>
+                                        <option value="<%=nedpts.departCode%>" <% if @sewadar_departments && @sewadar_departments.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+                                        <%
+                                           end
+                                         end
+
+                                         %>
+
+                                        </select>
+				</div>
+				<label class="col-form-label col-md-2"> Sewadar Code </label>
+					<div class="col-md-3">
+						<select class="form-control" required name="al_sewadarcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+             
+              <%
+              if @markedFieldAlw
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+            </div>
+				</div>
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Sewadar Name</label>
+					<div class="col-md-3">
+						<select required class="form-control" name="sewdarname" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+              <%
+              if @markedFieldAlw
+             %>
+               <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @Allsewobj && @Allsewobj.length >0
+                @Allsewobj.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @LoanRequest && @LoanRequest.al_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+            </select> 
+</div>
+						
+					
+				
+                         
+				  
+				</div>
+        <br><br>
+                          <div class="form-group row" style="text-align: center">
+
+                              <div class="col-md-12">
+																<label for="mylic" class="rad-btn"> <input type="radio" checked name="monthly_deduction" id="mylic" value="LIC"/>&nbsp
+															Certificate for higher education of children </label>
+                             
+                              <label for="mylic" class="rad-btn"> <input type="radio"  name="monthly_deduction" id="mylic" value="ITR"/>&nbsp
+															Certificate for ITR </label>
+																<%# <label for="mylic1" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic1" value="BUILD"/>&nbsp;
+																	Certificate for No objection & Tourist visa with SNM Accommodation  </label> %>
+																	<label for="mylic2" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic2" value="ELEC"/>&nbsp;
+																		Certificate for no objection & tourist visa </label>
+																		<!--<label for="mylic3" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic3" value="ADVL"/>&nbsp;
+																			M.A. Certificate for admission of child </label>-->
+																			<label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="HEAL"/>&nbsp;
+																				Certificate for Police Verification </label>
+                                        	<label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="RESP"/>&nbsp;
+																				Certificate for Residential Proof </label>
+                                        <label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="RESPWITHOUT"/>&nbsp;
+																				Certificate for Residential Proof without accommodation</label>
+                                        	 <label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="EWS"/>&nbsp;
+																		Certificate for EWS</label>
+                                        	 	<label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="AOCA"/>&nbsp;
+																				Certificate for admission of children with snm accommodation </label>
+                                        <label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="AOCWA"/>&nbsp;
+																				Certificate for admission of children without snm accommodation</label>
+                                       	<%# 	<label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="HEAL"/>&nbsp;
+																				POLICE VERIFICATION</label>
+                                        	<label for="mylic4" class="rad-btn">
+                                &nbsp;<input type="radio" name="monthly_deduction" id="mylic4" value="HEAL"/>&nbsp;
+																				POLICE VERIFICATION</label> %>
+                              </div>
+                          </div>
+				<div class="submit-section">
+				
+                  
+                    <a href="javascript:;" rel="<%=@printPath%>" id="printexceled" onclick="print_salary_excel_register();"><button class="btn btn-success submit-btn m-l-5 " type="button">Print</button></a>
+					
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+                 
+	</div>
+	<!-- /Page Content -->
+</div>

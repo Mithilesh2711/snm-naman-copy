@@ -1,0 +1,396 @@
+  <div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+            <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+     
+         <%= render "layouts/breadcrumbs" %>
+        
+          <!-- Page Header -->
+          <div class = "portlet">
+          <div class = "portlet-body">
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col-md-12">
+              <label class="cust_info">Performance Register from <%=formatted_date(@nbegindates)%> to <%=formatted_date(@enddate)%></label>
+            </div>
+              <div class="col-md-12">
+              <label class="cust_info">Form 12 (Rule-78) </label>
+            </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+       
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="server_request" name="server_request" value="Y"/>
+                         <div class="row filter-row" style="padding: 10px;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+          <div class = "row">
+           <div class ="col-md-12 d-flex">
+        
+            <div class ="col-md-1">
+             <label class="focus-label">Department</label>
+            </div>
+           <div class="col-sm-6 col-md-2">
+          <div class="form-group">
+          <select class="form-control" name="sewadar_departments" id="sewadar_departments" >
+           
+          <option value="">-Select -</option>
+  
+          <%
+            
+            if @sewDepart && @sewDepart.length >0
+             @sewDepart.each do |nedpts|
+          %>
+          <option value="<%=nedpts.departCode%>" <% if @department && @department.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+          <%
+             end
+           end
+
+           %>
+
+          </select>
+          
+          </div>
+          </div>
+       
+
+       
+      
+         <div class ="col-md-1">
+             <label class="focus-label">Location</label>
+            </div>
+          <div class="col-sm-2 col-md-2">
+         <select class="form-control" name="mylocation" id="mylocation">
+           <option value="">-Select-</option>
+           <%
+            if @ListHeadoffice && @ListHeadoffice.length >0
+              @ListHeadoffice.each do |newloc|
+           %>           
+           <option value="<%=newloc.hof_loccode%>" <% if @mylocation && @mylocation.to_i == newloc.hof_loccode.to_i %>selected="selected"<% end %>><%=newloc.hof_description%></option>
+           <%
+               end
+             end
+           %>
+         </select>
+          </div>
+          <div class ="col-md-1">
+             <label class="focus-label">Employee</label>
+            </div>
+          <div class="col-sm-2 col-md-2">
+         <select class="form-control" name="myemployee" id="myemployee">
+           <option value="">-Select-</option>
+           <%
+            if  @Allsewobj &&  @Allsewobj.length >0
+               @Allsewobj.each do |swds|
+           %>           
+           <option value="<%=swds.sw_sewcode%>" <% if @myemployee && @myemployee.to_s == swds.sw_sewcode.to_s %>selected="selected"<% end %>><%=swds.sw_sewadar_name%></option>
+           <%
+               end
+             end
+           %>
+         </select>
+          </div>
+          <%
+          if @mymonths.to_i <=0           
+             @mymonths = @myCurrentMonth
+          
+          end
+          
+          %>
+          <div class ="col-md-1">
+             <label class="focus-label">Months</label>
+            </div>
+          <div class="col-sm-3 col-md-1">
+         <select class="form-control" name="mymonths" id="mymonths">
+           
+               <option value="1"   <% if @mymonths.to_i == 1%> selected="selected" <% end %> >Jan</option>
+               <option value="2"   <% if @mymonths.to_i == 2%> selected="selected" <% end %>>Feb</option>
+               <option value="3"   <% if @mymonths.to_i == 3%> selected="selected" <% end %>>Mar</option>
+               <option value="4"   <% if @mymonths.to_i == 4%> selected="selected" <% end %>>Apr</option>
+               <option value="5"   <% if @mymonths.to_i == 5%> selected="selected" <% end %>>May</option>
+               <option value="6"   <% if @mymonths.to_i == 6%> selected="selected" <% end %>>Jun</option>
+               <option value="7"   <% if @mymonths.to_i == 7%> selected="selected" <% end %>>Jul</option>
+               <option value="8"   <% if @mymonths.to_i == 8%> selected="selected" <% end %>>Aug</option>
+               <option value="9"   <% if @mymonths.to_i == 9%> selected="selected" <% end %>>Sep</option>
+               <option value="10"  <% if @mymonths.to_i == 10%> selected="selected" <% end %>>Oct</option>
+               <option value="11"  <% if @mymonths.to_i == 11%> selected="selected" <% end %>>Nov</option>
+               <option value="12"  <% if @mymonths.to_i == 12%> selected="selected" <% end %>>Dec</option>
+         </select>
+          </div>
+           <div class="col-sm-6 col-md-1 m-t-5" style="padding-left: 10px">
+           <a href="javascript:;" class="btn btn-success btn-sm"  title="Press for search" onclick="filter_monthly();"><i class="la la-search"></i> Search </a> 
+             
+                                       
+          </div>
+          </div>
+         
+
+          
+          </div>
+<% end %>
+         
+          <!-- /Leave Statistics -->
+          
+         
+                </div>
+                 <div class="row" >
+
+            <%
+            months = 0
+            myyears = 0
+            if @mymonths.to_i            
+              months = @mymonths.to_i
+            else  
+             months =  @myCurrentMonth
+            end
+              myyears = @currentYear
+              numbermonths = get_total_days_of_month(months,myyears)
+            %>
+           <div  class="table-responsive  col-md-12 mt10" style="overflow-x: scroll;" id="">
+                <table class="table newtable" id="printperformance">
+                <thead class="head_table">
+                
+                <tr>
+                <th>Srl.No</th>
+               
+                  
+                   <th >Sewadar Code/ Card no<br/>
+                   Name/Desg/Dept/Location</th>
+                   <th>Date</th>
+                    <%
+                    for k in 1..numbermonths do
+                    %>
+                    <th><%=k%><br/><%=get_week_days(k,months,myyears)%></th>
+                    <%
+                     end
+                    %>
+                    <%
+                     if numbermonths.to_i ==30
+                    %>
+                    <th>31<br/></th>
+                    <%
+                     elsif numbermonths.to_i ==28
+                    %>
+                    <th>29<br/></th>
+                    <th>30<br/></th>
+                    <th>31<br/></th>
+                    <%
+                     elsif numbermonths.to_i ==29
+                    %>                    
+                    <th>30<br/></th>
+                    <th>31<br/></th>
+                    <% end %>
+                    
+                    
+                   <th>Days/Payable</th>
+                   <th>Total</th>
+                </tr>
+                </thead>
+                
+                
+                <tbody>
+                
+                   
+                 <!----repeating row starts-->
+
+
+   
+                    <%
+                    i = 1
+                     if @AttendanceList && @AttendanceList.length >0
+                       @AttendanceList.each do |newattd|                    
+                            sewdar      = ""
+                            lds_profile = ""
+                            desicode    = ""
+                            department  = ""
+                            oldsewadar  = ""
+                            sw_catgeory = ""
+                            location    = ""
+                            sewnmaesobj = get_mysewdar_list_details(newattd.al_empcode)
+                            if sewnmaesobj                                                                                  
+                              lds_profile   = sewnmaesobj.sw_image
+                              sewdar        = sewnmaesobj.sw_sewadar_name
+                              desicode      = sewnmaesobj.sw_desigcode
+                              oldsewadar    = sewnmaesobj.sw_oldsewdarcode
+                              sw_gender     = sewnmaesobj.sw_gender
+                              sw_catgeory   = sewnmaesobj.sw_catgeory
+                              dobs          = sewnmaesobj.sw_date_of_birth
+                              deprtobj      = get_all_department_detail(sewnmaesobj.sw_depcode)
+                              if deprtobj
+                                department = deprtobj.departDescription
+                              end
+                              locobj = get_location_detail(sewnmaesobj.sw_location)
+                              if locobj
+                                  location = locobj.hof_description
+                              end
+
+                            end
+                            desiname  = ""
+                            sewdesobj = get_sewdar_designation_detail(desicode)
+                            if sewdesobj
+                              desiname = sewdesobj.ds_description
+                            end 
+                            
+                    %>
+                    <tr>
+
+                      <td><%=i%></td>
+                      <td><%=newattd.al_empcode%><br/><%=sewdar%><br/><%=desiname%><br/><%=department%><br/><%=location%></td>
+                      <td>
+                        Shift<br/>
+                        IN<br/>
+                        Out<br/>
+                        Hours<br/>                        
+                        Status
+                     
+                      <%
+                       whrsfirst    = 0
+                       whrsmnsfirst = 0
+                       ovhrsfirst   = 0
+                       ovhrsmnsfirst = 0
+                       presents      = 0 
+                       absent        = 0  
+                       wo            = 0  ## wekkly off
+                       hl            = 0 ## holiday
+                       lwp           = 0 ## leave withoy pay
+                       lp            = 0  ## leave with pay 
+                       hlfd          = 0 ## half days
+                       tpaidays      = 0
+                      
+                      adysobj = get_perday_attendance(newattd.al_empcode,'',months,myyears)
+                       for c in 1..31 do
+                      %>       
+                     <td>
+                      <%
+                        if adysobj && adysobj.length >0
+                        adysobj.each do |newitem|
+                          if newitem.al_empcode.to_s == newattd.al_empcode && newitem.days.to_i==c
+                              shift     = newitem.al_shift
+                              timein    = newitem.al_arrtime
+                              timeout   = newitem.all_deptime
+                              othrs     = newitem.al_overtime
+                              ppstatus  = newitem.al_presabsent
+                              workhrs   = newitem.al_workhrs
+                              mystatus  = ppstatus.to_s
+                             
+                              presents  += newitem.al_present.to_f
+                              absent    += newitem.al_absent.to_f
+                              lp        += newitem.al_paidleave.to_f
+                              lwp       += newitem.al_unpaidleave.to_f
+                               mymipunch     = ""
+                              if newitem.al_arrtime.to_s.gsub(":",".").to_f >0 && newitem.all_deptime.to_s.gsub(":",".").to_f<=0
+                               mymipunch = "*"
+                              end
+                              if ppstatus.to_s=='WO'
+                                wo +=1
+                              end
+                              if ppstatus.to_s=='AP' || ppstatus.to_s=='PA' || ppstatus.to_s=='LP' || ppstatus.to_s=='PL'
+                                hlfd +=1
+                              end
+                              if ppstatus.to_s=='HL'
+                                hl +=1
+                              end
+                            ######## HRS & MNS & OVT SUM #########
+                                whrsfirst     += get_calculated_hours_minute(workhrs,'H').to_f
+                                whrsmnsfirst  += get_calculated_hours_minute(workhrs,'M').to_f
+                                ovhrsfirst    += get_calculated_hours_minute(othrs,'H').to_f
+                                ovhrsmnsfirst += get_calculated_hours_minute(othrs,'M').to_f                           
+
+                               ########## END HRS & OVT CALC ###########                           
+                         
+                            htmls = shift.to_s+"<br/>"+timein.to_s+"<br/>"+timeout.to_s+"<br/>"+workhrs.to_s+"<br/>"+mystatus.to_s+mymipunch.to_s
+                      %>
+                      <%=htmls.to_s.html_safe%>                     
+                       <% 
+                         end                    
+                        end
+                      end
+                     %>
+                     </td>
+                     <% end %>
+                     <%
+                      
+                       tholidy   = hl.to_i
+                       nebsents  = absent.to_f+lwp.to_f
+                       tpaidays  = presents.to_f+hl.to_f+wo.to_f+lp.to_f
+                                          
+                       workhrs   = find_actual_hours_minuts(whrsfirst,whrsmnsfirst)
+                       ovhrs     = find_actual_hours_minuts(ovhrsfirst,ovhrsmnsfirst)
+                     %>
+                      
+                                             <td>
+                                              <table style="font-weight: bold !important;" width="100%">
+                                                <tr><td>Present&nbsp;</td>
+                                                  <td  align="right"><%=presents%></td>
+                                                </tr>
+                                                <tr><td>Absent+LWP&nbsp;</td>
+                                                  <td align="right"><%=nebsents%></td>
+                                                </tr>
+                                                <tr><td>Holiday&nbsp;</td>
+                                                  <td  align="right"><%=tholidy%></td>
+                                                </tr>
+                                                <tr><td>WO&nbsp;</td>
+                                                  <td  align="right"><%=wo%></td>
+                                                </tr>
+                                                <tr><td>Leave&nbsp;</td>
+                                                  <td  align="right"><%=lp%></td>
+                                                </tr>
+                                                <tr><td>Half Days&nbsp;</td>
+                                                  <td  align="right"><%=hlfd%></td>
+                                                </tr>
+
+                                             
+                                              </table>
+                                             </td>
+                                             <td>
+                                               <table width="100%" style="font-weight: bold !important;">
+                                                <tr><td>PYD&nbsp;</td>
+                                                  <td  align="right"><%=tpaidays%></td>
+                                                </tr>
+                                                <tr><td>Whrs&nbsp;</td>
+                                                  <td align="right"><%=workhrs%></td>
+                                                </tr>
+                                                
+                                               
+
+                                             
+                                              </table>
+                                             </td>
+
+
+</tr>
+<%
+i +=1
+end
+else
+%>
+<tr>
+  <td colspan="8">
+  No record(s) found.
+  </td>
+</tr>
+<% end %>
+                 <!---repEATING ROW END-->
+               
+                </tbody>
+                </table>
+              </div>
+            
+          </div>
+                </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

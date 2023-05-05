@@ -1,0 +1,362 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Resolve Ticket Issue</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                <table>
+                  <tr>
+                    <td>Search By Tkt No. &nbsp;</td>
+                    <td><input type="text"  name="ticket_number" class="form-control" id="ticket_number" value="<% if @ticket_number %><%=@ticket_number%><% end %>"/></td>
+                    
+                    <td>Status&nbsp;</td>
+                    <td>
+                      <select required class="form-control"  name="ticket_status" id="ticket_status">
+                        <option value="">-Select-</option>
+                        <option value="O" <% if @ticket_status && @ticket_status == 'O'%>selected="selected"<% end %> >Open</option>
+                        <option value="C" <% if @ticket_status && @ticket_status == 'C'%>selected="selected"<% end %>>Closed</option>
+                      </select>
+                    </td>
+                    
+                  </tr>
+                  <tr>
+                    <td>
+                      &nbsp;
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      &nbsp;
+                    </td>
+                  </tr>
+                   
+                 
+                </table>
+ <div class="row filter-row">
+                        
+                          <div class="col-md-1 filter_flex">
+                             From Date 
+                          </div>
+                          
+                          <div class="col-md-2">
+                         <input type="text"    class="form-control" name="from_dated" id="from_dated" value="<% if @from_dated %><%=@from_dated%><% else %><%=format_oblig_date(Date.today)%><% end%>"/>
+                          </div>
+                           <div class="col-md-1 filter_flex">
+                             Upto Date 
+                          </div>
+                          
+                          <div class="col-md-2">
+                         <input type="text"   class="form-control" name="upto_dated"  id="upto_dated" value="<% if @upto_dated %><%=@upto_dated%><% else %><%=format_oblig_date(Date.today)%><% end%>"/>
+                          </div>
+                           <div class="col-md-1 filter_flex">
+                            Department
+                          </div>
+                          
+                          <div class="col-md-2">
+                             
+                              <select required class="form-control"  name="ticket_department" id="ticket_department">
+                                      <option value="">-Select-</option>
+                                      <%
+                                       if @ListDepart.length >0
+                                        @ListDepart.each do |newdept|
+                                      %>
+                                      <option value="<%=newdept.departCode%>" <% if @ticket_department && @ticket_department.to_s == newdept.departCode.to_s  %>selected="selected"<% end %>><%=newdept.departDescription%></option>
+
+                                      <%
+                                       end
+                                      end
+                                     %>
+
+                             
+                             </select>
+                          </div>
+   <% end %>
+                          <div class="col-md-2">
+                           
+              <a href="javascript:;" class="btn btn-success btn-sm"  onclick="filter_tickets();"><i class="la la-search"></i> Search </a>
+             
+                 
+                          </div>
+                        
+                 </div>
+		<div class="row">
+			<div class="col-md-12">
+				  <div >
+                                    
+                                      <%
+                                           if @TicketsListed.length >0
+                                         %>
+                                        
+                                                           <div class="col-auto float-right ml-auto hidden">
+                                              <div class="btn-group btn-group-sm">
+                  <a  class="btn btn-white"href="<%=@printpath%>" class="btn btn-white">CSV</a>
+                  
+                   <a href="<%=@printpdfpath%>" target="_blank" class="btn btn-white"><i class="fa fa-print fa-lg"></i> Print</a>
+                </div>
+              </div>
+                                          <% end %>
+                                  </div>
+				<div class="table-responsive">
+					<table class="table table-striped  mb-0">
+						<thead>
+							<tr>
+								<th id="center">S.NO</th>
+								
+								<th id="center">Details</th>
+							
+								
+								<th id="center">Query</th>
+								<th id="center">Level</th>
+								<th id="center">Assigned To</th>
+								<th id="center">Ticket Status</th>
+								
+								<th id="center">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+                                                  <%
+                                                  username = ""
+                                                   pagestart = params[:page] ? params[:page] : 1
+                                                    if pagestart.to_i <=1
+                                                      i = 1
+                                                    else
+                                                      i = ((pagestart.to_i-1)*10)+1
+                                                      i = i.to_i
+                                                    end
+                                                   if @TicketsListed && @TicketsListed.length >0
+                                                    @TicketsListed.each do |newtckets|
+                                                  %>
+                                                                    <%
+                                                                        sewobjs = get_mysewdar_list_details(newtckets.rt_assignedsewacode)
+                                                                         if sewobjs
+                                                                           assignetos = sewobjs.sw_sewadar_name
+                                                                         end
+                                                                          userobj = user_detail(newtckets.rt_issueraisedby)
+                                                                          if userobj
+                                                                            username = userobj.username
+                                                                          end
+                                                                         %>
+							<tr>
+									<td id="center">
+									<%=i%>
+									</td>
+									<td id="center">
+								            <%=newtckets.rt_ticketno%> <br/> <%=username%> <br/> <%=format_oblig_date(newtckets.rt_ticketdate)%> <%=newtckets.rt_tickettime%> <br/> <%=newtckets.rt_supporttype%>
+									</td>
+                                      
+									<td>
+                                                                          <%
+                                                                          if newtckets.rt_queryissue.to_s.length <40
+                                                                         %>
+                                                                          <%=newtckets.rt_queryissue.to_s%>
+                                                                          <%
+                                                                          else
+                                                                        %>
+                                                                           <%=newtckets.rt_queryissue.to_s[0..40]%>........
+                                                                          <%
+                                                                          end
+                                                                         %>
+
+                                                                        </td>
+									<td id="center">
+								
+                                                                        <%
+                                                                        if newtckets.rt_priorty == 'L1'
+                                                                       %>
+                                                                        Level 1
+                                                                         <%
+                                                                        elsif newtckets.rt_priorty == 'L2'
+                                                                       %>
+                                                                        Level 2
+                                                                         <%
+                                                                        elsif newtckets.rt_priorty == 'L3'
+                                                                       %>
+                                                                        Level 3
+                                                                         <%
+                                                                        elsif newtckets.rt_priorty == 'L4'
+                                                                       %>
+                                                                        Level 4
+                                                                        <%
+                                                                         end
+                                                                       %>
+									</td>
+									<td id="center">
+                                                                          
+                                                                          <%=assignetos%>
+
+                                                                        </td>
+									
+									<td id="center">
+									<%
+                                                                         if newtckets.rt_status == 'O'
+                                                                       %>
+                                                                          Open
+                                                                       <%
+                                                                         elsif newtckets.rt_status == 'A'
+                                                                       %>
+                                                                          Assigned
+                                                                          <%
+                                                                         elsif newtckets.rt_status == 'C'
+                                                                       %>
+                                                                          Closed
+                                                                          <%
+                                                                         elsif newtckets.rt_status == 'R'
+                                                                       %>
+                                                                          Resolved
+                                                                          <% end %>
+									</td>
+								
+                                                                     
+                                                            
+								<td class="text-right">
+                                                                  <div>
+                                                                    <%
+                                                                   if newtckets.rt_status == 'R'
+                                                                   %>
+								<a class="btn btn-primary btn-sm" href="javascript:;" data-toggle="modal" data-target="#feedback"> Feedback</a>
+                                                                <% end %>
+                                                                  <%
+                                                                     if session[:autherizedUserType] && session[:autherizedUserType].to_s == 'spt' || session[:autherizedUserType].to_s == 'adm'
+                                                                   %>
+								  <a class="btn btn-primary btn-sm hidden" href="javascript:;" data-toggle="modal" data-target="#assign"> Status</a>
+								<% end %>
+
+                                                                  </div>
+								</td>
+								</tr>
+                                                           <%
+                                                             end
+                                                            else
+                                                          %>
+                                                                <tr>
+                                                                  <td colspan="4">No record(s) found.</td>
+                                                                </tr>
+                                                          <%
+                                                           end
+                                                         %>
+						
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>
+
+<!-- Feedback Modal -->
+				<div class="modal custom-modal fade" id="feedback" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Feedback </h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="row">
+									<div class="col-md-12">
+															<div class="form-group row">
+										<label class="col-md-4">Feedback <span class="text-danger">*</span></label>
+									<textarea class="form-control col-md-8" rows="3" cols="3">
+										
+									</textarea>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-4">Ratings<span class="text-danger">*</span></label>
+							
+    <div class="rating col-md-6">
+      <input type="radio" name="rating" id="rating-5">
+      <label for="rating-5"></label>
+      <input type="radio" name="rating" id="rating-4">
+      <label for="rating-4"></label>
+      <input type="radio" name="rating" id="rating-3">
+      <label for="rating-3"></label>
+      <input type="radio" name="rating" id="rating-2">
+      <label for="rating-2"></label>
+      <input type="radio" name="rating" id="rating-1">
+      <label for="rating-1"></label>
+     
+    </div>
+ 
+
+									</div>
+									</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /Feedback Modal -->
+				<!---Assign Modal--->
+				<div class="modal custom-modal fade" id="assign" role="dialog">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Assign </h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<form>
+									<div class="row">
+									<div class="col-md-12">
+															<div class="form-group row">
+										<label class="col-md-4">Assigned To <span class="text-danger">*</span></label>
+								<select class="form-control col-md-6">
+									<option>Select</option>
+								</select>
+									</div>
+									<div class="form-group row">
+										<label class="col-md-4">Level<span class="text-danger">*</span></label>
+							
+    <select class="form-control col-md-6">
+									<option>Level 1</option>
+									<option>Level 2</option>
+									<option>Level 3</option>
+								</select>
+ 
+
+									</div>
+											<div class="form-group row">
+										<label class="col-md-4">Status<span class="text-danger">*</span></label>
+							
+    <select class="form-control col-md-6">
+									<option>Open</option>
+									<option>Assigned</option>
+									<option>Close</option>
+									<option>Solved</option>
+								
+								</select>
+ 
+
+									</div>
+									</div>
+									</div>
+									<div class="submit-section">
+										<button class="btn btn-primary submit-btn">Submit</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>

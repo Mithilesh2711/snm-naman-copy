@@ -1,0 +1,189 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Electric Consumption List</h3>
+					 <%=render'layouts/breadcrumbs'%>
+				</div>
+				
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" id="server_request" name="server_request" value="Y"/>
+
+                
+                  <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" required name="search_department" id="search_department">
+              <option value="">-Select-</option>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @search_department && @search_department.to_s.downcase == newdp.departCode.to_s.downcase %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+      </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" required name="search_category" id="search_category">
+              <option value="">-Select-</option>
+              <%
+               if @sewadarCategory && @sewadarCategory.length >0
+                @sewadarCategory.each do |catnms|
+              %>
+              <option value="<%=catnms.sc_name%>" <% if @search_category && @search_category.to_s.downcase == catnms.sc_name.to_s.downcase %>selected="selected"<% end %> ><%=catnms.sc_name%></option>
+              <%
+                end
+              end
+             %>
+      </select>
+                <label class="focus-label">Sewadar Category</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" required name="search_sewdarcode" id="search_sewdarcode">
+                        <option value="">-Select-</option>
+                        <%
+                         if @Allsewobj && @Allsewobj.length >0
+                          @Allsewobj.each do |sewdnm|
+                        %>
+                          <option value="<%=sewdnm.sw_sewcode%>" <% if @search_sewdarcode && @search_sewdarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewadar_name%> (<%=sewdnm.sw_sewcode%>)</option>
+                        <%
+                          end
+                        end
+                       %>
+                </select>
+                <label class="focus-label">Sewadar Code</label>
+              </div>
+             </div>
+             <% end %>
+          
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" onclick="filter_electrics();" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div> 
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive">
+					  <div >
+                                  	<a href="<%=root_url%>electric_consumption" class="btn add-btn float-left m-b-5"><i class="fa fa-plus"></i> Manage Electric Consumption</a>
+                                        
+                                         
+                                  </div>
+					<table class="table table-striped mb-0 ">
+									<thead>
+										<tr>
+											<th>Sewadar Name<br>Sewadar Code<br>Department</th>
+											<th>Entry No.<br>Month<br>Year</th>
+										    <th class="text-center">New/Current Reading<br>Last Reading</th>
+											<th class="text-center">Total Unit<br>Total Amount</th>
+											<th class="text-right">Remarks</th>
+											<th class="text-right">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+                                                                              <%
+                                                                            pagestart = params[:page] ? params[:page] : 1
+                                                                            if pagestart.to_i <=1
+                                                                              i = 1
+                                                                            else
+                                                                              i = ((pagestart.to_i-1)*10)+1
+                                                                              i = i.to_i
+                                                                            end
+                                                                            if @ElectricConsump && @ElectricConsump.length >0
+                                                                               @ElectricConsump.each do |newalt|
+                                                                     
+                                                                                   sewdarname = ""
+                                                                                   oldcodes   = ""
+                                                                                   seobj      = get_mysewdar_list_details(newalt.ec_sewdarcode)
+                                                                                   if seobj
+                                                                                         sewdarname = seobj.sw_sewadar_name
+                                                                                         oldcodes   = seobj.sw_oldsewdarcode
+                                                                                         myimages = "#{root_url}assets/img/profiles/avatar-09.jpg"
+                                                                                        if seobj.sw_image !=nil && seobj.sw_image !=''
+                                                                                        chekpath = "#{Rails.root}/public/images/sewadar/"+seobj.sw_image.to_s
+                                                                                        if File.file?(chekpath)
+                                                                                          myimages = "#{root_url}images/sewadar/"+seobj.sw_image.to_s
+                                                                                        end
+
+                                                                                        end
+                                                                                        desiname = ""
+                                                                                        sewdesobj = get_sewdar_designation_detail(seobj.sw_desigcode)
+                                                                                        if sewdesobj
+                                                                                           desiname = sewdesobj.ds_description
+                                                                                        end
+                                                                                        deprtobj = get_all_department_detail(seobj.sw_depcode)
+                                                                                        if deprtobj
+                                                                                        department = deprtobj.departDescription
+                                                                                        end
+                                                                                   end
+                                                                                   unitdiffs    = newalt.ec_currentreading.to_f-newalt.ec_lastreading.to_f
+                                                                                   
+                                                                                   %>
+										<tr>
+
+											<td><h2 class="table-avatar">
+													<a href="javascript:;" class="avatar"><img alt="<%=sewdarname%>" src="<%=myimages%>"/></a>
+													<a href="javascript:;"><%=sewdarname%><br/><%=newalt.ec_sewdarcode%>&nbsp;<% if oldcodes !=nil && oldcodes!='' %>(<%=oldcodes%>) <% end %><span><%=department%></span></a>
+												</h2></td>
+											<td><%=newalt.ec_entryno%><br><%=newalt.ec_readingmonth%> <br><%=newalt.ec_readingyear%></td>
+											<td id="center"><%=newalt.ec_currentreading.to_i%><br><%=newalt.ec_lastreading.to_i%></td>
+											<td id="center"><%=unitdiffs.to_i%><br/><%=newalt.ec_totalamount%></td>
+											<td id="center"><%=newalt.ec_reamrk%></td>
+											
+											<td class="text-right">
+
+                                                                                              <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                                                                  <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>electric_consumption/<%=newalt.id%>"><i class="fa fa-pencil m-r-5"></i> Edit</a> <a class="dropdown-item" onclick="alertChecked('<%=root_url%>electric_consumption/<%=newalt.id%>/deletes');" href="javascript:;"><i class="fa fa-trash-o m-r-5"></i> Delete</a> </div>
+                                                                                              </div>
+											</td>
+										</tr>
+                                                                                <%
+                                                                                end
+                                                                                else
+                                                                              %>
+                                                                                 <tr>
+                                                                                  <td colspan="4">
+                                                                                    No record(s) found.
+                                                                                  </td>
+                                                                                </tr>
+                                                                                <%
+                                                                                 end
+                                                                              %>
+										
+										
+									</tbody>
+								</table>
+               <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@ElectricConsump)%></div>
+                              
+                                  </div>               
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

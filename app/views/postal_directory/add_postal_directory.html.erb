@@ -1,0 +1,107 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Postal Directory</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="curpdcode" id="curpdcode" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_code%><% end %>"/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Postal Directory Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="pd_code" id="pd_code" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Postal Directory Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="pd_name" id="pd_name" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_name%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Country <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="pd_country" id="pd_country" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_country%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Tehsil <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="pd_tehsil" id="pd_tehsil" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_tehsil%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+					<label class="col-form-label col-md-2">State <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="pd_state" autofocus="" tabindex="1" id="pd_state" onchange="get_district_by_state();">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListSate.length >0
+                                                          @ListSate.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.sts_code%>" <% if @ListPostalDirectory && @ListPostalDirectory.pd_state.to_s.downcase == newst.sts_code.to_s.downcase %>selected="selected"<% end %>><%=newst.sts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">District <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="pd_district" id="pd_district">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @DistList && @DistList.length >0
+                                                          @DistList.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.dts_districtcode%>" <% if @ListPostalDirectory && @ListPostalDirectory.pd_district.to_s.downcase == newst.dts_districtcode.to_s.downcase %>selected="selected"<% end %>><%=newst.dts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+            <div class="form-group row">
+            <label class="col-form-label col-md-2"> City <span class="mandatory">*</span></label>
+            <div class="col-md-3">
+                <input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="pd_city" id="pd_city" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_city%><% end %>"/> </div>
+        
+			
+                    <label class="col-form-label col-md-2"> Pincode <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="pd_pincode" id="pd_pincode" value="<% if @ListPostalDirectory %><%=@ListPostalDirectory.pd_pincode%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="pd_status" id="pd_status">
+                                              <option value="">-Select</option>
+                                              <option value="Y" <% if @ListPostalDirectory && @ListPostalDirectory.pd_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                              <option value="N" <% if @ListPostalDirectory && @ListPostalDirectory.pd_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                                            </select>
+                                    </div>
+                </div>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>postal_directory"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

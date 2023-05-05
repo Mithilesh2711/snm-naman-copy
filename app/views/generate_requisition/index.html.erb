@@ -1,0 +1,159 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+ <div class="row">
+              <h3 class="page-title col-md-10">Generate Requisition by ESS and Support Staff
+</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>generate_requisition/requisition_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>    
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                
+   <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+
+                                        <label class="col-form-label col-md-2">Request No<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                          <input type="text"  required="" readonly autocomplete="off" maxlength="20" class="form-control" name="" id="" value="">
+             </div>
+             <label class="col-form-label col-md-2">Request Date</label>
+          <div class="col-md-2">
+                                          <input type="text" required="" readonly autocomplete="off" maxlength="60" class="form-control " name="" id="" value="">
+             </div>
+          </div>          
+        
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">Department </label>
+          <div class="col-md-3">
+                                     <select class="form-control">
+                                       <option value="">select</option>
+                                     </select>
+             </div>          
+            
+           </div>
+            <div class="form-group row">
+          <label class="col-form-label col-md-2">Sewadar Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control">
+                                       <option value="">select</option>
+                                     </select>
+             </div>          
+             <label class="col-form-label col-md-2">Sewadar Name <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control">
+                                       <option value="">select</option>
+                                     </select>
+             </div> 
+           </div>
+               <div class="form-group row">
+          <label class="col-form-label col-md-2">Apply For <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control">
+                                       <option value="">select</option>
+                                       <option value="">Self</option>
+                                       <option value="">Dependent</option>
+                                     </select>
+             </div>          
+             <label class="col-form-label col-md-2">Dependent List <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control">
+                                       <option value="">select</option>
+                                     </select>
+             </div> 
+           </div>
+             <div class="form-group row d-flex grid_bg" style="margin-bottom: 0px !important;">
+
+
+          <div class="col-md-3 process_visibility  ">
+            <label>Product Code</label>
+            <br>
+       
+ <select class="form-control " >
+     <option value="">-Select-</option>
+
+</select>
+          </div>
+        
+          <div class="col-md-3  process_visibility ">
+              <label class="">Product Name</label>
+<br>
+      <select class="form-control " >
+     <option value="">-Select-</option>
+
+</select>
+</div>
+            
+       
+<div class="col-md-3">
+    <label>Quantity</label><br><input type="text" class="form-control right"  maxlength="10" id="" value="">
+</div>
+  <div class="col-md-1  " id="center">
+           <label>Action</label> <br><a href="javascript:;" data-placement="bottom" data-toggle="tooltip" title="" data-original-title="Save"><i class="fa fa-floppy-o"></i></a> 
+          </div>       
+      
+     
+        </div>          
+          <div class="form-group row">
+            <div class="table-responsive col-md-12">
+<table class="table_input table-bordered mb-0" style="width:100%">
+<thead class="new_tblhead">
+<tr>
+<th>S.No</th>
+
+<th>Product Code</th>
+<th>Product Name</th>
+<th>Quantity</th>
+<th colspan="2">Action</th>
+
+</tr>
+</thead>
+
+<tbody >
+<tr>
+  <td>1</td>
+  <td>001</td>
+  <td>Pens</td>
+  <td>20</td>
+  <td><a href="javascript:" ><i class="fa fa-pencil m-r-5"></i></a></td>
+  <td><a href="javascript:" ><i class="fa fa-trash-o m-r-5"></i></a></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+          </div> 
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn">Save </button>
+          <a href="<%=root_url%>generate_requisition/requisition_list"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+      </div>
+    </div>
+      </div>
+                 <% end %>  
+    </div>
+  </div>
+  <!-- /Page Content -->

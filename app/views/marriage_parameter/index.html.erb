@@ -1,0 +1,61 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Marriage Aid Parameters</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                
+   <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+
+                                        <label class="col-form-label col-md-3">Total Sewa Required (Regular)<span class="mandatory">*</span></label>
+          <div class="col-md-2">
+                                          <input type="text"  required="" autocomplete="off" maxlength="18" class="form-control right" name="mp_totalsewaself" onkeypress="return isNumberKeys(event);" maxlength="3" id="mp_totalsewaself" value="<% if @ListMarriage %><%=@ListMarriage.mp_totalsewaself.to_i%><% end %>"/>
+             </div>
+             <label class="col-form-label col-md-3">Total Sewa Required (Temporary)<span class="mandatory">*</span></label>
+          <div class="col-md-2">
+                                          <input type="text" required="" autocomplete="off" maxlength="18" class="form-control right" name="mp_totalsewaengage" onkeypress="return isNumberKeys(event);" maxlength="3" id="mp_totalsewaengage" value="<% if @ListMarriage %><%=@ListMarriage.mp_totalsewaengage.to_i%><% end %>"/>
+             </div>
+          </div>          
+        
+        <div class="form-group row">
+          <label class="col-form-label col-md-3">For Male  <span class="mandatory">*</span></label>
+          <div class="col-md-2">
+                                          <input type="text" required="" autocomplete="off" maxlength="18" class="form-control right" name="mp_totalsewaformale" onkeypress="return isNumberKeys(event);"  id="mp_totalsewaformale" value="<% if @ListMarriage %><%=currency_formatted(@ListMarriage.mp_totalsewaformale)%><% end %>"/>
+             </div>          
+              <label class="col-form-label col-md-3">For Female  <span class="mandatory">*</span></label>
+          <div class="col-md-2">
+                                          <input type="text" required="" autocomplete="off" maxlength="18" class="form-control right" name="mp_totalsewafemale" onkeypress="return isNumberKeys(event);"  id="mp_totalsewafemale" value="<% if @ListMarriage %><%=currency_formatted(@ListMarriage.mp_totalsewafemale)%><% end %>"/>
+             </div>
+           </div>
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn">Save</button>
+          <a href="javascript::"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+      </div>
+    </div>
+      </div>
+                 <% end %>  
+    </div>
+ 
+  <!-- /Page Content -->

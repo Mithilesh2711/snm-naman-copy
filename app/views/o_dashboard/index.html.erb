@@ -1,0 +1,353 @@
+
+			<!-- /Sidebar -->
+			
+			<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                                <%
+                              myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                              if @seawdarsobj
+                                if @seawdarsobj.sw_image !=nil && @seawdarsobj.sw_image !=''
+                                    chekpath = "#{Rails.root}/public/images/ledger/profile/thumb/"+@seawdarsobj.sw_image.to_s
+                                    if File.file?(chekpath)
+                                    myimages = "#{root_url}images/ledger/profile/thumb/"+@seawdarsobj.sw_image.to_s
+                                    end
+
+                                end
+                              end
+
+                              %>
+                <div class="content container-fluid">
+					<div class="row hidden">
+						<div class="col-md-12">
+							<div class="welcome-box">
+								<div class="welcome-img">
+									<img alt="<% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %>" src="<%=myimages%>"/>
+								</div>
+								<div class="welcome-det " style="width:100%">
+								    <h3>Welcome, <% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %>  <span><a class="btn btn-custom" style="float:right;padding: 2px 10px;" href="sewadar_dashboard">View Profile</a></span></h3>
+									<p>Dhan Nirankar Ji <span style="float:right"><%=Date.today.strftime("%A")%>, <%=Date.today.strftime("%d %b %Y")%></span></p>
+									
+									<!--<a href="javascript:void(0);" class="btn btn-primary edit-btn"><i class="fa fa-pencil"></i>Edit</a>-->
+									
+								</div>
+								
+							</div>
+						</div>
+					</div>
+					<div class="row card">
+              <div class="card-body text-center">
+						    <h4 class="holiday-title mb-0 animate__animated animate__flash animate__infinite animate__slower 3s" style="font-size: 13px;">
+						        
+						       Kindly take necessary action on the pending applications/ requests (Leaves, Advance, Education Aid, Marriage Aid) latest by 25th of every month latest by 6:00 PM to avoid auto-approval by the system
+						    </h4>
+						   </div> 
+						</div>
+					<div class="row m-t-10">
+						<div class="col-lg-6 col-md-6">
+							<section class="dash-section">
+								<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-universal-access" aria-hidden="true"></i> Quick Access</h2>
+								<div class="dash-sec-content">
+									<div class="dash-info-list">
+										<!--<a href="#" class="dash-card text-danger">-->
+											<div class="dash-card hidden">
+											<div class="container">
+												<!--<div class="dash-card-icon">-->
+												<!--	<i class="fa fa-hourglass-o"></i>-->
+												<!--</div>-->
+												<div class="row">
+                                                                                                
+											<div class="chat-profile-img col-md-4">
+																<a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>leaves');"><div class="icon-img">
+																<i class="la la-user"> </i>
+																</div>
+														<h5 class="user-name m-t-10 mb-0">Leave Approval</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>loans_approval');"><div class="icon-img">
+																<i class="la la-rocket"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Advance Request</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>marriageaid_approval');"><div class="icon-img">
+																<i class="la la-dashboard"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Marriage Aid Approval</h5></a>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											</div>
+											</div>
+											<div class="container">
+											<div class="row">
+											    	
+												<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('<%=session[:sec_ec_approved]%>','<%=root_url%>educationaid_approval');"><div class="icon-img">
+																<i class="la la-dashboard"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Education Aid Approval</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<a href="javascript:;"><div class="icon-img">
+																<i class="la la-money"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Stationary  Approval</h5></a>
+											</div>
+
+                      
+											
+											
+											</div></div>
+										
+										<!--</a>-->
+									</div>
+
+
+								</div>
+							</section>
+<section class ="hidden">
+    <style>.table-font td
+    {
+        font-size:12px;
+    }</style>
+    <div class="dash-section">
+    <div class="dash-info-list">
+										<!--<a href="#" class="dash-card text-danger">-->
+											<div class="dash-card">
+              <h4 style="text-align:center">Request Sheet</h4>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      <th class="text-left">For</th>
+                      <th class="text-left">No.</th>
+                      <th class="text-left">Date</th>
+                      <th class="text-left">Status</th>
+                     </tr>
+                  </thead>
+                  <tbody class="table-font">
+                    <%
+                    if @LeaveUnapprove && @LeaveUnapprove.length >0 || @AdvUnapprove && @AdvUnapprove.length >0 || @TrnRaiseTicket && @TrnRaiseTicket.length >0
+                     if @LeaveUnapprove && @LeaveUnapprove.length >0
+                        @LeaveUnapprove.each do |newbw|
+                          leavename = ""
+                          leavobj   = get_leavemaster_detail(newbw.ls_leave_code)
+                          if leavobj
+                            leavename = leavobj.attend_leavetype
+                          end
+                      %>
+                    <tr>
+                      <td class="text-left"><%=leavename%></td>
+                      <td class="text-left"><%=newbw.ls_leave_code%></td>
+                      <td class="text-left">
+                        <%=format_oblig_date(newbw.ls_fromdate)%></td>
+                        <td class="text-left">
+                          Pending
+                        </td>
+                      </tr>
+                      <%
+                        end
+                       end
+                      %>
+                      <%
+                        if @AdvUnapprove && @AdvUnapprove.length >0
+                          @AdvUnapprove.each do |advprov|
+                      %>
+                      <tr>
+                      <td class="text-left"><%=advprov.al_requesttype%></td>
+                      <td class="text-left"><%=advprov.al_requestno%></td>
+                      <td class="text-left"><%=format_oblig_date(advprov.al_requestdate)%></td>
+                      <td class="text-left">Voucher Pending</td>
+                      </tr>                     
+                      <%
+                       end
+                     end
+                     %>
+                      <%
+                       if @TrnRaiseTicket && @TrnRaiseTicket.length >0
+                          @TrnRaiseTicket.each do |newhlpsk|
+                     %>
+                       <tr>
+                      <td class="text-left"><%=newhlpsk.rt_queryissue%></td>
+                      <td class="text-left"><%=newhlpsk.rt_ticketno%></td>
+                      <td class="text-left"><%=format_oblig_date(newhlpsk.rt_ticketdate)%></td>
+                      <td class="text-left">Open</td>
+                      </tr> 
+                      <%
+                       end
+                     end
+
+                     else
+                     %>
+                     <tr>
+                      <td class="text-left" colspan="4">No record(s) found.</td>
+
+                      </tr>
+                      <%
+                        end
+
+                      %>
+                    
+                  </tbody>
+                </table>
+                <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8"> </div>
+
+                                  </div>
+              </div></div>
+              </div></div>
+      
+</section>
+
+						
+						</div>
+
+						<div class="col-lg-6 col-md-6">
+							<div class="dash-sidebar">
+                                                          <%
+
+                                                           if @listAnnouncement && @listAnnouncement.length >0
+                                                         %>
+								<section>
+									<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-bullhorn" aria-hidden="true"></i> Announcement/Message</h2>
+									<div class="card">
+										<div class="card-body">
+											<div class="slideshow-container">
+<%
+
+if @listAnnouncement && @listAnnouncement.length >0
+  @listAnnouncement.each do |aanounceamt|
+   department = ""
+   deprtobj   = get_department_detail(aanounceamt.ans_posteddashboard)
+   if deprtobj
+     department = deprtobj.departDescription
+   end
+  %>
+<div class="mySlides">
+   <q><%=aanounceamt.ans_announcment%> </q>
+  <p class="author">- <%=department%></p>
+</div>
+  <%
+   end
+
+ else
+ %>
+ No announcement found.
+<%
+  end
+  %>
+
+<a class="prev" onclick="plusSlides(-1)">❮</a>
+<a class="next" onclick="plusSlides(1)">❯</a>
+
+</div>
+
+<div class="dot-container">
+  <span class="dot" onclick="currentSlide(1)"></span> 
+  <span class="dot" onclick="currentSlide(2)"></span> 
+  <!--<span class="dot" onclick="currentSlide(3)"></span> -->
+</div>
+										</div>
+									</div>
+								</section>
+                                                                <% end %>
+								<section>
+								  <% if @ListSewBirth %>  	
+                  <h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-birthday-cake" aria-hidden="true"></i> Birthdays</h2> <% end%>
+                    <%
+                      if @ListSewBirth
+                    %>
+								
+										<div class="card">
+										<div class="card-body text-center bday-wish">
+											<h5 class="holiday-title mb-0"><% if @BirthdayList%><%=@BirthdayList.bw_title_enlish%><% end %>   <%=@ListSewBirth.sw_sewadar_name%></h5>
+											<h5 style=" color:#0184e0">- Blessings - </h5>
+											<h5 class="holiday-title mb-0">" <% if @BirthdayList%><%=@BirthdayList.bw_title_hindi.html_safe%><% end %>
+                                                                  <% if @BirthdayList%><%=@BirthdayList.bw_description_hindi.html_safe%><% end %> "</h5>
+										    <h5 class="holiday-title mb-0">- <% if @BirthdayList%><%=@BirthdayList.bw_bottom_bless.html_safe%><% end %></h5>
+										</div>
+									</div>
+                                                                        <% end %>
+                                                                        <%
+                                                                         birtallist = get_all_birthday_listed()
+                                                                         if birtallist && birtallist.length >0
+                                                                       %>
+									<div class="card">
+										<div class="card-body">
+											<div class="slideshow-container" style="height: 200px;">
+<%
+ birtallist.each do |newabd|
+  bwmyimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+  if newabd.sw_image !=nil && newabd.sw_image !=''
+   
+        chekpaths = "#{Rails.root}/public/images/sewadar/"+newabd.sw_image.to_s
+        if File.file?(chekpaths)
+         
+            bwmyimages = "#{root_url}images/sewadar/"+newabd.sw_image.to_s
+        end
+
+    end
+  department = ""
+  departobj = get_all_department_detail(newabd.sw_depcode)
+  if departobj
+    department = departobj.departDescription
+  end
+  %>
+<div class="mySlides">
+   <img alt="" src="<%=bwmyimages%>"/>
+  <p class="author">- <%=newabd.sw_sewadar_name%></p>
+  <p><%=department%></p>
+  <a class="btn btn-custom hidden"  href="javascript:;">Send Wish Message</a>
+</div>
+<%
+ end
+%>
+
+
+<a class="prev" onclick="plusSlides(-1)">❮</a>
+<a class="next" onclick="plusSlides(1)">❯</a>
+
+</div>
+
+<div class="dot-container">
+  <span class="dot" onclick="currentSlide(1)"></span> 
+  <span class="dot" onclick="currentSlide(2)"></span> 
+  <!--<span class="dot" onclick="currentSlide(3)"></span> -->
+</div>
+										</div>
+									</div>
+                                                                        <% end %>
+								</section>
+								
+							
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!-- /Page Content -->
+<footer>
+     <div class="content container-fluid">
+    <section class="dash-section">
+								<!--<h1 class="dash-sec-title">Help Guide/FAQ</h1>-->
+								<div class="dash-sec-content">
+									<div class="dash-info-list">
+										<div class="dash-card">
+											<div class="container">
+											
+													<a href="o_dashboard">Help Guide/FAQ</a>
+													<span style="float:right"><a href="javascript:;" >Copyright Sant Nirankari Mission 2022</a></span>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+</footer>
+            </div></div>
+			<!-- /Page Wrapper -->
+			
+        </div>
+		<!-- /Main Wrapper -->

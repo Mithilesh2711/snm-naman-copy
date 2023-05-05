@@ -1,0 +1,2 @@
+class MstSewadarOfficeInfo < ApplicationRecord
+end

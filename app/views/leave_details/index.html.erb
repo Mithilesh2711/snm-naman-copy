@@ -1,0 +1,322 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Sewadar Leave Details</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+          
+
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                        
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+ <div class="form-group row">
+                <label class="col-form-label col-md-1"> Year<span class="mandatory">*</span></label>
+              <div class="col-md-3 ">
+                  <select class="form-control" name="selected_years" id="selected_years" >
+                 
+                  <%
+               prevdate = @nbegindate
+               newprvs  = Date.today.strftime("%Y")
+               while prevdate.to_i <=newprvs.to_i do
+              %>
+               <option value="<%=prevdate.to_i%>" <% if @selected_years && @selected_years.to_i == prevdate.to_i  %>selected="selected"<% end %>><%=prevdate.to_i%></option>
+               <%
+               prevdate= prevdate.to_i+1
+               end
+               %>
+                  </select>
+              </div>
+ </div>
+          <div class="form-group row">
+          
+          <label class="col-form-label col-md-1">Department<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+         <select class="form-control" required name="ls_depcode"  id="al_depcode" onchange="get_all_sewadar_by_department();">
+               <%
+                if @markedAllowed
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == newdp.departCode.to_s.downcase %>selected="selected" <% end %>><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+            
+          </div>
+         <label class="col-form-label col-md-1 hidden">Code<span class="mandatory">*</span></label>
+          <div class="col-md-3 hidden">
+
+            <select class="form-control" required  name="al_sewadarcode" required id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+               <%
+                if @allowedCaseduser
+              %>
+                 <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @newsewdarList && @newsewdarList.length >0
+                @newsewdarList.each do |newswd|
+              %>
+              <option value="<%=newswd.sw_sewcode%>" <% if @search_sewadar && @search_sewadar.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewcode%></option>
+              <%
+              end
+             end
+             %>
+
+            </select>
+          </div>
+
+<label class="col-form-label col-md-1">Sewadar<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+                  <select class="form-control" autofocus="" required name="ls_empcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                     <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+                    <%
+                     if @newsewdarList && @newsewdarList.length >0
+                      @newsewdarList.each do |newswd|
+                    %>
+                    <option value="<%=newswd.sw_sewcode%>" <% if @search_sewadar && @search_sewadar.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewadar_name%> (<%=newswd.sw_sewcode%>)</option>
+                    <%
+                    end
+                   end
+                   %>
+                    </select>
+
+          </div></div>
+          
+
+
+ <% end %>
+      <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<a href="javascript:;" onclick="filter_listed_leaves();" class="btn btn-success btn-block"> <i class="fa fa-search"></i> Search </a>
+					   </div>         
+         
+          <!-- /Leave Statistics -->
+          
+          <div class="row">
+              <div class="col-md-6 hidden">
+                  <h4 class="text-left" style="color:blue">January, 2022</h4>
+              </div>
+              <div class="col-md-6 hidden">
+                  <h4 class="text-right" style="color:blue">Processing Month December, 2021</h4>
+              </div>
+              <div class="col-md-6">
+                  <h4 style="text-align:center">Summary</h4>
+                 
+                  <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      <th>Leave Type</th>   
+                      <th class="text-right">OB</th>                   
+                      <th class="text-right">Credit</th>
+                      <th class="text-right">Taken</th>
+                      <th class="text-right">Balance</th>
+                     </tr>
+                  </thead>
+                  <tbody id="myleavesummary">
+                      <%
+                         
+                         if @leaveLedger && @leaveLedger.length >0
+                          @leaveLedger.each do |inv|
+                          creiditedlv = inv.credits.to_f
+                          debitedleve = inv.debits.to_f
+                          useob       =  get_opening_balance(@selected_years,@search_sewadar,inv.leavecode)
+                          obs         =  get_all_opening_balance(inv.leavecode)
+                          if(  inv.leavecode.to_s == 'SL' )
+                              useob    = 0
+                              sewobjs = get_mysewdar_list_details(@search_sewadar)
+                              if sewobjs 
+                                    nelvsobj    = get_leavemaster_bycategory(sewobjs.sw_catcode,'SL')
+                                    if nelvsobj
+                                        creiditedlv = nelvsobj.attend_creditruledays
+                                        
+                                    end
+                               end                                                      
+                          end
+                          newobs      =  obs.to_f+useob.to_f
+                          balances    = (newobs.to_f+creiditedlv.to_f).to_f-inv.debits.to_f
+                       
+                        @clbal = balances
+                      
+                      %>
+                      <%
+                         if(  inv.leavecode.to_s == 'OD' )
+                      %>
+                    <tr>
+                      <td><%=inv.leavecode%> </td>
+                      <td class="text-right">--</td>
+                      <td class="text-right">--</td>
+                      <td class="text-right"><%=debitedleve%></td>
+                      <td class="text-right">--</td>
+                      
+                    </tr>
+                    <% else %>
+                      <tr>
+                      <td><%=inv.leavecode%> </td>
+                      <td class="text-right"><%=newobs%></td>
+                      <td class="text-right"><%=creiditedlv%></td>
+                      <td class="text-right"><%=debitedleve%></td>
+                      <td class="text-right"><%=balances%></td>
+                      
+                    </tr>
+                    <% end %>
+
+
+                    <%
+                      end
+                      %>
+                      
+                     <% 
+                      else
+                    %>
+                    
+                    <tr>
+                      <td colspan="3">No record(s) found.</td>
+                      
+                    </tr>
+                    <% end %>
+                     
+                    </tbody>
+                </table>
+              
+              </div>
+                <div style="text-align:center;margin-top:20px;float:none !important">
+                                    <a href="<%=root_url%>leave/apply_leave" class="btn add-btn" style="float:none !important">Apply leave</a>
+
+                                  </div>
+              </div>
+              
+            <div class="col-md-6">
+              <h4 style="text-align:center">Taken Leaves</h4>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      <%
+                       if @markedFieldAlw
+                     %>
+                      <!--<th>Sewadar Code<br/>Sewadar Name<br/>Department</th>-->
+                      <% end %>
+                      <th>Leave Type<br/>Reason</th>
+                      <th>From<br/>To</th>
+                      
+                      <th class="text-right">Days</th>
+                      <!--<th>Approved by</th>-->
+                      <!--<th>Action</th>-->
+                    
+                    </tr>
+                  </thead>
+                  <tbody id="mytakenleaves">
+                    <%
+                    unlinkimg = "#{root_url}assets/img/profiles/avatar-09.jpg"
+                     if @ApplyLeaves && @ApplyLeaves.length >0
+                      @ApplyLeaves.each do |aplleave|
+                        lsobj    = get_leavemaster_detail(aplleave.ls_leave_code)
+                        leavsnm  = ""
+                        if lsobj
+                           leavsnm = lsobj.attend_leavetype
+                        end
+                        
+                        approvedby  = ""
+                        lds_profile = ""
+                        deprtcode   = ""
+                        sewadarcode = ""
+                        sewdarname  = ""
+                        department  = ""
+                        oldcodes    = nil
+                        sewdonbjs   = get_mysewdar_list_details(aplleave.ls_empcode)
+                        if sewdonbjs
+                            deprtcode   = sewdonbjs.sw_depcode
+                            sewadarcode = aplleave.ls_empcode
+                            sewdarname  = sewdonbjs.sw_sewadar_name
+                            oldcodes    = sewdonbjs.sw_oldsewdarcode
+                        end
+                        depobj          = get_all_department_detail(deprtcode)
+                        if depobj
+                            hodcode      = depobj.departHod
+                            department   = depobj.departDescription
+                            sewnmaesobj  = get_first_my_sewadar(hodcode)
+                            if sewnmaesobj
+                               approvedby  = nil # sewnmaesobj.lds_name
+                               lds_profile = sewnmaesobj.lds_profile
+                            end
+                        end
+                        
+                       
+                      %>
+                    <tr>
+                       <%
+                       if @markedFieldAlw
+                     %>
+                      
+                      <% end %>
+                      <td class="wrap-txt"><%=leavsnm%><br/><%=aplleave.ls_leavereson%></td>
+                      <td><%=formatted_date(aplleave.ls_fromdate)%><br/><%=formatted_date(aplleave.ls_todate)%></td>
+                      <td class="text-right">
+                       <%=(aplleave.ls_nodays.to_i <= 1 ? aplleave.ls_nodays.to_s: aplleave.ls_nodays.to_s)%> <% if aplleave.ls_period.to_s !=nil && aplleave.ls_period.to_s!='' %>(
+                       <%
+                        if aplleave.ls_period.to_s == 'S'
+                       %>
+                        Second Half
+                        <% elsif aplleave.ls_period.to_s == 'F' %>
+                        First Half
+                        <% end %>
+                       )
+                       <% end %>
+                      </td>
+                    
+                       
+                    </tr>
+                    <%
+                      end
+                   end
+
+                   %>
+                    
+                    
+                  </tbody>
+                </table>
+                <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  </div>
+
+                                  </div>
+              </div>
+            </div>
+          </div>
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

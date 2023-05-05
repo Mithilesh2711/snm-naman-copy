@@ -1,0 +1,2 @@
+class MstMarriageParameter < ApplicationRecord
+end

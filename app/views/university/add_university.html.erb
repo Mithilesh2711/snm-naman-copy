@@ -1,0 +1,71 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Institutes/Schools/University</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_description" id="cur_description" value="<% if @ListDepart %><%=@ListDepart.un_description%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDepart %><%=@ListDepart.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2"> Add Institutes/Schools/University Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="un_description" id="un_description" value="<% if @ListDepart %><%=@ListDepart.un_description%><% end %>"/> </div>
+						<label class="col-form-label col-md-2">Add available Qualifications  <span class="mandatory">*</span></label>
+                                                  <%
+                                                  arrqltype = nil
+                                                  if @ListDepart
+                                                    if @ListDepart.un_qltype
+                                                      arrqltype = @ListDepart.un_qltype.to_s.split(",")
+                                                    end
+
+                                                  end
+                                                %>
+                                                <div class="col-md-3 select_drop">
+						  
+                                                    <ul>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_1" value="No Schooling" <% if arrqltype && arrqltype.include?('No Schooling')%>checked<% end %> />&nbsp;No Schooling</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_2" value="Non Matric" <% if arrqltype && arrqltype.include?('Non Matric')%>checked<% end %> />&nbsp;Non Matric</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_3" value="High School/Matric/Secondary" <% if arrqltype && arrqltype.include?('High School/Matric/Secondary')%>checked<% end %> />&nbsp;High School/Matric/Secondary</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_4" value="Intermediate/10+2/Higher Secondary" <% if arrqltype && arrqltype.include?('Intermediate/10+2/Higher Secondary')%>checked<% end %> />&nbsp;Intermediate/10+2/Higher Secondary</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_5" value="Graduate" <% if arrqltype && arrqltype.include?('Graduate')%>checked<% end %>/>&nbsp;Graduate</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_6" value="Post Graduate" <% if arrqltype && arrqltype.include?('Post Graduate')%>checked<% end %>/>&nbsp;Post Graduate</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_7" value="Doctorate" <% if arrqltype && arrqltype.include?('Doctorate')%>checked<% end %>/>&nbsp;Doctorate</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_8" value="Certificate" <% if arrqltype && arrqltype.include?('Certificate')%>checked<% end %> />&nbsp;Certificate</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_9" value="Diploma" <% if arrqltype && arrqltype.include?('Diploma')%>checked<% end %>/>&nbsp;Diploma</li>
+                                                      <li><input type="checkbox" name="un_qltype[]" id="un_qltype_10" value="Training/Others" <% if arrqltype && arrqltype.include?('Training/Others')%>checked<% end %>/>&nbsp;Training/Others</li>
+
+                                                    </ul>
+                                            
+                                        </div>
+					
+				</div>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>university"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

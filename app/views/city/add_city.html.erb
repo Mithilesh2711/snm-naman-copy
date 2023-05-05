@@ -1,0 +1,87 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<div class="row">
+							<h3 class="page-title col-md-10">Add City</h3>
+						
+						 	<div class="col-md-2 m-b-5 ">
+						 		<a href="<%=root_url%>city" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+						 	</div>
+						
+					</div>
+				
+
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="cur_city_code" id="cur_city_code" value="<% if @ListDist %><%=@ListDist.ct_citycode%><% end %>"/>
+                 <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListDist %><%=@ListDist.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">State Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="ct_statecode" autofocus="" tabindex="1" id="ct_statecode" onchange="get_districtcode_by_states();">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListSate.length >0
+                                                          @ListSate.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.sts_code%>" <% if @ListDist && @ListDist.ct_statecode.to_s.downcase == newst.sts_code.to_s.downcase %>selected="selected"<% end %>><%=newst.sts_code%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">District Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="ct_districtcode" id="ct_districtcode">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @DistList && @DistList.length >0
+                                                          @DistList.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.dts_districtcode%>" <% if @ListDist && @ListDist.ct_districtcode.to_s.downcase == newst.dts_districtcode.to_s.downcase %>selected="selected"<% end %>><%=newst.dts_districtcode%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">City Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" autocomplete="off" maxlength="4" tabindex="3" class="form-control" name="ct_citycode" id="ct_citycode" value="<% if @ListDist %><%=@ListDist.ct_citycode%><% end %>"/> </div>
+						<label class="col-form-label col-md-2">City Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text"  autocomplete="off" maxlength="60" tabindex="4" class="form-control" name="ct_description" id="ct_description" value="<% if @ListDist %><%=@ListDist.ct_description%><% end %>"/> </div>
+				</div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>city"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+				</div>
+				</div>
+					
+				
+			</div>
+                <% end %>
+		</div>
+	</div>
+	<!-- /Page Content -->

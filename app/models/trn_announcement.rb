@@ -1,0 +1,2 @@
+class TrnAnnouncement < ApplicationRecord
+end

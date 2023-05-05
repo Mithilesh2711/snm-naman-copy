@@ -1,0 +1,201 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Member</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="curmbrcode" id="curmbrcode" value="<% if @ListMember %><%=@ListMember.mbr_code%><% end %>"/>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListMember %><%=@ListMember.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">Code <span class="mandatory">*</span></label>
+					<div class="col-md-2">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="mbr_code" id="mbr_code" value="<% if @ListMember %><%=@ListMember.mbr_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> 
+                    </div>
+                    <div class="col-md-2">
+                        <select required autocomplete="off" class="form-control" name="mbr_title" id="mbr_title">
+                                                <option value="">Title</option>
+                                                <option value="Mr." <% if @ListMember && @ListMember.mbr_title.to_s == 'Mr.' %>selected="selected"<% end %>>Mr.</option>
+                                                <option value="Ms." <% if @ListMember && @ListMember.mbr_title.to_s == 'Ms.' %>selected="selected"<% end %>>Ms.</option>
+                                                <option value="Mrs" <% if @ListMember && @ListMember.mbr_title.to_s == 'Mrs.' %>selected="selected"<% end %>>Mrs.</option>
+                        </select>
+                    </div>
+                        <label class="col-form-label col-md-2"> Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_name" id="mbr_name" value="<% if @ListMember %><%=@ListMember.mbr_name%><% end %>"/> 
+				    </div>
+                </div>
+                <div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Mobile <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mbr_mobile" id="mbr_mobile" value="<% if @ListMember %><%=@ListMember.mbr_mobile%><% end %>"/> </div>
+					<label class="col-form-label col-md-2"> Email <span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+						<input type="email" required maxlength="30" autocomplete="off" autofocus="" class="form-control" name="mbr_email" id="mbr_email" value="<% if @ListMember %><%=@ListMember.mbr_email%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+                    <label class="col-form-label col-md-2">  Care Of <span class="mandatory">*</span></label>
+                    <div class="col-md-2">
+                        <select required autocomplete="off" class="form-control" name="mbr_co_title" id="mbr_co_title">
+                                                <option value="">Title</option>
+                                                <option value="S/O" <% if @ListMember && @ListMember.mbr_co_title.to_s == 'S/O' %>selected="selected"<% end %>>S/O</option>
+                                                <option value="D/O" <% if @ListMember && @ListMember.mbr_co_title.to_s == 'D/O' %>selected="selected"<% end %>>D/O</option>
+                                                <option value="W/O" <% if @ListMember && @ListMember.mbr_co_title.to_s == 'W/O' %>selected="selected"<% end %>>W/O</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" placeholder="Name" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_co_name" id="mbr_co_name" value="<% if @ListMember %><%=@ListMember.mbr_co_name%><% end %>"/> 
+				    </div>
+                </div>
+                <div class="form-group row">
+					<label class="col-form-label col-md-2">State <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" name="mbr_state" autofocus="" tabindex="1" id="mbr_state" onchange="get_district_by_state();">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListSate.length >0
+                                                          @ListSate.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.sts_code%>" <% if @ListMember && @ListMember.mbr_state.to_s.downcase == newst.sts_code.to_s.downcase %>selected="selected"<% end %>><%=newst.sts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+					</div>
+					<label class="col-form-label col-md-2">District <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" tabindex="2" name="mbr_district" id="mbr_district">
+							<option value="">Select</option>
+                                                        <%
+                                                         if @ListDist && @ListDist.length >0
+                                                          @ListDist.each do |newst|
+                                                        %>
+                                                        <option value="<%=newst.dts_districtcode%>" <% if @ListMember && @ListMember.mbr_district.to_s.downcase == newst.dts_districtcode.to_s.downcase %>selected="selected"<% end %>><%=newst.dts_description%></option>
+                                                        <%
+                                                         end
+                                                        end
+                                                       %>
+						</select>
+				</div>
+			</div>
+
+            <div class="form-group row">
+            <label class="col-form-label col-md-2">City <span class="mandatory">*</span></label>
+            <div class="col-md-3">
+                <select class="form-control" tabindex="2" name="mbr_city" id="mbr_city">
+                    <option value="">Select</option>
+                                                <%
+                                                 if @ListCity && @ListCity.length >0
+                                                  @ListCity.each do |newct|
+                                                %>
+                                                <option value="<%=newct.ct_citycode%>" <% if @ListMember && @ListMember.mbr_city.to_s.downcase == newct.ct_citycode.to_s.downcase %>selected="selected"<% end %>><%=newct.ct_description%></option>
+                                                <%
+                                                 end
+                                                end
+                                               %>
+                </select>
+            </div>
+                <label class="col-form-label col-md-2"> Pincode <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_pincode" id="mbr_pincode" value="<% if @ListMember %><%=@ListMember.mbr_pincode%><% end %>"/> </div>
+            
+            </div>
+
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Address Line 1 <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_addr_l1" id="mbr_addr_l1" value="<% if @ListMember %><%=@ListMember.mbr_addr_l1%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Address Line 2 </label>
+                    <div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_addr_l2" id="mbr_addr_l2" value="<% if @ListMember %><%=@ListMember.mbr_addr_l2%><% end %>"/> </div>
+			</div>
+
+            <div class="form-group row">
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="mbr_status" id="mbr_status">
+                                            <option value="">-Select</option>
+                                            <option value="Y" <% if @ListMember && @ListMember.mbr_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                            <option value="N" <% if @ListMember && @ListMember.mbr_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                    </select>
+                </div>
+			</div>
+            <div class="form-group row">
+				<label class="col-form-label col-md-2"> <h4>Additional Details</h4> </label>
+			</div>
+
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Gender </label>
+					<div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="mbr_gender" id="mbr_gender">
+                                            <option value="">-Select</option>
+                                            <option value="male" <% if @ListMember && @ListMember.mbr_gender.to_s == 'male' %>selected="selected"<% end %>>Male</option>
+                                            <option value="female" <% if @ListMember && @ListMember.mbr_gender.to_s == 'female' %>selected="selected"<% end %>>Female</option>
+                                            <option value="others" <% if @ListMember && @ListMember.mbr_gender.to_s == 'others' %>selected="selected"<% end %>>Others</option>
+                    </select>
+                </div>
+                    <label class="col-form-label col-md-2">Date Of Birth </label>
+                    <div class="col-md-3">
+                        <input type="date" autocomplete="off" name="mbr_dob" id="mbr_dob" autocomplete="off" class="form-control" value="<% if @ListMember %><%=format_oblig_date(@ListMember.mbr_dob)%><% elsif @cdate %><%=format_oblig_date(@cdate)%><% end %>"/> </div>
+			</div>
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Additional Phone</label>
+					<div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_mobile2" id="mbr_mobile2" value="<% if @ListMember %><%=@ListMember.mbr_mobile2%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> PAN No. </label>
+                    <div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_pan" id="mbr_pan" value="<% if @ListMember %><%=@ListMember.mbr_pan%><% end %>"/> </div>
+			</div>
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Education</label>
+					<div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_education" id="mbr_education" value="<% if @ListMember %><%=@ListMember.mbr_education%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Occupation </label>
+                    <div class="col-md-3">
+						<input type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_occupation" id="mbr_occupation" value="<% if @ListMember %><%=@ListMember.mbr_occupation%><% end %>"/> </div>
+			</div>
+
+            <% if @ListMember %>
+            <div class="form-group row">
+					
+					<label class="col-form-label col-md-3"> Reason For Change <span class="mandatory">*</span></label>
+					<div class="col-md-8">
+						<input required type="text" maxlength="60" autocomplete="off" autofocus="" class="form-control" name="mbr_reason_change" id="mbr_reason_change" /> </div>
+					</div>
+            
+            <% end %>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>member"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

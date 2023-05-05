@@ -1,0 +1,121 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">Announcement Entry by EC</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="mid" name="mid" value="<% if @ListDist !=nil %><%=@ListDist.id%><% end %>"/>
+          <!-- Leave Statistics -->
+          <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          
+          <label class="col-form-label col-md-2">Posting by<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+             <input class="form-control" readonly required autocomplete="off" name="ans_postedby" id="ans_postedby" value="<% if @ListDist !=nil %><%=@ListDist.ans_postedby%><% elsif @Hodname %><%=@Hodname%><% end %>" type="text"/>
+                   
+            
+          </div>
+         <label class="col-form-label col-md-2">Posting Dashboard<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+
+            <select class="form-control" required name="ans_posteddashboard" id="ans_posteddashboard"  >
+             
+              <option value="">-Select-</option>
+              <option value="all" <% if @ListDist !=nil && @ListDist.ans_posteddashboard.to_s.strip == 'all' %>selected="selected"<% end %> >All</option>
+              <%
+              if @sewDepart && @sewDepart.length >0
+               @sewDepart.each do |nedpts|
+               
+             %>
+              <option value="<%=nedpts.departCode%>" <% if @ListDist !=nil && @ListDist.ans_posteddashboard.to_s.strip == nedpts.departCode.to_s.strip %>selected="selected"<% end %> ><%=nedpts.departDescription%></option>
+             <%
+               end
+             end
+             %>
+             
+            </select>
+          </div>
+          
+
+      </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">Posting Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+             <input class="form-control"  required autocomplete="off" name="ans_postingdate" id="ans_postingdate" value="<% if @ListDist !=nil %><%=format_oblig_date(@ListDist.ans_postingdate)%><% end %>" type="text"/>
+                    </div> </div>
+          <label class="col-form-label col-md-2">Posting Time <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           
+                      <input class="form-control " required maxlength="15" onchange="common_time_formatted(this.value,'ans_postingtime');"  autocomplete="off" name="ans_postingtime" id="ans_postingtime"  value="<% if @ListDist !=nil %><%=@ListDist.ans_postingtime%><% end %>" type="text"/>
+                    </div>
+                  </div>
+                   <div class="form-group row">
+       
+            <label class="col-form-label col-md-2">Announcement<span class="mandatory">*</span></label>
+          <div class="col-md-5">
+           <textarea rows="2" required maxlength="1000" class="form-control" name="ans_announcment" id="ans_announcment"><% if @ListDist !=nil %><%=@ListDist.ans_announcment%><% end %></textarea></div>
+        </div>
+        <div class="form-group row" style="text-align: center">
+<label class="col-form-label col-md-2"><span class="mandatory">*</span></label>
+                              <div class="col-md-5">
+																<label for="active" class="rad-btn"> <input type="radio" checked="" name="ans_status" id="ans_status_1" value="Y" <% if @ListDist !=nil && @ListDist.ans_status == 'Y' %>checked<% elsif @ListDist ==nil%>checked<% end %>/>&nbsp;
+																Active</label>
+																<label for="inactive" class="rad-btn">
+                                &nbsp;<input type="radio" name="ans_status" id="ans_status_2" value="N" <% if @ListDist !=nil && @ListDist.ans_status == 'N' %>checked<% end %>/>&nbsp;
+																	In-active</label>
+																	
+                              </div>
+                          </div>
+        
+            <div class="form-group row">
+          <label class="col-form-label col-md-2">Publishing Date<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+           <div class="cal-icon">
+             <input class="form-control" required autocomplete="off" name="ans_publishdate" id="ans_publishdate" value="<% if @ListDist !=nil %><%=format_oblig_date(@ListDist.ans_publishdate)%><% end %>" type="text"/>
+                    </div> </div>
+          <label class="col-form-label col-md-2">Publishing Time <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                      <input class="form-control " required onchange="common_time_formatted(this.value,'ans_publishtime');" autocomplete="off" name="ans_publishtime" id="ans_publishtime"  value="<% if @ListDist !=nil %><%=@ListDist.ans_publishtime%><% end %>" type="text"/>
+                    </div>
+                  </div>
+           
+        <div class="submit-section">
+          <button class="btn btn-primary submit-btn processleave" onclick="return chec_save_posting();">Save</button>
+          <a href="<%=root_url%>ec_announcement"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+        </div>
+          
+        
+      </div>
+        <% end %>
+    </div>
+  </div>
+          <!-- /Leave Statistics -->
+                </div>
+        <!-- /Page Content -->
+       
+        
+            </div>
+      <!-- /Page Wrapper -->

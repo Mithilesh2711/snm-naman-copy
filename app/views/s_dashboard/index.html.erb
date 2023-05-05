@@ -1,0 +1,569 @@
+
+			<!-- /Sidebar -->
+			
+			<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                                <%
+                              myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+                              if @seawdarsobj
+                                if @seawdarsobj.sw_image !=nil && @seawdarsobj.sw_image !=''
+                                    chekpath = "#{root_url}/public/images/sewadar/"+@seawdarsobj.sw_image.to_s
+                                    if File.file?(chekpath)
+                                    myimages = "#{root_url}images/sewadar/"+@seawdarsobj.sw_image.to_s
+                                    end
+
+                                end
+                              end
+
+                              %>
+                              <input type="hidden" id="globalrootaccesspath" value="<%=root_url%>">
+                <div class="content container-fluid">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="welcome-box">
+								<div class="welcome-img">
+									<img alt="<% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %>" src="<%=myimages%>"/>
+								</div>
+								<div class="welcome-det" style="width:100%">
+								    <h3>Welcome, <% if @seawdarsobj %><%=@seawdarsobj.sw_sewadar_name%><% end %>  <span><a class="btn btn-custom" style="float:right;padding: 2px 10px;" href="sewadar_dashboard">View Profile</a></span></h3>
+									<p>Dhan Nirankar Ji <span style="float:right"><%=Date.today.strftime("%A")%>, <%=Date.today.strftime("%d %b %Y")%></span></p>
+									
+									<!--<a href="javascript:void(0);" class="btn btn-primary edit-btn"><i class="fa fa-pencil"></i>Edit</a>-->
+									
+								</div>
+								
+							</div>
+						</div>
+					</div>
+						<div class="row card">
+              <div class="card-body text-center">
+						    <h4 class="holiday-title mb-0 animate__animated animate__flash animate__infinite animate__slower 3s" style="font-size: 14px;">
+						        
+						       Kindly ensure all your profile details are correctly updated in NAMAN (viz. Contact details, Leaves, Advance, Dependents, Education Aid, Marriage Aid, etc)
+						    </h4>
+						    
+						</div>
+            </div>
+					<div class="row m-t-10">
+						<div class="col-lg-6 col-md-6">
+							<section class="dash-section">
+								<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-universal-access" aria-hidden="true"></i> Quick Access</h2>
+								<div class="dash-sec-content">
+									<div class="dash-info-list">
+										<!--<a href="#" class="dash-card text-danger">-->
+											<div class="dash-card">
+											<div class="container">
+												<!--<div class="dash-card-icon">-->
+												<!--	<i class="fa fa-hourglass-o"></i>-->
+												<!--</div>-->
+												<div class="row">
+                                                                                                
+											<div class="chat-profile-img col-md-4">
+																<a href="<%=root_url%>sewadar_dashboard"><div class="icon-img">
+																<i class="la la-user"> </i>
+																</div>
+														<h5 class="user-name m-t-10 mb-0">Profile</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>leave');"><div class="icon-img">
+																<i class="la la-rocket"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Apply Leave</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4 ">
+														<a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>generate_ticket/ticket_list');" ><div class="icon-img">
+																<i class="fa fa-phone"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Helpdesk</h5></a>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											</div>
+											</div>
+											<div class="container">
+											<div class="row">
+											    	
+												<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>leave_details');"><div class="icon-img">
+																<i class="la la-dashboard"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Leave Ledger</h5></a>
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>loans_advance/loans_advance_list');"><div class="icon-img">
+																<i class="la la-money"> </i>
+																</div>
+															<h5 class="user-name m-t-10 mb-0">Apply Advance</h5></a>
+											</div>
+											
+											<div class="chat-profile-img col-md-4 ">
+															<a href="javascript:;" onclick="get_selected_tds_listed('swd','<%=root_url%>advance_detail');"><div class="icon-img">
+																<i class="la la-list"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Advance Ledger</h5>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											</div></div>
+											<div class="container">
+											<div class="row">
+											
+											
+											<div class="chat-profile-img col-md-4 hidden">
+															<a href="<%=root_url%>apply_marriageaid/marriageaid_list"><div class="icon-img">
+																<i class="la la-share-alt"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Marriage Aid</h5></a>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											<div class="chat-profile-img col-md-4 hidden">
+															<a href="<%=root_url%>apply_educationaid/educationaid_list"><div class="icon-img">
+																<i class="la la-edit"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Education Aid</h5></a>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											<div class="chat-profile-img col-md-4 hidden">
+															<div class="icon-img">
+																<i class="fa fa-plus"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Health Insurance</h5>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											</div></div>
+                     
+											<div class="container hidden">
+											<div class="row">
+											<div class="chat-profile-img col-md-4">
+															
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											<div class="chat-profile-img col-md-4">
+															<div class="icon-img">
+																<i class="la la-info"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Directory</h5>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											
+											<div class="chat-profile-img col-md-4">
+															<div class="icon-img">
+																<i class="la la-calendar"> </i>
+															</div>
+															<h5 class="user-name m-t-10 mb-0">Calendar</h5>
+															<!--<small class="text-muted">Web Designer</small>-->
+											</div>
+											</div></div>
+											</div>
+										<!--</a>-->
+									</div>
+
+
+								</div>
+							</section>
+<section class="hidden">
+    <style>.table-font td
+    {
+        font-size:12px;
+    }</style>
+    <div class="dash-section">
+    <div class="dash-info-list">
+										<!--<a href="#" class="dash-card text-danger">-->
+											<div class="dash-card">
+              <h4 style="text-align:center">Advance Summary</h4>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      <th>Advance Type</th>
+                      <th class="text-right">Amount</th>
+                      <th class="text-right">EMI</th>                     
+                      <th class="text-right">Status</th>
+                     </tr>
+                  </thead>
+                  <tbody class="table-font">
+                    <%
+                    myselectcount = 0
+                      if  @advListobj!=nil && @advListobj.length >0 && @advListobj[0].al_approvestatus !=nil  && @advListobj[0].al_approvestatus != ''
+                         myselectcount = 1                    
+                      end
+                    
+                       if myselectcount.to_i >0
+                         @advListobj.each do |advs|
+                            totals  = advs.adamounts
+                            mytypes = ""
+                            status  = 0
+                            if advs.al_approvestatus.to_s == 'A'
+                              status = "Approved"
+                            elsif advs.al_approvestatus.to_s == 'R'  
+                              status = 'Rejected'
+                            elsif advs.al_approvestatus.to_s == 'N'  
+                              status = 'Pending' 
+                            elsif advs.al_approvestatus.to_s == 'C'  
+                              status = 'Cancelled'   
+                             elsif advs.al_approvestatus.to_s == 'H'  
+                              status = 'Hold'      
+                            else
+                              status = 'Pending'     
+                            end
+                            if advs.al_requesttype.to_s == 'Loan'
+                                mytypes = "Advance upto 60k"
+                            elsif advs.al_requesttype.to_s == 'Advance'
+                                mytypes = "MA Advance"
+                            else
+                                mytypes = advs.al_requesttype
+                            end
+                        
+                    %>
+
+                    
+                      <tr>
+                      <td><%=mytypes%></td>                      
+                      <td class="text-right"><%=totals%></td>
+                      <td class="text-right"><%=advs.al_installpermonth%></td>
+                      <td class="text-right"><%=status%></td>
+                    </tr>                    
+                      <%
+                        end                    
+                       else
+                     %>
+                     <tr>
+                      <td class="text-left" colspan="4">No record(s) found.</td>
+
+                      </tr>
+                      <%
+                        end
+                      %>
+                    
+                  </tbody>
+                </table>
+                <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8"> </div>
+
+                                  </div>
+              </div></div>
+              </div></div>
+      
+</section>
+<section class="hidden">
+    <div class="dash-section">
+      <div class="dash-info-list">
+										<!--<a href="#" class="dash-card text-danger">-->
+											<div class="dash-card">
+    <h4 style="text-align:center">Leave Summary</h4>
+                  <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable tb-pd">
+                  <thead>
+                    <tr>
+                      <th>Leave Type</th>
+                      <th class="text-right">OB</th>
+                      <th class="text-right">Credit</th>
+                      <th class="text-right">Taken</th>
+                      <th class="text-right">Balance</th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <%
+                         
+                         if @leaveLedger && @leaveLedger.length >0
+                          @leaveLedger.each do |inv|
+                          creiditedlv = inv.credits.to_f
+                          debitedleve = inv.debits.to_f
+                          obs         = get_all_opening_balance(inv.leavecode)
+                          balances    = (obs.to_f+inv.credits.to_f).to_f-inv.debits.to_f                       
+                           @clbal = balances
+                      
+                      %>
+                    
+                    <tr>
+                      <td><%=inv.leavecode%> </td>
+                      <td class="text-right"><%=obs%></td>
+                      <td class="text-right"><%=creiditedlv%></td>
+                      <td class="text-right"><%=debitedleve%></td>
+                      <td class="text-right"><%=balances%></td>
+                      
+                    </tr>
+                    <%
+                    end
+                   else
+                   %>
+                    <tr>
+                      <td colspan="5">No record(s) found.</td>
+                      
+                    </tr>
+                    <%
+                     end
+                    %>
+                    
+                    </tbody>
+                </table>
+              
+              </div></div>
+              </div></div>
+</section>
+						
+						</div>
+
+						<div class="col-lg-6 col-md-6">
+							<div class="dash-sidebar">
+                                                          <%
+
+                                                           if @listAnnouncement && @listAnnouncement.length >0
+                                                         %>
+								<section>
+									<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-bullhorn" aria-hidden="true"></i> Announcement/Message</h2>
+									<div class="card">
+										<div class="card-body">
+											<div class="slideshow-container">
+<%
+
+if @listAnnouncement && @listAnnouncement.length >0
+  @listAnnouncement.each do |aanounceamt|
+   department = ""
+   deprtobj   = get_department_detail(aanounceamt.ans_posteddashboard)
+   if deprtobj
+     department = deprtobj.departDescription
+   end
+  %>
+<div class="mySlides1" style="">
+   <q><%=aanounceamt.ans_announcment%> </q>
+  <p class="author">- <%=department%></p>
+</div>
+  <%
+   end
+
+ else
+ %>
+ No announcement found.
+<%
+  end
+  %>
+
+<a class="prev" onclick="plusSlides1(-1)">❮</a>
+<a class="next" onclick="plusSlides1(1)">❯</a>
+
+</div>
+
+<div class="dot-container">
+  
+  <%
+   sld = 1;
+    if @listAnnouncement && @listAnnouncement.length >0
+     @listAnnouncement.each do |aanounceamt|
+  %>
+  <span class="dot" onclick="currentSlide1(<%=sld%>)"></span> 
+  <%
+  sld +=1
+  end
+
+end
+  
+  %>
+  <!--<span class="dot" onclick="currentSlide(3)"></span> -->
+</div>
+										</div>
+									</div>
+								</section>
+                                                                <% end %>
+								<section>
+								  <% if @ListSewBirth %>  	<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-birthday-cake" aria-hidden="true"></i> Birthdays</h2> <% end%>
+                                                                  <%
+                                                                   if @ListSewBirth
+                                                                 %>
+								
+										<div class="card">
+										<div class="card-body text-center bday-wish">
+											<h5 class="holiday-title mb-0"><% if @BirthdayList%><%=@BirthdayList.bw_title_enlish%><% end %>   <%=@ListSewBirth.sw_sewadar_name%></h5>
+											<h5 style=" color:#0184e0">- Blessings - </h5>
+											<h5 class="holiday-title mb-0">" <% if @BirthdayList%><%=@BirthdayList.bw_title_hindi.html_safe%><% end %>
+                                                                  <% if @BirthdayList%><%=@BirthdayList.bw_description_hindi.html_safe%><% end %> "</h5>
+										    <h5 class="holiday-title mb-0">- <% if @BirthdayList%><%=@BirthdayList.bw_bottom_bless.html_safe%><% end %></h5>
+										</div>
+									</div>
+                                                                        <% end %>
+                                                                        <%
+                                                                         birtallist = get_all_birthday_listed()
+                                                                         if birtallist && birtallist.length >0
+                                                                       %>
+                                                                       	<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-birthday-cake" aria-hidden="true"></i> Birthdays</h2> 
+									<div class="card">
+										<div class="card-body">
+											<div class="slideshow-container" style="height: 200px;">
+<%
+ birtallist.each do |newabd|
+  bwmyimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+  if newabd.sw_image !=nil && newabd.sw_image !=''   
+         
+        
+         if newabd.types.to_s == 'sewa'
+            chekpaths = "#{Rails.root}/public/images/sewadar/"+newabd.sw_image.to_s
+            if File.file?(chekpaths)         
+              bwmyimages = "#{root_url}images/sewadar/"+newabd.sw_image.to_s
+            end
+         end  
+         if newabd.types.to_s == 'memb'  
+            chekpath  = "#{Rails.root}/public/images/ledger/profile/"+newabd.sw_image.to_s
+            if File.file?(chekpath)
+              bwmyimages = "#{root_url}images/ledger/profile/"+newabd.sw_image.to_s
+            end
+         end  
+    end
+  department = ""
+  departobj  = get_all_department_detail(newabd.sw_depcode)
+  if departobj
+    department = departobj.departDescription
+  end
+  %>
+<div class="mySlides">
+    
+   <img alt="" src="<%=bwmyimages%>"/>
+  <p class="author">- <%=newabd.sw_sewadar_name%></p>
+  <p><%=department%></p>
+  <a class="btn btn-custom hidden"  href="javascript:;">Send Wish Message</a>
+</div>
+<%
+ end
+%>
+
+
+<a class="prev" onclick="plusSlides(-1)">❮</a>
+<a class="next" onclick="plusSlides(1)">❯</a>
+
+</div>
+
+<div class="dot-container">
+  
+  <%
+   sld = 1;
+    birtallist = get_all_birthday_listed()
+    if birtallist && birtallist.length >0
+         birtallist.each do |newabd|
+  %>
+  <span class="dot" onclick="currentSlide(<%=sld%>)"></span> 
+  <%
+  sld +=1
+  end
+
+end
+  
+  %>
+  <!--<span class="dot" onclick="currentSlide(3)"></span> -->
+</div>
+										</div>
+									</div>
+                                                                        <% end %>
+								</section>
+								
+								<section>
+										<h2 class="dash-sec-title" style="text-align:center"><i class="fa fa-calendar" aria-hidden="true"></i>
+ Upcoming Holiday</h2>
+									<div class="card">
+										<div class="card-body text-center">
+											<h4 class="holiday-title mb-0">
+                                                                                          <%
+                                                                                          if @Holidaylisted
+                                                                                        %>
+                                                                                          <%=Date.parse(@Holidaylisted.dateYear).strftime("%A")%> <%=Date.parse(@Holidaylisted.dateYear).strftime("%d %b %Y")%> - <%=@Holidaylisted.description%>
+
+                                                                                          <% end %>
+                                                                                        </h4>
+										</div>
+									</div>
+								</section>
+								<section>
+    <div class="dash-section">
+      </div>
+
+ 
+
+</section>
+							</div>
+             
+						</div>
+            <div class="col-auto ml-auto hidden">
+            <a href="#" class="btn btn-custom" data-toggle="modal" data-target="#leave_details"> Leave Detail</a>
+          </div>
+					</div>
+         
+				</div>
+
+       
+				<!-- /Page Content -->
+<footer>
+     <div class="content container-fluid">
+    <section class="dash-section">
+								<!--<h1 class="dash-sec-title">Help Guide/FAQ</h1>-->
+								<div class="dash-sec-content">
+									<div class="dash-info-list">
+										<div class="dash-card">
+											<div class="container">
+											
+													<a href="s_dashboard">Help Guide/FAQ</a>
+													<span style="float:right"><a href="#" >Copyright Sant Nirankari Mission 2022</a></span>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</section>
+</footer>
+            </div></div>
+			<!-- /Page Wrapper -->
+			
+      <!-- Add Leave Modal -->
+      <%
+        if session[:request_absent_logged] && session[:request_absent_logged] == 'Y'
+          if @ListAbsents &&  @ListAbsents.to_f >0 || @ListLeaveTakens && @ListLeaveTakens.to_f >0
+      %>
+      <div id="leave_details_alertmessage" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">  
+          <div class="modal-content" >
+       <div class="m-t-15"style="padding-left:50px;">
+       <h4 ><%=Date.today.strftime(" %b, %Y")%> </h4> 
+       </div>
+            <div class="modal-header" style="padding: 0;">
+            <a href="javascript:;" onclick="process_restoreses_data();">
+              <button type="button" class="close hvrd" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+             </a>
+            </div>
+           
+            <div class="modal-body ">
+              <form>
+                <div class="form-group" style="display:flex;">
+                <div class="col-md-6">
+                <div class="stats-info" style="background: #ff6666;">
+                  <h2><% if @ListAbsents%><%=@ListAbsents%><% end %><i class="fa fa-warning"></i></h2>
+                  <h6>This Month Absentee </h6>
+                </div>
+              </div>
+              <div class="col-md-6">
+							<div class="stats-info">
+              <h2><% if @ListLeaveTakens%><%=@ListLeaveTakens%><% end %></h2>
+								<h6>Taken Paid Leaves</h6>
+							
+							</div>
+						</div>
+                </div>
+                <div class="form-group text-center">
+                  <p class="">Apply Leaves To Avoid M.A Deduction</p>
+                 
+                </div>
+                <div class="col-12">
+											<a href="javascript:void(0);" onclick="get_selected_tds_listed('swd','<%=root_url%>leave');process_restoreses_data();" data-dismiss="modal" class="btn btn-primary" style="float: right;">View Information</a>
+										</div>
+              
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% 
+           end 
+         end
+      %>
+      <!-- /Add Leave Modal -->
+        </div>
+		<!-- /Main Wrapper -->

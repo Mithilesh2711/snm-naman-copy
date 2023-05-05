@@ -1,0 +1,2 @@
+module GenerateTicketHelper
+end

@@ -1,0 +1,2 @@
+class TrnStokistProduct < ApplicationRecord
+end

@@ -1,0 +1,330 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title"> Education Aid Approvals</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+    <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+    <input type="hidden" name="server_request" id="server_request" value="Y"/>
+    <input type="hidden"  id="userXRoot" value="<%=root_url%>"/>
+    <input type="hidden"  id="userslogin" value="<% if session[:requestuser_loggedintp] %><%=session[:requestuser_loggedintp]%><% end %>"/>
+    <input type="hidden" id="approvedby"  value="<% if session[:sec_ec_approved] %><%=session[:sec_ec_approved]%><% end %>"/>
+               <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department">
+                    <%
+                      if @sewDepart && @sewDepart.length >1
+                    %>
+                      <option value=""> -- Select -- </option>
+                      <% end %>
+                        <%
+                          if @sewDepart && @sewDepart.length >0
+                          @sewDepart.each do |depts|
+                      %>
+                        <option value="<%=depts.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == depts.departCode.to_s.downcase%>selected="selected"<% end %>><%=depts.departDescription%></option>
+                      <%
+                        end
+                      end
+                      %>
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_category" id="voucher_category">
+                     <option value="">--Select--</option>
+                         <%
+                             if @sewadarCategory && @sewadarCategory.length >0
+                             @sewadarCategory.each do |secats|
+                          %>
+                            <option value="<%=secats.sc_name%>" <% if @voucher_category && @voucher_category.to_s.downcase == secats.sc_name.to_s.downcase%>selected="selected"<% end %> ><%=secats.sc_name%></option>
+                          <%
+                           end
+                         end
+                         %>
+                </select>
+                <label class="focus-label">Sewadar Type</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" name="sewadar_status" id="sewadar_status">
+                  <option value="">-Select-</option>
+                  <option value="N" <% if @sewadar_status && @sewadar_status.to_s == 'N' %>selected="selected"<% end %> >Pending </option>
+                  <option value="A" <% if @sewadar_status && @sewadar_status.to_s == 'A'%>selected="selected"<% end %> >Approve</option>
+                  <option value="F" <% if @sewadar_status && @sewadar_status.to_s == 'A'%>selected="selected"<% end %> >Farward To HR</option>
+                  <option value="R" <% if @sewadar_status && @sewadar_status.to_s == 'R'%>selected="selected"<% end %> >Reject</option>
+
+                                                                           
+                </select>
+                <label class="focus-label">Status</label>
+              </div>
+             </div>
+             
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_requesttype" id="sewadar_requesttype">
+                  <option value="">-Select-</option>                     
+                  <option value="self" <% if @sewadar_requesttype && @sewadar_requesttype.to_s == 'self'%>selected="selected"<% end %> >Self</option>
+                  <option value="dependent" <% if @sewadar_requesttype && @sewadar_requesttype.to_s == 'dependent'%>selected="selected"<% end %>>Dependent</option>
+
+                </select>
+                <label class="focus-label">Request Type</label>
+              </div>
+             </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" onclick="filter_approval();" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div>
+                     <div class="row filter-row">
+                          <div class="col-md-3"> 
+              
+                <input type="text" class="form-control" placeholder="Select approve from date" name="search_from_date" id="search_from_date" value="<% if @search_from_date %><%=@search_from_date%><% end %>"/>
+                </div>
+      
+              <div class="col-md-3"> 
+                 
+                    <input type="text" class="form-control" placeholder="Select approve upto  date" name="search_upto_date" id="search_upto_date" value="<% if @search_upto_date %><%=@search_upto_date%><% end %>"/>
+                    
+                
+             </div>
+                     </div>
+    <% end %>
+    <div class="row m-t-15">
+      <div class="col-md-12">
+      
+        <div class="table-responsive">
+<table class="table table-striped  mb-0 ">
+<thead class="new_tblhead">
+<tr>
+<th>Request No<br/>Request Date<br/>Apply For</th>
+<th >Sewadar Details</th>                
+<th>Aadhaar No<br/>Date of Birth</th>
+<th>Dependent</br>Amount</th>
+<th>Attachment 1<br/>Attachment 2<br/>Attachment 3</th>  
+<th>For Class </th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+  <%
+    if @MarriageListing && @MarriageListing.length >0
+    @MarriageListing.each do |newdiscp|
+  
+      newsewa      =  get_mysewdar_list_details(newdiscp.aea_sewadarcode)
+      myimages     = "#{root_url}assets/img/profiles/avatar-02.jpg"
+      sewdanmame   = ""
+      sewaoldcode  = ""
+      mycatgpars   = ""
+      genders      = ""
+      department   = ""
+
+      relatoinname    = ""
+      aadhaarno       = ""
+      doblist         = ""
+      selfdob         = ""
+      selfadhar       = ""
+      relaobj = get_family_relation_detail(newdiscp.aea_dependent);
+      if relaobj
+          relatoinname = relaobj.skf_dependent
+          aadhaarno    = relaobj.skf_pannumber
+          doblist      = relaobj.skf_datebirth
+      end
+
+      deptobj = get_department_detail(newdiscp.aea_departcode)
+      if deptobj
+         department = deptobj.departDescription
+      end
+       if newsewa
+        sewdanmame = newsewa.sw_sewadar_name
+        sewaoldcode = newsewa.sw_oldsewdarcode
+        selfdob     = newsewa.sw_date_of_birth
+        if  newsewa.sw_gender == 'M'
+            genders = "MALE"
+        elsif  newsewa.sw_gender == 'F'
+            genders = "FEMALE"
+        end   
+        
+        if newsewa.sw_image !=nil && newsewa.sw_image !=''
+            chekpath = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+            if File.file?(chekpath)
+              myimages = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+            end
+
+        end
+             mycatgpars = newsewa.sw_catgeory 
+      end
+        
+       kycobj    =  global_sewadar_kyc_information(newdiscp.aea_sewadarcode)  
+      if kycobj
+         selfadhar = kycobj.sk_adharno
+      end  
+       classname = get_class_series(newdiscp.aea_forclass)
+  %>
+<tr>
+<td><%=newdiscp.aea_requestno%><br/><%=formatted_date(newdiscp.aea_requestdate)%><br/><%=newdiscp.aea_applyfor%></td>
+<td>
+<h2 class="table-avatar">
+
+    <a href="javascript:;" class="avatar"><img alt="<%=sewdanmame%>" src="<%=myimages%>"/></a>
+    <div>
+    <span>	<%=newdiscp.aea_sewadarcode%> <% if sewaoldcode !=nil && sewaoldcode !='' %> (<%=sewaoldcode%>)<% end %> </span>
+    <a href="javascript:;"><%=sewdanmame%><br/><%=department%></a>
+    <span><%=genders%><br><%=mycatgpars%></span>
+    </div>
+    </h2>
+    <br/>
+
+
+</td>
+
+<td>
+ <%
+  if newdiscp.aea_applyfor.to_s =='self'                         
+%>
+  <%=selfadhar%><br/>
+      <%=formatted_date(selfdob)%> 
+<% else %>
+      <%=aadhaarno%><br/>
+      <%=formatted_date(doblist)%>                         
+<% end %>
+</td>
+<td>
+<%=relatoinname%><br/><%=currency_formatted(newdiscp.aea_amount)%>
+
+</td>
+
+<td>
+<% if newdiscp.ama_attachfirst != nil && newdiscp.ama_attachfirst != '' %>
+                        <a href="<%=root_url%>images/education/a1/<%=newdiscp.ama_attachfirst%>" target="_blank">
+                        <%=newdiscp.aea_titlefirst!=nil && newdiscp.aea_titlefirst!= '' ? newdiscp.aea_titlefirst : newdiscp.ama_attachfirst%>
+                        </a>
+                      <% end %>
+                      <% if newdiscp.aea_attachsecond != nil && newdiscp.aea_attachsecond != '' %>
+                        <br/>
+                        <a href="<%=root_url%>images/education/a2/<%=newdiscp.aea_attachsecond%>" target="_blank">
+                        <%=newdiscp.aea_tiitlesec!=nil && newdiscp.aea_tiitlesec!= '' ? newdiscp.aea_tiitlesec : newdiscp.aea_attachsecond%>
+                        </a>
+                        <% end %>
+                        <% if newdiscp.aea_attachthird != nil && newdiscp.aea_attachthird != '' %>
+                        <br/>
+                        <a href="<%=root_url%>images/education/a3/<%=newdiscp.aea_attachthird%>" target="_blank">
+                        <%=newdiscp.aea_titlethird!=nil && newdiscp.aea_titlethird!= '' ? newdiscp.aea_titlethird : newdiscp.aea_attachthird%>
+                        </a>
+                      <% end %>
+
+</td>
+<td><%=classname%></td>
+
+    <td class="text-center">
+                      <%
+                        if newdiscp.aea_status.to_s == "C"
+                      
+                      %>
+                       Cancelled
+                      <% else %>
+                        <div class="dropdown action-label">
+                          <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+                           
+                            <%
+                              if newdiscp.aea_status.to_s == "F"
+                            %>
+                            <i class="fa fa-dot-circle-o text-success"></i>
+                            Forward To HR
+                           
+                            <%
+                             elsif newdiscp.aea_status.to_s == "R"
+                            %>
+                               <i class="fa fa-dot-circle-o text-purple"></i> 
+                              Reject
+                            
+                            <%
+                             elsif newdiscp.aea_status.to_s == "A"
+                            %>
+                               <i class="fa fa-dot-circle-o text-purple"></i> 
+                              Approved  
+                              <%
+                               else
+                              %>
+                               <i class="fa fa-dot-circle-o text-purple"></i> 
+                              Pending
+                            <% end%>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right">  
+                               <%
+                                if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' )
+                               %>  
+                               <%
+                                if newdiscp.aea_status.to_s != "A"
+                               %>                          
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','N')"><i class="fa fa-dot-circle-o text-info"></i> Pending</a>
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','F')" ><i class="fa fa-dot-circle-o text-success"></i> Forward To HR</a>
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','R')"><i class="fa fa-dot-circle-o text-danger"></i> Reject</a>
+                                <% else %>
+                                <a class="dropdown-item" href="javascript:;" ><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+                                <% end %>
+                              <%
+                                elsif session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'hr')
+                               %>
+                              
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','N')"><i class="fa fa-dot-circle-o text-info"></i> Pending</a>
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','A')" ><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+                                <a class="dropdown-item" href="javascript:;" onclick="request_approval('<%=newdiscp.id%>','R')"><i class="fa fa-dot-circle-o text-danger"></i> Reject</a>                              
+
+
+
+                              <% end %>
+                              
+                              
+                            
+                          </div>
+                        </div>
+                        <% end %>
+                         <%
+                              if newdiscp.aea_status.to_s == "A" || newdiscp.aea_status.to_s == "F"
+                            %>
+                         <br/>
+                            <%=formatted_date(newdiscp.aea_approvedated)%>
+                            <% end %>
+                      </td>
+
+</td>
+
+</tr>
+<%
+  end
+  else
+%>
+<tr>
+  <td colspan="5">No record(s) found.</td>
+</tr>
+<% end%>
+
+</tbody>
+</table>
+                                
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+</div>
+</div>

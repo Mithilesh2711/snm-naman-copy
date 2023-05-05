@@ -1,0 +1,760 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+				<h3 class="page-title">Welcome 
+				<%
+				  if @ListMembname
+				%>
+				<%=@ListMembname%>!
+				<% else %>
+					<% if session[:autherizedUserName]%>
+					<%=session[:autherizedUserName]%>
+					<% end %>
+				     !
+				<% end %>
+				</h3>
+				<ul class="breadcrumb">
+					<li class="breadcrumb-item active">Dashboard</li>
+				</ul>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+
+        <div class="page-header">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                          
+                </div>
+                 <div class="col-md-4">
+		<h3 class="page-title dash-widget-info">  <%=get_month_listed_data(@ListMonths)%>, <%=@ListYears%></h3>
+              
+                </div>
+              </div>
+            </div>
+<%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+<input type="hidden" name="server_request" id="server_request" value="Y">
+<input type="hidden" id="rootXPath" value="<%=root_url%>">
+ <div class="form-group row">
+  <label class="col-form-label col-md-1"> Department<span class="mandatory">*</span></label>
+              <div class="col-md-3 ">
+                  <select class="form-control" required name="ls_depcode"  id="al_depcode" onchange="get_all_sewadar_by_department();">
+               <%
+                if @markedAllowed
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @sewDepart && @sewDepart.length >0
+                @sewDepart.each do |newdp|
+              %>
+              <option value="<%=newdp.departCode%>" <% if @deprtcode && @deprtcode.to_s.downcase == newdp.departCode.to_s.downcase %>selected="selected" <% end %>><%=newdp.departDescription%></option>
+              <%
+                end
+              end
+             %>
+            </select>
+              </div>
+                <label class="col-form-label col-md-1"> Year<span class="mandatory">*</span></label>
+              <div class="col-md-2 ">
+                  <select class="form-control" id="hph_years" name="hph_years" required>
+                  <option value="">-Select-</option>
+                    <%
+                    prevdate = @nbegindate
+                    newprvs  = Date.today.strftime("%Y")
+                    while prevdate.to_i <=newprvs.to_i do
+                  %>
+                    <option value="<%=prevdate.to_i%>" <% if @Yearx && @Yearx.to_i == prevdate.to_i %>selected="selected"<% end %>><%=prevdate.to_i%></option>
+                    <%
+                    prevdate= prevdate.to_i+1
+                    end
+                    %>
+
+              </select>
+              </div>
+			    <label class="col-form-label col-md-1"> Month<span class="mandatory">*</span></label>
+              <div class="col-md-2">
+                  <select class="form-control" name="hph_months" id="hph_months" required>
+				<option value="">-Select-</option>
+				<option value="1"   <% if @Monthsx && @Monthsx.to_i == 1 %>selected="selected"<% end %> >Jan</option>
+				<option value="2"   <% if @Monthsx && @Monthsx.to_i == 2 %>selected="selected"<% end %>>Feb</option>
+				<option value="3"   <% if @Monthsx && @Monthsx.to_i == 3 %>selected="selected"<% end %>>Mar</option>
+				<option value="4"   <% if @Monthsx && @Monthsx.to_i == 4 %>selected="selected"<% end %>>Apr</option>
+				<option value="5"   <% if @Monthsx && @Monthsx.to_i == 5 %>selected="selected"<% end %>>May</option>
+				<option value="6"   <% if @Monthsx && @Monthsx.to_i == 6 %>selected="selected"<% end %>>Jun</option>
+				<option value="7"   <% if @Monthsx && @Monthsx.to_i == 7 %>selected="selected"<% end %>>Jul</option>
+				<option value="8"   <% if @Monthsx && @Monthsx.to_i == 8 %>selected="selected"<% end %>>Aug</option>
+				<option value="9"   <% if @Monthsx && @Monthsx.to_i == 9 %>selected="selected"<% end %>>Sep</option>
+				<option value="10"  <% if @Monthsx && @Monthsx.to_i == 10 %>selected="selected"<% end %>>Oct</option>
+				<option value="11"  <% if @Monthsx && @Monthsx.to_i == 11 %>selected="selected"<% end %>>Nov</option>
+				<option value="12"  <% if @Monthsx && @Monthsx.to_i == 12 %>selected="selected"<% end %>>Dec</option>
+		</select>
+              </div>
+			  <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12 col-12 col">  
+							<a href="javascript:;" onclick="filter_listed_newdashboard();" class="btn btn-success btn-block"> <i class="fa fa-search"></i> Search </a>
+							</div>
+ </div>
+ <% end %>
+     <div class="row">
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-cubes"></i></span>
+									<div class="dash-widget-info">
+										<h3><%=get_dashboard_list_view_detail('TOT')%></h3>
+										<span>Strength</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3><%=get_dashboard_list_view_detail('REG')%></h3>
+										<span>Regular</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3><%=get_dashboard_list_view_detail('TEP')%></h3>
+										<span>Temporary</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+							<div class="card dash-widget">
+								<div class="card-body">
+									<span class="dash-widget-icon"><i class="fa fa-user"></i></span>
+									<div class="dash-widget-info">
+										<h3><%=get_dashboard_list_view_detail('OTH')%></h3>
+										<span>Others</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+<%
+maafterless = 0
+arrears     = 0
+licdeduct   = 0
+accomdat    = 0
+electcity   = 0
+advrefund   = 0
+inctaxamt   = 0
+otherdedc   = 0
+pmnetpay   = 0
+
+maafterlessX = 0
+arrearsX     = 0
+licdeductX   = 0
+accomdatX    = 0
+electcityX   = 0
+advrefundX   = 0
+inctaxamtX   = 0
+otherdedcX   = 0
+pmnetpayX   = 0
+totaldect   = 0
+loadmaobj = get_ma_listing_views('',@Yearx,@Monthsx);
+if loadmaobj!=nil
+	maafterless = loadmaobj.pmbasic
+	arrears     = loadmaobj.pmarear
+	licdeduct   = loadmaobj.pmdedlicemployee
+	accomdat    = loadmaobj.pmdedaccomodatamount
+	electcity   = loadmaobj.pmdedelectricamount
+	advrefund   = loadmaobj.refundamt
+	inctaxamt   = loadmaobj.pmincometaxamount
+	otherdedc   = loadmaobj.totaldeductions.to_f-(licdeduct.to_f+accomdat.to_f+electcity.to_f+advrefund.to_f+inctaxamt.to_f).to_f
+	pmnetpay    = loadmaobj.pmnetpay
+	totaldect    = loadmaobj.totaldeductions.to_f
+end
+
+loadmaobjX = get_ma_listing_views('PRV',@Yearx,@Monthsx);
+if loadmaobjX!=nil
+	maafterlessX = loadmaobjX.pmbasic
+	arrearsX     = loadmaobjX.pmarear
+	licdeductX   = loadmaobjX.pmdedlicemployee
+	accomdatX    = loadmaobjX.pmdedaccomodatamount
+	electcityX   = loadmaobjX.pmdedelectricamount
+	advrefundX   = loadmaobjX.refundamt
+	inctaxamtX   = loadmaobjX.pmincometaxamount
+	otherdedcX   = loadmaobjX.totaldeductions.to_f-(licdeduct.to_f+accomdat.to_f+electcity.to_f+advrefund.to_f+inctaxamt.to_f).to_f
+	pmnetpayX    = loadmaobjX.pmnetpay
+	totaldectX   = loadmaobjX.totaldeductions.to_f
+	
+end
+
+######PERCENT CALCULATIONS ##########
+	
+	afleessmap = maafterlessX.to_f >0 ? ((maafterless.to_f-maafterlessX.to_f)/maafterlessX.to_f)*100 : 0
+	arrearsp   = arrearsX.to_f >0 ? ((arrears.to_f-arrearsX.to_f)/arrearsX.to_f)*100 : 0
+	licdeductp = licdeductX.to_f >0 ? ((licdeduct.to_f-licdeductX.to_f)/licdeductX.to_f)*100 : 0
+	accomdatp  = accomdatX.to_f >0 ? ((accomdat.to_f-accomdatX.to_f)/accomdatX.to_f)*100 : 0
+	electcityp = electcityX.to_f >0 ? ((electcity.to_f-electcityX.to_f)/electcityX.to_f)*100 : 0
+	advrefundp = advrefundX.to_f >0 ? ((advrefund.to_f-advrefundX.to_f)/advrefundX.to_f)*100 : 0
+	inctaxamtp = inctaxamtX.to_f >0 ? ((inctaxamt.to_f-inctaxamtX.to_f)/inctaxamtX.to_f)*100 : 0
+	otherdedcp = otherdedcX.to_f >0 ? ((otherdedc.to_f-otherdedcX.to_f)/otherdedcX.to_f)*100 : 0
+	pmnetpayp  = pmnetpayX.to_f >0 ?  ((pmnetpay.to_f-pmnetpayX.to_f)/pmnetpayX.to_f)*100 : 0
+	totaldectp = totaldectX.to_f >0 ? ((totaldect.to_f-totaldectX.to_f)/totaldectX.to_f)*100 : 0
+	
+######## END PERCENT CALCULATION ########
+
+#### LOAN REQUEST #########
+
+%>
+
+          	<div class="row">
+						<div class="col-md-12">
+							<div class="card-group m-b-30">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Actual M.A</span>
+											</div>
+											<div>
+											    <%
+												  if afleessmap.to_f<0
+												%>
+												<span class="text-danger"><%=currency_formatted(afleessmap)%>%</span>
+												<% else %>
+												<span class="text-success"><%=currency_formatted(afleessmap)%>%</span>				
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(maafterless)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(afleessmap)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(maafterlessX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Arrear</span>
+											</div>
+											<div>
+											    <%
+												  if arrearsp.to_f<0
+												%>
+												<span class="text-danger"><%=currency_formatted(arrearsp)%>%</span>
+												<% else %>
+														<span class="text-success"><%=currency_formatted(arrearsp)%>%</span>
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(arrears)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(arrearsp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(arrearsX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Lic Deduction</span>
+											</div>
+											<div>
+											    <%
+												  if licdeductp.to_f<0
+												%>
+												<span class="text-danger"><%=currency_formatted(licdeductp)%>%</span>
+												<% else %>
+													<span class="text-success"><%=currency_formatted(licdeductp)%>%</span>
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(licdeduct)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(licdeductp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(licdeductX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Building Maintenance</span>
+											</div>
+											<div>
+											     <%
+												  if accomdatp.to_f<0
+												  
+												%>
+												<span class="text-danger"><%=currency_formatted(accomdatp)%>%</span>
+												<% else%>
+														<span class="text-success"><%=currency_formatted(accomdatp)%>%</span>
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(accomdat)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(accomdatp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(accomdatX)%></span></p>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+
+          	<div class="row">
+						<div class="col-md-12">
+							<div class="card-group m-b-30">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Electricity Deduction</span>
+											</div>
+											<div>
+											 <%
+												  if electcityp.to_f<0
+												  
+												%>
+												<span class="text-danger"><%=currency_formatted(electcityp)%>%</span>
+												<% else %>
+													<span class="text-success"><%=currency_formatted(electcityp)%>%</span>
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(electcity)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(electcityp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(electcityX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Advance Repaid</span>
+											</div>
+											<div>
+											    <%
+												  if advrefundp.to_f<0
+												  
+												%>
+												<span class="text-danger"><%=currency_formatted(advrefundp)%>%</span>
+												<% else %>
+												<span class="text-success"><%=currency_formatted(advrefundp)%>%</span>			
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(advrefund)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(advrefundp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(advrefundX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Income Tax Deduction</span>
+											</div>
+											<div>
+											   <%
+												  if inctaxamtp.to_f<0
+												  
+												%>
+													<span class="text-danger"><%=currency_formatted(inctaxamtp)%>%</span>
+												<% else %>
+													<span class="text-success"><%=currency_formatted(inctaxamtp)%>%</span>
+												<% end %>
+												
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(inctaxamt)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(inctaxamtp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(inctaxamtX)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Other Deduction</span>
+											</div>
+											<div>
+											<%
+												  if otherdedcp.to_f<0
+												  
+												%>
+												<span class="text-danger"><%=currency_formatted(otherdedcp)%>%</span>
+												<% else %>
+													<span class="text-success"><%=currency_formatted(otherdedcp)%>%</span>
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(otherdedc)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(otherdedcp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(otherdedcX)%></span></p>
+									</div>
+								</div>
+                <div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Net Payable</span>
+											</div>
+											<div>
+											<%
+												  if pmnetpayp.to_f<0
+												  
+												%>
+												<span class="text-danger"><%=currency_formatted(pmnetpayp)%>%</span>
+												<% else %>
+												<span class="text-success"><%=currency_formatted(pmnetpayp)%>%</span>
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(pmnetpay)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=currency_formatted(pmnetpayp)%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(pmnetpayX)%></span></p>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+					
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="col-md-12 text-center">
+									<div class="card">
+										<div class="card-body">
+											<h3 class="card-title">Monthly MA</h3>
+                      	<h4 >Year Summary</h4>
+											<div id="myChart"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<%
+					totaladvance     = get_advance_request_list("","") ? get_advance_request_list("","") : 0
+					prevesadvance    = get_advance_request_list("PRV","") ?  get_advance_request_list("PRV","") : 0
+					pendingadvance   = get_advance_request_list("","PD") ? get_advance_request_list("","PD") : 0
+					prevpendadvance  = get_advance_request_list("PRV","PD") ? get_advance_request_list("PRV","PD") : 0
+					advancep         = prevesadvance.to_f >0 ? ((totaladvance.to_f-prevesadvance.to_f).to_f/prevesadvance.to_f)*100 : 0
+					pendingadvp      = prevpendadvance.to_f>0 ? ((pendingadvance.to_f-prevpendadvance.to_f).to_f/prevpendadvance.to_f)*100 : 0
+					totalapproved    = get_advance_request_list("","AD")
+					pendingaproved   = get_advance_request_list("PRV","AD")
+					percenatgep      = pendingaproved.to_f >0 ? ((totalapproved.to_f-pendingaproved.to_f).to_f/pendingaproved.to_f)*100 : 0
+					
+					%>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="card-group m-b-30">
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Advance Request</span>
+											</div>
+											<div>
+											<%
+											  if advancep.to_f<0
+											%>
+												<span class="text-danger"><%=advancep.to_f >0 ? currency_formatted(advancep): 0 %>%</span>
+												<% else %>
+												<span class="text-success"><%=advancep.to_f >0  ? currency_formatted(advancep): 0 %>%</span>
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(totaladvance)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=advancep.to_f >0 ? currency_formatted(advancep): 0 %>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(prevesadvance)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Pending Advance Request</span>
+											</div>
+											<div>
+											<%
+											  if pendingadvp.to_f<0
+											%>
+												<span class="text-danger"><%=pendingadvp.to_s!='NaN' ? currency_formatted(pendingadvp) : 0%>%</span>
+												<% else %>
+												<span class="text-success"><%=pendingadvp.to_s!='NaN' ? currency_formatted(pendingadvp) : 0%>%</span>
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(pendingadvance)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=pendingadvp.to_s!='NaN' ? currency_formatted(pendingadvp) : 0%>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(prevpendadvance)%></span></p>
+									</div>
+								</div>
+							
+								<div class="card">
+									<div class="card-body">
+										<div class="d-flex justify-content-between mb-3">
+											<div>
+												<span class="d-block">Approve Advance Request</span>
+											</div>
+											<div>
+											<%
+											  if percenatgep.to_f<0
+											%>
+												<span class="text-danger"><%=percenatgep.to_s!='NaN' ? currency_formatted(percenatgep) : 0 %>0%</span>
+												<%
+												  else
+												%>
+												<span class="text-success"><%=percenatgep.to_s!='NaN' ? currency_formatted(percenatgep) : 0 %>0%</span>
+												<% end %>
+											</div>
+										</div>
+										<h3 class="mb-3"><%=currency_formatted(totalapproved)%></h3>
+										<div class="progress mb-2" style="height: 5px;">
+											<div class="progress-bar bg-primary" role="progressbar" style="width: <%=percenatgep.to_s!='NaN' ? currency_formatted(percenatgep) : 0 %>%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+										</div>
+										<p class="mb-0">Previous Month <span class="text-muted"><%=currency_formatted(pendingaproved)%></span></p>
+									</div>
+								</div>
+							</div>
+						</div>	
+					</div>
+					
+					<!-- Statistics Widget -->
+					<div class="row">
+						<div class="col-md-12 col-lg-6 col-xl-6 d-flex">
+							<div class="card flex-fill">
+								<div class="card-body">
+									<div class="d-flex justify-content-between mb-3">
+											<div>
+												<h4 class="card-title">Leaves</h4>
+											</div>
+											<div>
+											
+												<span><%=get_month_listed_data(@Monthsx)%>, <%=@Yearx%></span>
+											</div>
+										</div>
+										<%
+										  mycl  = 0
+										  myel  = 0
+										  myod  = 0
+										  mylwm = 0
+										  myabs = 0
+										  mysl  = 0
+										  myco  = 0
+										    totalbaset   =  get_total_absent_listed(@Monthsx,@Yearx) ? get_total_absent_listed(@Monthsx,@Yearx) : 0
+										    totalleaves  =  get_leave_count_listed("",@Monthsx,@Yearx) ? get_leave_count_listed("",@Monthsx,@Yearx) : 0
+											unpaidleave  =  get_leave_count_listed("UNP",@Monthsx,@Yearx) ? get_leave_count_listed("UNP",@Monthsx,@Yearx) : 0
+										    totunpalevae =  totalbaset.to_f+unpaidleave.to_f
+											 dbsoj       =  get_leave_detail_by_code(type="",@Monthsx,@Yearx)
+											 if dbsoj.length >0
+											   dbsoj.each do |newleaves|
+													if newleaves.ls_leave_code.to_s == 'CL'
+													mycl = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													mycl = (mycl.to_f*100).to_i;
+													elsif newleaves.ls_leave_code.to_s == 'CO'
+													myco = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													myco = (myco.to_f*100).to_i;
+													elsif newleaves.ls_leave_code.to_s == 'EL'
+													myel = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													myel = (myel.to_f*100).to_i;
+													elsif newleaves.ls_leave_code.to_s == 'LWM'
+													mylwm = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													mylwm = (mylwm.to_f*100).to_i;
+													elsif newleaves.ls_leave_code.to_s == 'OD'
+													myod = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													myod = (myod.to_f*100).to_i;
+													elsif newleaves.ls_leave_code.to_s == 'SL'
+													 mysl = newleaves.totalnumber.to_f >0 ? (newleaves.totalnumber.to_f/totalleaves.to_f).to_f : 0
+													 mysl = (mysl.to_f*100).to_i;
+													end			
+											   end
+											 end  
+													myabs = totalbaset.to_f >0 ? (totalbaset.to_f/totalleaves.to_f).to_f : 0
+													myabs  = (myabs.to_f*100).to_i
+										%>
+									<div class="statistics">
+										<div class="row">
+											<div class="col-md-4 col-6 text-center">
+												<div class="stats-box mb-4">
+													<p>Paid Leaves</p>
+													<h3><%=totalleaves%></h3>
+												</div>
+											</div>
+											<div class="col-md-4 col-6 text-center">
+												<div class="stats-box mb-4">
+													<p>Unpaid Leaves</p>
+													<h3><%=totunpalevae%></h3>
+												</div>
+											</div>
+											<div class="col-md-4 col-6 text-center">
+												<div class="stats-box mb-4">
+													<p>Pending Leaves </p>
+													<h3><%=get_leave_count_listed("PD",@Monthsx,@Yearx) ? get_leave_count_listed("PD",@Monthsx,@Yearx) : 0 %></h3>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="progress mb-4">
+										<div class="progress-bar bg-purple" role="progressbar" style="width: <%=mycl%>%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"> <%=mycl%>%</div>
+										<div class="progress-bar bg-warning" role="progressbar" style="width: <%=myco%>%" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"> <%=myco%>%</div>
+										<div class="progress-bar bg-success" role="progressbar" style="width: <%=myel%>%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"> <%=myel%>%</div>
+										<div class="progress-bar bg-warning" role="progressbar" style="width:  <%=mylwm%>%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"> <%=mylwm%>%</div>
+										
+										<div class="progress-bar bg-info" role="progressbar" style="width:  <%=myod%>%" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"> <%=myod%>%</div>
+                    <div class="progress-bar bg-purple" role="progressbar" style="width:  <%=mysl%>%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"> <%=mysl%>%</div>
+									<div class="progress-bar bg-danger" role="progressbar" style="width:  <%=myabs%>%" aria-valuenow="14" aria-valuemin="0" aria-valuemax="100"><%=myabs%></div>
+									</div>
+									
+									<div>
+									<%
+									
+									 if dbsoj.length >0
+									   dbsoj.each do |newleaves|
+									   classname = ""
+									   if newleaves.ls_leave_code.to_s == 'CL'
+									   classname = "text-purple"
+									   elsif newleaves.ls_leave_code.to_s == 'CO'
+									    classname = "text-warning"
+									  elsif newleaves.ls_leave_code.to_s == 'EL'
+									    classname = "text-success"
+									 elsif newleaves.ls_leave_code.to_s == 'LWM'
+									   classname = "text-warning"
+									  elsif newleaves.ls_leave_code.to_s == 'OD'
+									    classname = "text-info"
+									 elsif newleaves.ls_leave_code.to_s == 'SL'
+									    classname = "text-purple"
+									 end
+									%>
+										<p><i class="fa fa-dot-circle-o <%=classname%> mr-2"></i>Total <%=newleaves.ls_leave_code%><span class="float-right"><%=newleaves.totalnumber%></span></p>
+										
+										<% end end %>
+                    <p class="mb-0"><i class="fa fa-dot-circle-o text-danger mr-2"></i>Total ABS <span class="float-right"><%=get_total_absent_listed(@Monthsx,@Yearx)%></span></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<%
+						mycounts  = 0
+						 atrobjs = get_today_absent_listed()
+							if atrobjs && atrobjs.length >0
+								mycounts = 	atrobjs.length
+							end
+						%>
+						<div class="col-md-12 col-lg-6 col-xl-6 d-flex">
+							<div class="card flex-fill" >
+								<div class="card-body" style="overflow: auto;height: 200px;">
+									<h4 class="card-title">Today Absent <span class="badge bg-inverse-danger ml-2"><%=mycounts%></span></h4>
+									<%
+									i = 1
+									if atrobjs && atrobjs.length >0
+									    atrobjs.each do |newitems|
+										if i.to_i<=5
+										sewdaraname = ""
+										myimages    = "#{root_url}assets/img/profiles/avatar-02.jpg"
+										newsewa     = get_mysewdar_list_details(newitems.al_empcode)
+										if newsewa
+											sewdaraname = newsewa.sw_sewadar_name
+											if newsewa.sw_image !=nil && newsewa.sw_image !=''
+												chekpath = "#{Rails.root}/public/images/sewadar/"+newsewa.sw_image.to_s
+												if File.file?(chekpath)
+												myimages = "#{root_url}images/sewadar/"+newsewa.sw_image.to_s
+												end
+											end
+										end
+									%>
+									<span id="loadMoreBasents">
+									<div class="leave-info-box">
+										<div class="media align-items-center">
+											<a href="javascript:;" class="avatar">
+											<img alt="<%=sewdaraname%>" src="<%=myimages%>">
+											</a>
+											<div class="media-body">
+												<div class="text-sm my-0"><%=sewdaraname%></div>
+											</div>
+										</div>
+										<div class="row align-items-center mt-3 hidden">
+											<div class="col-6">
+												<h6 class="mb-0">4 Sep 2019</h6>
+												<span class="text-sm text-muted">Leave Date</span>
+											</div>
+											<div class="col-6 text-right">
+												<span class="badge bg-inverse-danger">Pending</span>
+											</div>
+										</div>
+									</div>
+									</span>
+									<%
+									  end
+									   i +=1
+									  end
+									end  
+									%>
+									
+									<%
+									if atrobjs && atrobjs.length >6	
+									%>						
+									<div class="load-more text-center loadmorecontent">
+										<a class="text-dark" href="javascript:;" onclick="loadmore_data();">Load More</a>
+									</div>
+									<%
+									  
+									 end 
+									%>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /Statistics Widget -->
+					
+					
+
+
+
+
+
+	</div>
+	<!-- /Page Content -->
+</div>

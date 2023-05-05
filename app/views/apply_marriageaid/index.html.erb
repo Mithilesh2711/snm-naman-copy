@@ -1,0 +1,236 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+ <div class="row">
+              <h3 class="page-title col-md-10">Apply For Marriage Aid</h3>
+            
+              <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>apply_marriageaid/marriageaid_list" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+            
+          </div>    
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                <input type="hidden" id="mid" name="mid" value="<% if @MarriageItem !=nil %><%=@MarriageItem.id%><% end %>"/>
+                <input type="hidden" id="cursewacode" name="cursewacode" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_sewadarcode%><% end %>"/>
+                <input type="hidden" id="updateremark" name="updateremark" value=""/>
+                <input type="hidden" id="curdependent" name="curdependent" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_dependent%><% end %>"/>
+                
+                
+   <div class="row">
+      <div class="col-md-12">
+        <div class="form-group row">
+
+                                        <label class="col-form-label col-md-2">Request No<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                          <input type="text"  required="" readonly autocomplete="off" maxlength="30" class="form-control" name="ama_requestno" id="ama_requestno" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_requestno%><% elsif @lastEntryNo %><%=@lastEntryNo%><% end %>">
+             </div>
+             <label class="col-form-label col-md-2">Request Date</label>
+          <div class="col-md-2">
+                                          <input type="text" required="" readonly autocomplete="off" maxlength="30" class="form-control " name="ama_requestdate" id="ama_requestdate" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_requestno%><% else %><%=formatted_date(Date.today)%><% end %>">
+             </div>
+          </div>          
+        
+        <div class="form-group row">
+          <label class="col-form-label col-md-2">Department </label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_departcode" id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                        <%
+                                         if @sewDepart && @sewDepart.length >1
+                                        %>
+                                        <option value="">-Select-</option>
+                                        <% end %>
+                                        <%
+                                            if @sewDepart && @sewDepart.length >0
+                                              @sewDepart.each do |newdp|
+                                            %>
+                                            <option value="<%=newdp.departCode%>" <% if @MarriageItem !=nil && @MarriageItem.ama_departcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+                                            <%
+                                              end
+                                            end
+                                          %>
+                                     </select>
+             </div>          
+            
+           </div>
+            <div class="form-group row">
+            <label class="col-form-label col-md-2">Sewadar Name <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="amasewadarcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                                       <%
+                                       if @Allsewobj && @Allsewobj.length >1
+                                       %>
+                                       <option value="">-Select-</option>
+                                       <% end %>
+                                       <%
+                                        if @Allsewobj && @Allsewobj.length >0
+                                          @Allsewobj.each do |sewdnm|
+                                        %>
+                                        <option value="<%=sewdnm.sw_sewcode%>" <% if @MarriageItem !=nil && @MarriageItem.ama_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>  ><%=sewdnm.sw_sewadar_name%></option>
+                                        <%
+                                          end
+                                        end
+                                      %>
+                                     </select>
+             </div> 
+          <label class="col-form-label col-md-2">Sewadar Code <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_sewadarcode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+                                       <%
+                                       if @Allsewobj && @Allsewobj.length >1
+                                       %>
+                                       <option value="">-Select-</option>
+                                       <% end %>
+                                       <%
+                                          if @Allsewobj && @Allsewobj.length >0
+                                            @Allsewobj.each do |sewdnm|
+                                          %>
+                                          <option value="<%=sewdnm.sw_sewcode%>" <% if @MarriageItem !=nil && @MarriageItem.ama_sewadarcode.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %> ><%=sewdnm.sw_sewcode%></option>
+                                          <%
+                                            end
+                                          end
+                                        %>
+                                     </select>
+             </div>          
+             
+           </div>
+               <div class="form-group row">
+          <label class="col-form-label col-md-2">Apply For <span class="mandatory">*</span></label>
+          <div class="col-md-3">
+                                     <select class="form-control" required name="ama_applyfor" id="ama_applyfor" onchange="get_dependent_listed();">
+                                       <option value="">-Select-</option>
+                                       <option value="self" <% if @MarriageItem !=nil && @MarriageItem.ama_applyfor.to_s =='self' %>selected<% end %>>Self</option>
+                                       <option value="dependent" <% if @MarriageItem !=nil && @MarriageItem.ama_applyfor.to_s =='dependent' %>selected<% end %>>Dependent</option>
+                                     </select>
+             </div>          
+             <label class="col-form-label col-md-2 mydependentlist hidden">Dependent List <span class="mandatory"></span></label>
+          <div class="col-md-3 mydependentlist hidden">
+                                     <select class="form-control" name="ama_dependent" id="ama_dependent" onchange="get_apply_aidamts();">
+                                       <option value="">-Select-</option>
+                                       <%
+                                         if @AlldependentList && @AlldependentList.length >0
+                                         @AlldependentList.each do |nedpts|
+                                       %>
+                                       <option value="<%=nedpts.id%>" <% if @MarriageItem !=nil && @MarriageItem.ama_dependent.to_i == nedpts.id.to_i %>selected<% end %>><%=nedpts.skf_dependent%></option>
+                                       <% end end %>
+                                     </select>
+             </div> 
+           </div>
+
+           <div class="form-group row">
+          <label class="col-form-label col-md-2">Amount<span class="mandatory">*</span></label>
+          <div class="col-md-3">
+             <input class="form-control" readonly required name="ama_amount" id="ama_amount" value="<% if @MarriageItem !=nil%><%=@MarriageItem.ama_amount%><% end %>"/>
+          </div>  
+          <%
+             if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s != 'swd'          
+           %>         
+             <label class="col-form-label col-md-2">Remark <span class="mandatory"></span></label>
+          <div class="col-md-3">
+              <textarea class="form-control" name="ama_remark" id="ama_remark"/><% if @MarriageItem !=nil%><%=@MarriageItem.ama_remark%><% end %></textarea>
+                                       
+             </div>
+              <% end %>
+           </div>
+
+
+           <input type="hidden" name="currfilefirst" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_attachfirst%><% end %>"/>
+           <input type="hidden" name="currfilesecond" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_attachsecond%><% end %>"/>
+           <input type="hidden" name="currfilethird" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_attachthird%><% end %>"/>
+
+            <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 1<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Upload Marriage Card" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachfirst" id="ama_attachfirst"/><br/>
+            <% if @MarriageItem && @MarriageItem.ama_attachfirst != nil && @MarriageItem.ama_attachfirst != '' %>
+              <a href="<%=root_url%>images/marriage/m1/<%=@MarriageItem.ama_attachfirst%>" target="_blank">
+                 <%=@MarriageItem.ama_titlefirst!=nil && @MarriageItem.ama_titlefirst!= '' ? @MarriageItem.ama_titlefirst : @MarriageItem.ama_attachfirst%>
+              </a>
+            <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Upload Marriage Card" name="ama_titlefirst" id="ama_titlefirst" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_titlefirst%><% end %>"/>
+              
+					 </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 2<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Upload Other Documents" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachsecond" id="ama_attachsecond"/>
+              <% if @MarriageItem && @MarriageItem.ama_attachsecond != nil && @MarriageItem.ama_attachsecond != '' %>
+                <br/>
+                <a href="<%=root_url%>images/marriage/m2/<%=@MarriageItem.ama_attachsecond%>" target="_blank">
+                <%=@MarriageItem.ama_tiitlesec!=nil && @MarriageItem.ama_tiitlesec!= '' ? @MarriageItem.ama_tiitlesec : @MarriageItem.ama_attachsecond%>
+                </a>
+                <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Upload Other Documents" name="ama_tiitlesec" id="ama_tiitlesec" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_tiitlesec%><% end %>"/>
+					 </div>
+					 </div>
+					 <div class="form-group row">
+           <label class="col-form-label info col-md-2">Attachment 3<a href="javascript:;"  data-container="body" data-toggle="popover" data-placement="right" data-content="Upload Other Documents" data-trigger="focus" ><i class="la la-question-circle-o"></i></a> </label>
+					<div class="col-md-2">
+						<input type="file" name="ama_attachthird" id="ama_attachthird"/>
+            <% if @MarriageItem && @MarriageItem.ama_attachthird != nil && @MarriageItem.ama_attachthird != '' %>
+                <br/>
+                <a href="<%=root_url%>images/marriage/m3/<%=@MarriageItem.ama_attachthird%>" target="_blank">
+                <%=@MarriageItem.ama_titlethird!=nil && @MarriageItem.ama_titlethird!= '' ? @MarriageItem.ama_titlethird : @MarriageItem.ama_attachthird%>
+                </a>
+              <% end %>
+					 </div>
+					 <div class="col-md-3 m-l-5">
+					 	<input type="text" class="form-control" placeholder="Upload Other Documents" name="ama_titlethird" id="ama_titlethird" value="<% if @MarriageItem !=nil %><%=@MarriageItem.ama_titlethird%><% end %>"/>
+					 </div>
+					 </div>
+           <%
+            bttonsv  = "Apply"
+            updatrmk = "hidden"
+            myshowns = ""
+            if @MarriageItem !=nil
+                bttonsv = "Update"
+                if @MarriageItem.ama_status == 'A' || @MarriageItem.ama_status == 'R' || @MarriageItem.ama_status == 'C'
+                    myshowns = "hidden"
+                end
+                if @MarriageItem.ama_status == 'A'
+                    updatrmk = ""
+                end
+            end
+           %>
+            <%
+              if session[:requestuser_loggedintp] && session[:requestuser_loggedintp].to_s == 'hr' 
+            %>
+              <div class="submit-section <%=updatrmk%>">
+                <button type="button" class="btn btn-primary submit-btn" onclick="return process_update_remarks();">Update Remark</button>         
+              </div>
+          <% end %>
+        <div class="submit-section <%=myshowns%>">
+          <button class="btn btn-primary submit-btn"><%=bttonsv%></button>
+          <a href="<%=root_url%>apply_marriageaid/marriageaid_list"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+        </div>
+      </div>
+    </div>
+      </div>
+                 <% end %>  
+    </div>
+  </div>
+  <!-- /Page Content -->

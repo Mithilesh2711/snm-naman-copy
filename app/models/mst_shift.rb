@@ -1,0 +1,2 @@
+class MstShift < ApplicationRecord
+end

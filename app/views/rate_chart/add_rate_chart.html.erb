@@ -1,0 +1,113 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Rate Charts</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="currccode" id="currccode" value="<% if @ListRateChart %><%=@ListRateChart.rc_code%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @ListRateChart %><%=@ListRateChart.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2">  Rate Chart Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required maxlength="30" autocomplete="off" class="form-control" name="rc_code" id="rc_code" value="<% if @ListRateChart %><%=@ListRateChart.rc_code%><% elsif @lastcodes %><%=@lastcodes%><% end %>"/> </div>
+						<label class="col-form-label col-md-2"> Rate Chart Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="rc_name" id="rc_name" value="<% if @ListRateChart %><%=@ListRateChart.rc_name%><% end %>"/> </div>
+				</div>
+                <div class="form-group row">
+					
+                <label class="col-form-label col-md-2">Subscription Type <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select class="form-control" name="rc_subtyp" id="rc_subtyp" tabindex="
+                    1" required>
+                        <option value="">--Select--</option>
+                                                    <%
+                                                     if @ListSubTyp.length >0
+                                                      @ListSubTyp.each do |subtyp|
+                                                    %>
+                                                    <option value="<%=subtyp.subtyp_code%>" <% if @ListRateChart && @ListRateChart.rc_subtyp.to_s.downcase == subtyp.subtyp_code.to_s.downcase %>selected="selected"<% end %>><%=subtyp.subtyp_name%></option>
+                                                    <%
+                                                     end
+                                                     end
+                                                   %>
+                    </select>
+                </div>
+
+                <label class="col-form-label col-md-2">Currency <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select class="form-control" name="rc_currency" id="rc_currency" tabindex="
+                    1" required>
+                        <option value="">--Select--</option>
+                                                    <%
+                                                     if @ListCurrency.length >0
+                                                      @ListCurrency.each do |cur|
+                                                    %>
+                                                    <option value="<%=cur.cur_code%>" <% if @ListRateChart && @ListRateChart.rc_currency.to_s.downcase == cur.cur_code.to_s.downcase %>selected="selected"<% end %>><%=cur.cur_name%></option>
+                                                    <%
+                                                     end
+                                                     end
+                                                   %>
+                    </select>
+                </div>
+				</div>
+                <div class="form-group row">
+                <label class="col-form-label col-md-2">Magazine <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select class="form-control" name="rc_magazine" id="rc_magazine" tabindex="
+                    1" required>
+                        <option value="">--Select--</option>
+                                                    <%
+                                                     if @ListMag.length >0
+                                                      @ListMag.each do |mag|
+                                                    %>
+                                                    <option value="<%=mag.mag_code%>" <% if @ListRateChart && @ListRateChart.rc_magazine.to_s.downcase == mag.mag_code.to_s.downcase %>selected="selected"<% end %>><%=mag.mag_name%></option>
+                                                    <%
+                                                     end
+                                                     end
+                                                   %>
+                    </select>
+                </div>
+                
+                    <label class="col-form-label col-md-2"> Amount<span class="mandatory">*</span></label>
+                    <div class="col-md-3">
+                        <input type="number" required maxlength="60" autocomplete="off" autofocus="" class="form-control" name="rc_amount" id="rc_amount" value="<% if @ListRateChart %><%=@ListRateChart.rc_amount%><% end %>"/> </div>
+                </div>
+                <div class="form-group row">
+                
+                <label class="col-form-label col-md-2">Status <span class="mandatory">*</span></label>
+                <div class="col-md-3">
+                    <select required autocomplete="off" class="form-control" name="rc_status" id="rc_status">
+                                              <option value="">-Select</option>
+                                              <option value="Y" <% if @ListRateChart && @ListRateChart.rc_status.to_s == 'Y' %>selected="selected"<% end %>>Yes</option>
+                                              <option value="N" <% if @ListRateChart && @ListRateChart.rc_status.to_s == 'N' %>selected="selected"<% end %>>No</option>
+                                            </select>
+                                    </div>
+                </div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>rate_chart"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

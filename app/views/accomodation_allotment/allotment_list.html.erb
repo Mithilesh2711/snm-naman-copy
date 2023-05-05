@@ -1,0 +1,188 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Allotment List</h3>
+					 <%=render'layouts/breadcrumbs'%>
+				</div>
+				
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                   <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                   <input type="hidden" id="server_request" name="server_request" value="Y"/>
+                   <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_search_code" id="sewadar_search_code">
+                  <option value=""> -- Select -- </option>
+                  <%
+               if @ListSewdar && @ListSewdar.length >0
+                @ListSewdar.each do |sewdnm|
+              %>
+              <option value="<%=sewdnm.sw_sewcode%>" <% if @sewadar_search_code && @sewadar_search_code.to_s == sewdnm.sw_sewcode.to_s %>selected="selected"<% end %>><%=sewdnm.sw_sewadar_name%></option>
+              <%
+                end
+              end
+             %>
+                                                                           
+                </select>
+                <label class="focus-label">Sewadar Code</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_branches" id="sewadar_branches">
+                  <option value="">-Select-</option>
+                  <option value="B" <% if @sewadar_branches && @sewadar_branches.to_s == 'B' %>selected="selected"<% end %>>Branch</option>
+                  <option value="H" <% if @sewadar_branches && @sewadar_branches.to_s  == 'H' %>selected="selected"<% end %>>Headquater</option>
+             
+                                                                           
+                </select>
+                <label class="focus-label">Belongs</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group">
+                 <input type="text"  placeholder="Allotment No"  name="sewdar_alloment" id="sewdar_alloment" value="<% if @search_allotno %><%=@search_allotno%><% end %>"/>
+                
+              </div>
+             </div>
+             
+             
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" onclick="filter_allotment();" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div>
+                <% end %>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive">
+					  <div >
+                                  	<a href="<%=root_url%>accomodation_allotment" class="btn add-btn float-left m-b-5"><i class="fa fa-plus"></i> Accomodation Allotment</a>
+                                  	 <div class="col-auto float-right ml-auto">
+								<div class="btn-group btn-group-sm">
+									<a  class="btn btn-white" target="_blank" href="<%=@printpath%>" class="btn btn-white">CSV</a>
+									
+									
+								</div>
+							</div>
+                                              
+                                         
+                                  </div>
+					<table class="table table-striped mb-0 ">
+									<thead>
+										<tr>
+											<th style="width: 30px;">Allotment No</th>
+											<th>Allotment Date</th>
+											<th>Belongs</th>
+											<th>Address</th>
+										
+											<th>Sewadar Name</th>
+											<th >Declaration Signed</th>	
+																			
+											<th class="text-right">Action</th>
+										</tr>
+									</thead>
+									<tbody>
+                                                                            <%
+                                                                            pagestart = params[:page] ? params[:page] : 1
+                                                                            if pagestart.to_i <=1
+                                                                              i = 1
+                                                                            else
+                                                                              i = ((pagestart.to_i-1)*10)+1
+                                                                              i = i.to_i
+                                                                            end
+                                                                            if @AllotmentList && @AllotmentList.length >0
+                                                                               @AllotmentList.each do |newalt|
+                                                                            %>
+										<tr>
+											<td><%=newalt.aa_alotmentno%></td>
+											<td><%=format_oblig_date(newalt.aa_alotmentdate)%></td>
+											<td>
+                                                                                          <%
+                                                                                           if newalt.aa_addtype =='H'
+                                                                                         %> 
+                                                                                          Head
+                                                                                          <%
+                                                                                          elsif newalt.aa_addtype =='B'
+                                                                                          %>
+                                                                                          Branch
+                                                                                          <% end %>
+                                                                                        </td>
+											<td>
+                                                                                          <%
+                                                                                         address = ""
+                                                                                         addrsobj      = get_accomodation_addresslisted(newalt.aa_address)
+                                                                                         if addrsobj
+                                                                                           address = addrsobj.ad_address
+                                                                                         end
+                                                                                         %>
+                                                                                         <%=address%>
+
+                                                                                         </td>
+											
+											<td>
+                                                                                          <%
+                                                                                         sewdarname = ""
+                                                                                         seobj      = get_mysewdar_list_details(newalt.aa_sewadarcode)
+                                                                                         if seobj
+                                                                                           sewdarname = seobj.sw_sewadar_name
+                                                                                         end
+                                                                                         %>
+                                                                                         <%=sewdarname%>
+
+                                                                                        </td>
+                                                                                        <td id="center">
+                                                                                           <%=newalt.aa_declaretaking%>
+
+                                                                                        </td>
+											
+											<td class="text-right">
+                                                                                              <div class="dropdown dropdown-action"> <a href="javascript:;" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                                                                <div class="dropdown-menu dropdown-menu-right"> <a class="dropdown-item" href="<%=root_url%>accomodation_allotment/<%=newalt.id%>"><i class="fa fa-pencil m-r-5"></i> View</a> </div>
+                                                                                              </div>
+                                                                                              </td>
+										</tr>
+                                                                                <%
+                                                                                 end
+
+                                                                                else
+                                                                               %>
+                                                                                <tr>
+                                                                                  <td colspan="4">
+                                                                                    No record(s) found.
+                                                                                  </td>
+                                                                                </tr>
+                                                                                <%
+                                                                                  end
+                                                                               %>
+										
+										
+									</tbody>
+								</table>
+                                  <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@AllotmentList)%></div>
+
+                                  </div>
+                              
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Page Content -->
+</div>

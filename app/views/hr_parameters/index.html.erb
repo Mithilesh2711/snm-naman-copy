@@ -1,0 +1,456 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">HR Parameters</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+                
+    <div class="row">
+      <div class="col-md-12">
+      
+
+    
+              <div class="form-group row">
+        
+          <label class="col-md-2 lbl_name1 ">
+ Processing Year
+                     </label>
+                  
+            <div class="col-md-2">
+          <select class="form-control" id="hph_years" name="hph_years" required>
+              <option value="">-Select-</option>
+               <%
+               prevdate = @nbegindate
+               newprvs  = @nbegindate.to_i+2
+               while prevdate.to_i <=newprvs.to_i do
+              %>
+               <option value="<%=prevdate.to_i%>" <% if @HeadHrp && @HeadHrp.hph_years.to_i == prevdate.to_i  %>selected="selected" <% elsif prevdate.to_i == @nbegindate.to_i%> selected="selected"<% end %>><%=prevdate.to_i%></option>
+               <%
+               prevdate= prevdate.to_i+1
+               end
+               %>
+               
+          </select>
+              
+           </div>
+                  <label class="col-md-2 lbl_name1 ">
+ 
+                     </label>
+                  
+            <div class="col-md-2">
+          <select class="form-control" name="hph_months" id="hph_months" required>
+                <option value="">-Select-</option>
+                <option value="1"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 1%> selected="selected" <% end %> >Jan</option>
+               <option value="2"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 2%> selected="selected" <% end %>>Feb</option>
+               <option value="3"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 3%> selected="selected" <% end %>>Mar</option>
+               <option value="4"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 4%> selected="selected" <% end %>>Apr</option>
+               <option value="5"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 5%> selected="selected" <% end %>>May</option>
+               <option value="6"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 6%> selected="selected" <% end %>>Jun</option>
+               <option value="7"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 7%> selected="selected" <% end %>>Jul</option>
+               <option value="8"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 8%> selected="selected" <% end %>>Aug</option>
+               <option value="9"   <% if @HeadHrp && @HeadHrp.hph_months.to_i == 9%> selected="selected" <% end %>>Sep</option>
+               <option value="10"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 10%> selected="selected" <% end %>>Oct</option>
+               <option value="11"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 11%> selected="selected" <% end %>>Nov</option>
+               <option value="12"  <% if @HeadHrp && @HeadHrp.hph_months.to_i == 12%> selected="selected" <% end %>>Dec</option>
+          
+          </select>                              
+           </div>
+        </div>
+         <div class="form-group row">
+          <label class="lbl_name1 col-md-2">LIC Rules</label>
+         
+                                           <label class="col-form-label col-md-2 right">Total LIC Amount </label>
+                                            <label class="col-form-label col-md-2 right">Mandal  Pay </label>
+                                             <label class="col-form-label col-md-2 right">Sewadar Pay </label>
+          
+        </div>
+        <div class="form-group row">
+        
+          <label class="col-md-2">
+ 
+                     </label>
+                  
+            <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_licpay" id="hph_licpay" autocomplete="off"  value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_licpay)%><% end %>"/> </div>
+            <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_mandalpay" id="hph_mandalpay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_mandalpay)%><% end %>"/> </div>
+                                     <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_sewapay" id="hph_sewapay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_sewapay)%><% end %>"/> </div>
+          
+        </div>
+   </div>
+           </div>
+           <div class="row m-t-5" style="background: #dee2e6;">
+      <div class="col-md-12">
+       <div class="form-group row">
+       <label class="col-md-5 right"></label>
+       <label class="col-md-3 Center m-t-10 mbfs" >Sewadar</label>
+       </div>
+       <div class="form-group row">
+          <label class="lbl_name1 col-md-2">Group Policy Rules</label>
+          <label class="col-md-2 right">
+         Sum Insured
+                     </label>
+                                           <label class="col-form-label col-md-2 right hidden">Amount Monthly </label>
+                                            <label class="col-form-label col-md-2 right hidden">Mandal Pay </label>
+                                             <label class="col-form-label col-md-1 center pdrl2" style="text-align: center;">Self </label>
+                                            <label class="col-form-label col-md-1 center pdrl2" >Dependent </label>
+                                            <label class="col-form-label col-md-1 center pdrl2" > Parents </label>
+        </div>
+       <div class="form-group row">
+        
+          <label class="col-md-2">
+        Policy Slab One
+                     </label>
+                                       <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right " onkeypress="return isNumberFloatKey(event);" name="hph_suminsured" id="hph_suminsured" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_suminsured)%><% end %>"/> </div>
+            <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_monthly_amt" id="hph_monthly_amt" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_monthly_amt)%><% end %>"/> </div>
+            <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policymandalpay" id="hph_policymandalpay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policymandalpay)%><% end %>"/> </div>
+                                     <div class="col-md-1 pdr0">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policysewapay" id="hph_policysewapay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policysewapay)%><% end %>"/> </div>
+           <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_dependent" id="hph_dependent" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_dependent)%><% end %>"/> </div>
+           <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_parent" id="hph_parent" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_parent)%><% end %>"/> </div>
+          
+        </div>
+          <div class="form-group row">
+      
+          <label class="col-md-2">
+        Policy Slab Two
+                     </label>
+                                       <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policyslabtwo_sumins" id="hph_policyslabtwo_sumins" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policyslabtwo_sumins)%><% end %>"/> </div>
+            <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policytwo_monthlyamt" id="hph_policytwo_monthlyamt" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policytwo_monthlyamt)%><% end %>"/> </div>
+                                     <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policytwo_mandalpay" id="hph_policytwo_mandalpay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policytwo_mandalpay)%><% end %>"/> </div>
+            <div class="col-md-1 pdr0">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policytwo_sewapay" id="hph_policytwo_sewapay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policytwo_sewapay)%><% end %>"/> </div>
+          <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_dependentsec" id="hph_dependentsec" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_dependentsec)%><% end %>"/> </div>
+           <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_parenetsec" id="hph_parenetsec" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_parenetsec)%><% end %>"/> </div>
+          
+        </div>
+          <div class="form-group row m-b-5">
+         
+          <label class="col-md-2">
+        Policy Slab Three
+                     </label>
+                                              <div class="col-md-2">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policythree_sumins" id="hph_policythree_sumins" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policythree_sumins)%><% end %>"/> </div>
+                                       <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policythree_monthly" id="hph_policythree_monthly" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policythree_monthly)%><% end %>"/> </div>
+            <div class="col-md-2 hidden">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policythree_mandalpay" id="hph_policythree_mandalpay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policythree_mandalpay)%><% end %>"/> </div>
+            <div class="col-md-1 pdr0">
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_policythree_sewpay" id="hph_policythree_sewpay" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_policythree_sewpay)%><% end %>"/> </div>
+          <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_dependentthird" id="hph_dependentthird" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_dependentthird)%><% end %>"/> </div>
+           <div class="col-md-1 pdr0" >
+                                        
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_parenthird" id="hph_parenthird" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_parenthird)%><% end %>"/> </div>
+          
+        </div>
+        </div>
+           </div>
+           <div class="row">
+      <div class="col-md-12">
+            <div class="form-group row m-t-10">
+         
+          <label class="lbl_name1 col-md-2">
+        Income Tax % on MA
+                     </label>
+                                              <div class="col-md-2">
+                                        
+                                                <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" maxlength="3" name="hph_incometaxpercent" id="hph_incometaxpercent" maxlength="3" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_incometaxpercent)%><% end %>"/> </div>
+           
+          <label class="lbl_name1 col-md-2">
+        Deduction After(Limit)
+                     </label>
+                                              <div class="col-md-2">
+
+                                                <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hph_deductedlimited" id="hph_deductedlimited" maxlength="15" autocomplete="off" value="<% if @HeadHrp %><%=currency_formatted(@HeadHrp.hph_deductedlimited)%><% end %>"/> </div>
+
+        </div>
+        <div class="row d-flex">
+          <div class="col-md-6">
+              <div class="row m-t-10 ">
+         <label class="lbl_name1 col-md-12 info">Electric Matrix
+             </label>
+          <label class="lbl_name1 col-md-12 info">
+       Electricity   If Consumption >   <input type="text"  class="form-control right" style="width: 100px;margin-left: 10px;margin-right: 10px;" onkeypress="return isNumberFloatKey(event);"  maxlength="5" name="hph_consumption" id="hph_consumption" value="<% if @HeadHrp %><%=@HeadHrp.hph_consumption.to_i%><% end %>"/>
+                   Unit then Rate 2 Applicable
+                     </label>
+                     <!--<a href="javascript:;" class="col-md-2" data-container="body" data-toggle="popover" data-placement="right" data-content="If less than 400 than Rate 1 else Rate 2" data-trigger="focus" data-original-title="" title=""><i class="la la-question-circle-o"></i></a>-->
+               
+         
+          
+        </div>
+       
+             <% end %>
+             <div class="row form-group">
+         
+          <label class=" col-md-3 right">
+       Range From
+                     </label>
+                <label class=" col-md-3 right">
+       Range Upto
+                     </label>
+                       <label class=" col-md-2 right">
+       Rate 1
+                     </label>
+                       <label class=" col-md-2 right">
+      Rate 2
+                     </label>
+           
+               
+        </div>
+          <div class="row form-group">
+            <input type="hidden" id="rangemid" value=""/>
+          <label class=" col-md-3">
+            <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" maxlength="16" name="hpr_rangefrom" id="hpr_rangefrom" autocomplete="off" />
+                     </label>
+                <label class=" col-md-3">
+       <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" maxlength="16" name="hpr_rangeto" id="hpr_rangeto" autocomplete="off" />
+                     </label>
+                       <label class=" col-md-2">
+       <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" maxlength="16" name="hpr_rate1" id="hpr_rate1" autocomplete="off" />
+                     </label>
+                       <label class=" col-md-2">
+      <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" maxlength="16" name="hpr_rate2" id="hpr_rate2" autocomplete="off" />
+                     </label>
+                     <div class="col-md-2" id="process_rangesave">
+           <a href="javascript:;" style="padding: 3px;" onkeypress="return isNumberFloatKey(event);" onclick="add_range_hrparameters();" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> ADD </a>
+          </div>
+           
+          
+        </div>
+            <div class="row">
+       <div class="table-responsive col-md-12 ">
+<table class="table table-striped mb-0 ">
+<thead class="new_tblhead">
+<tr>
+<th>Range From</th>
+<th>Range Upto</th>
+<th>Rate 1</th>
+<th>Rate 2</th>
+
+<th colspan="2" id="center">Action</th>
+</tr>
+</thead>
+<tbody id="parameterranges">
+  <%
+   if @hrRange && @hrRange.length >0
+    @hrRange.each do |newrange|
+  %>
+<tr>
+
+<td id="center"><%=newrange.hpr_rangefrom.to_i%></td>
+<td  id="center"><%=newrange.hpr_rangeto.to_i%></td>
+<td id="center"><%=newrange.hpr_rate1%></td>
+<td id="center"><%=newrange.hpr_rate2%></td>
+
+<td><a href="javascript:" id="center" onclick="get_range_parameters('<%=newrange.id%>','<%=currency_formatted(newrange.hpr_rangefrom)%>','<%=currency_formatted(newrange.hpr_rangeto)%>','<%=currency_formatted(newrange.hpr_rate1)%>','<%=currency_formatted(newrange.hpr_rate2)%>');"><i class="fa fa-pencil m-r-5"></i></a></td>
+<td><a href="javascript:" id="center" onclick="delete_common_data('RNG','<%=newrange.id%>')"><i class="fa fa-trash-o m-r-5"></i></a></td>
+
+</tr>
+<%
+  end
+   else
+   %>
+<tr>
+  <td colspan="4">
+    No record(s) found.
+
+  </td>
+
+</tr>
+<%
+  end
+  %>
+
+                    
+                    
+                  </tbody>
+                </table>
+                                
+        </div>
+        </div>
+        
+          </div>
+           <div class="col-md-6">
+                 <div class="row m-t-10">
+         
+          <label class="lbl_name1 col-md-6">
+       Accomodation Charges
+                     </label>
+              <label class="lbl_name1 col-md-12 info">
+       Applicable Rate 1 If MA is <   <input type="text"  class="form-control right" style="width: 100px;margin-left: 10px;margin-right: 10px;" onkeypress="return isNumberFloatKey(event);"  maxlength="10" name="hph_aplicablema" id="hph_aplicablema" value="<% if @HeadHrp %><%=@HeadHrp.hph_aplicablema.to_f%><% end %>"/>
+                   or Applicable Rate-2
+                     </label>
+           
+          
+        </div>
+        
+        <div class="row form-group">
+         
+          <label class=" col-md-4 right">
+       Accomodation Type
+                     </label>
+                <label class=" col-md-3" style="text-align:center">
+       Rate 1
+                     </label>
+                       <label class=" col-md-3" style="text-align:center">
+      Rate 2
+                     </label>
+           
+               
+        </div>
+          <div class="row form-group">
+            <input type="hidden" id="rangemid" value=""/>
+          <label class=" col-md-4">
+            <select class="form-control" name="hpa_types" id="hpa_types">
+        <option value="">Select</option>
+        <%
+         if @hraccmtype && @hraccmtype.length >0
+           @hraccmtype.each do |newcacc|
+        %>
+        <option value="<%=newcacc.id%>"><%=newcacc.at_description%></option>
+        <%
+         end
+       end
+       %>
+      </select>
+                     </label>
+                       <label class=" col-md-3">
+       <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hpa_value" id="hpa_value" autocomplete="off" />
+                     </label>
+                       <label class=" col-md-3">
+      <input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hpa_rates" id="hpa_rates" autocomplete="off" />
+                     </label>
+                     <div class="col-md-2 process_hrvalues">
+           <a href="javascript:;" onclick="add_hrparameter_values();" style="padding: 3px;" onclick="" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> ADD </a>
+          </div>
+           
+          
+        </div>
+        
+        
+     <!--          <div class="form-group row">-->
+                   <!--<div class="form-group row m-t-35">-->
+     <!--     <input type="hidden" class="form-control right" name="aid" id="aid" autocomplete="off" />-->
+     <!-- <label class="col-md-4">Accomodation Type</label>-->
+     <!-- <div class="col-md-3">-->
+      
+     <!-- </div>-->
+     <!--     <label class="col-md-2">Rate 1</label>-->
+     <!-- <div class="col-md-3">-->
+     <!--<input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hpa_value" id="hpa_value" autocomplete="off" />-->
+     <!-- </div>  -->
+     <!-- <label class="col-md-2">Rate 2</label>-->
+     <!-- <div class="col-md-3">-->
+     <!--<input type="text" class="form-control right" onkeypress="return isNumberFloatKey(event);" name="hpa_value" id="hpa_value" autocomplete="off" />-->
+     <!-- </div> -->
+     <!--     <div class="col-md-2 process_hrvalues">-->
+     <!--      <a href="javascript:;" onclick="add_hrparameter_values();" style="padding: 3px;" onclick="" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> ADD </a>-->
+     <!--     </div>-->
+     <!--   </div>-->
+        <div class="row">
+          <div class="table-responsive col-md-12 ">
+<table class="table table-striped mb-0 ">
+<thead class="new_tblhead">
+<tr>
+<th>Accomodation Type</th>
+<th>Rate 1</th>
+<th>Rate 2</th>
+<th colspan="2" id="center">Action</th>
+</tr>
+</thead>
+<tbody id="myhrparametervalue">
+  <%
+  if @neDatas && @neDatas.length >0
+    @neDatas.each do |newvals|
+     
+    %>
+<tr>
+<td><%=newvals.hracctype%></td>
+<td><%=currency_formatted(newvals.hpa_value)%></td>
+<td><%=currency_formatted(newvals.hpa_rates)%></td>
+<td><a href="javascript:" id="center" onclick="edit_values_parameters('<%=newvals.id%>','<%=currency_formatted(newvals.hpa_value)%>','<%=newvals.hpa_types%>','<%=newvals.hpa_rates%>')"><i class="fa fa-pencil m-r-5"></i></a></td>
+<td><a href="javascript:" id="center" onclick="delete_common_data('AVL','<%=newvals.id%>')"><i class="fa fa-trash-o m-r-5"></i></a></td>
+
+</tr>
+<%
+   end
+
+else
+  %>
+<tr>
+  <td colspan="4">No record(s) found.</td>
+</tr>
+<%
+ end
+%>
+
+                    
+                    
+                  </tbody>
+                </table>
+                                
+        </div>
+        </div>
+           </div>
+        </div>
+        </div>
+        <div class="submit-section col-md-12 process_headparameter">
+          <button class="btn btn-primary submit-btn" type="button" onclick="add_hrparameter_header();">Save</button>
+          <a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+        </div>
+      </div>
+               
+    </div>
+  </div>
+  <!-- /Page Content -->

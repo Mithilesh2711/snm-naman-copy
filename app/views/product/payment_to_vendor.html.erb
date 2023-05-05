@@ -1,0 +1,247 @@
+<!-- BEGIN CONTAINER -->
+<!-- BEGIN CONTENT -->
+	<div class="page-content-wrapper">
+		<div class="page-content">
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<%= render "layouts/portlet-config" %>
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+			<!-- BEGIN STYLE CUSTOMIZER -->
+			<%= render "layouts/theme-panel" %>
+			<!-- END BEGIN STYLE CUSTOMIZER -->
+			<!-- BEGIN PAGE HEADER-->
+			<h3 class="page-title">
+			Payment to Vendor
+
+
+			</h3>
+			<% if flash[:error] %>
+                         <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                           <%= flash[:error] %>
+                         </div>
+                        <% end %>
+			<%= render "layouts/breadcrumbs" %>
+				<div><a href="<%=root_url%>payment/payment_vendor_list"><img src="<%=root_url%>images/backtolist.png"/></a></div>
+				<div>&nbsp;</div>
+
+			<!------------------text Being-------------->
+			<div class="row">
+				<div class="col-md-12">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+				<div class="portlet">
+				<div class="portlet-body">
+				<div class="row">
+				    <div class="col-md-12">
+				<%= form_tag({:action=>'payment_to_vendor'} ,:multipart=>true,:id=>'myForms' ) do  %>
+                                     <input type="hidden"  id="iscreatevendor" name="iscreatevendor" value="Y"/>
+                                     <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                                     <input type="hidden"  id="receiptXId" name="receiptXId" value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.id%><% end %>"/>
+                                    <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Cash' %>
+                                     <input type="hidden"  id="xcardCdate" value=""/>
+                                     <input type="hidden"  id="xcardNumber" value=""/>
+                                     <% elsif @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Card' %>
+                                     <input type="hidden"  id="xcardCdate" value="<%=@isReceivedObj.pr_cc_number%>"/>
+                                     <input type="hidden"  id="xcardNumber" value="<%=@isReceivedObj.pr_cc_invoice_number%>"/>
+                                     <% elsif @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Cheque' %>
+                                     <%
+                                      nsdate   = Date.parse( @isReceivedObj.pr_cheque_date.to_s )
+                                     @cqdate   = nsdate.strftime('%d-%b-%Y')
+                                     %>
+                                     <input type="hidden"  id="xcardCdate" value="<%=@cqdate%>"/>
+                                     <input type="hidden"  id="xcardNumber" value="<%=@isReceivedObj.pr_cheque_number%>"/>
+                                    <% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Cash' %>
+                                     <input type="hidden"  id="xcardCdate" value=""/>
+                                     <input type="hidden"  id="xcardNumber" value=""/>
+                                     <% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Card' %>
+                                     <input type="hidden"  id="xcardCdate" value="<%=session[:request_params]['pr_cheque_date']%>"/>
+                                     <input type="hidden"  id="xcardNumber" value="<%=session[:request_params]['pr_cheque_number']%>"/>
+                                     <% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Cheque' %>
+                                     <input type="hidden"  id="xcardCdate" value="<%=session[:request_params]['pr_cheque_date']%>"/>
+                                     <input type="hidden"  id="xcardNumber" value="<%=session[:request_params]['pr_cheque_number']%>"/>
+                                     <% else %>
+                                     <input type="hidden"  id="xcardCdate" value=""/>
+                                    <% end %>
+                                      <input type="hidden" required readonly class="form-control" name="pr_customer_id" id="pr_customer_id" value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_customer_id%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_customer_id']%><% end %>"/>
+					<div class="row">
+                                            <%
+                                              if @isReceivedObj!=nil
+                                                    rcvdate   = Date.parse( @isReceivedObj.pr_date.to_s )
+                                                    @rcdate   = rcvdate.strftime('%d-%b-%Y')
+                                              end
+                                            %>
+					<div class="col-md-2">
+					Pay No. <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" readonly placeholder=""  maxlength="60" required class="form-control" name="pr_receive_id" id="pr_receive_id"  value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_receive_id%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_receive_id']%><% elsif @receiptNo!=nil%><%=@receiptNo%><% end %>"/>
+					</div>
+					<div class="col-md-3">
+					<select   class="form-control"  id="pr_receive_number" name="pr_receive_number" onchange="isInvoiceListItem(this.value,'rc','P')">
+                                        <option value="">-Select-</option>
+                                        <%
+                                         if @PaymentReceive
+                                              @PaymentReceive.each do |pmrcv|
+                                        %>
+                                       <option value="<%=pmrcv.pr_receive_id%>" <% if @isReceivedObj!=nil && @isReceivedObj.pr_receive_id.to_i==pmrcv.pr_receive_id.to_i %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_receive_number'].to_i == pmrcv.pr_receive_id.to_i %>selected="selected"<% end %>><%=pmrcv.pr_receive_id%></option>
+                                      <% end end %>
+					</select>
+					</div>
+                                         <div class="col-md-2">
+					<a href="<%=root_url%>payment/payment_return_refresh"><img src="<%=root_url%>images/newbutt.png"/></a>
+					</div>
+					</div>
+					<div>&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2">
+					Pay Date <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder=""  maxlength="10" required class="form-control" name="pr_date" id="pr_date"  value="<% if @isReceivedObj!=nil %><%=@rcdate%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_date']%><% elsif @cdate!=nil%><%=@cdate%><% end %>"/>
+					</div>
+					<div class="col-md-2">
+					Vendor <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<select  required class="form-control"  id="pr_customer_name" name="pr_customer_name" onchange="paymentCustomerId(this.value);">
+					<option value="">-Select-</option>
+						<%
+						 if @Customers
+						  @Customers.each do |custm|
+						%>
+						<option value="<%=custm.id%>" <% if @isReceivedObj!=nil && @isReceivedObj.pr_customer_id.to_i==custm.id.to_i %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_customer_name'].to_i == custm.id.to_i %>selected="selected"<% end %>><%=custm.cs_customername.upcase%></option>
+						<% end end %>
+					</select>
+					</div>
+
+					</div>
+
+					<div>&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2">
+					Payment <span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder=""  onkeypress="return isNumberFloatKey(event);" onkeyup="payNetAmounts(this.value);" maxlength="15" required class="form-control" name="pr_amount" id="pr_amount" value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_amount%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_amount']%><% end %>"/>
+					</div>
+					<div class="col-md-2">
+					Deduction
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder="" maxlength="10" onkeypress="return isNumberFloatKey(event);" onkeyup="paymentDeductedAmount(this.value);" class="form-control" name="pr_deduct" id="pr_deduct" value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_deduct%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_deduct']%><% end %>"/>
+					</div>
+
+					</div>
+
+					<div>&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2">
+					Net Received
+					</div>
+					<div class="col-md-3">
+					 <input type="text" placeholder="" readonly maxlength="17"  class="form-control" name="pr_netamount" id="pr_netamount" value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_netamount%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_netamount']%><% end %>"/>
+
+					</div>
+					<div class="col-md-2">
+					Pmt. Mode<span class="hrms_flag">[*]</span>
+					</div>
+					<div class="col-md-3">
+					 <select  required class="form-control" name="pr_paymode" id="pr_paymode" onchange="checkIsPaymentMode(this.value);">
+						<option value="Cash" <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Cash' %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Cash' %>selected="selected"<% end %>>Cash</option>
+						<option value="Card" <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Card' %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Card' %>selected="selected"<% end %>>Card</option>
+						<option value="Cheque" <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Cheque' %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Cheque' %>selected="selected"<% end %>>Cheque</option>
+						<option value="NEFT" <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='NEFT' %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'NEFT' %>selected="selected"<% end %>>NEFT</option>
+                                                <option value="Other" <% if @isReceivedObj!=nil && @isReceivedObj.pr_paymode =='Other' %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_paymode'] == 'Other' %>selected="selected"<% end %>>Other</option>
+					</select>
+
+					</div>
+					</div>
+
+					<div>&nbsp;</div>
+					<div class="row isPaymentScreen hidden">
+					<div class="col-md-2 " id="isChequeNo">
+					Cheque No.
+					</div>
+					<div class="col-md-3 ">
+					<input type="text" placeholder=""   maxlength="10" class="form-control" name="pr_cheque_number" id="pr_cheque_number"  value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_cheque_number%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_cheque_number']%><% end %>"/>
+					</div>
+					<div class="col-md-2 ischequenumber" style="display:none">
+					 <select  class="form-control" id="pr_cheq_detail" name="pr_cheq_detail" onchange="isInvoiceListItem(this.value,'cq','C')">
+						  <option value="">-Select-</option>
+						  <%
+						   if @PaymentReceive
+							@PaymentReceive.each do |chq|
+						  	if chq.pr_cheque_number.to_s.length >1
+						  %>
+				          <option value="<%=chq.pr_cheque_number%>" <% if @isReceivedObj!=nil && @isReceivedObj.pr_cheque_number.to_i ==chq.pr_cheque_number.to_i %>selected="selected"<% elsif session[:request_params]!=nil &&  session[:request_params]['pr_cheq_detail'].to_i == chq.pr_cheque_number.to_i %>selected="selected"<% end %>><%=chq.pr_cheque_number%></option>
+				         <% end end end %>
+					</select>
+					</div>
+                                          <div class="col-md-2 isChequeDatewidth " id="isChequeDate">
+					Cheque Date
+					</div>
+					<div class="col-md-3 isCheckDate ">
+					<input type="text" placeholder=""  maxlength="10"  class="form-control" name="pr_cheque_date" id="pr_cheque_date"  value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_cheque_date%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_cheque_date']%><% end %>" onclick="NewCal('pr_cheque_date','ddmmmyyyy');"/>
+					</div>
+					</div>
+                                        <div class="isPaymentScreen2 hidden">&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2 isPaymentScreen2 hidden" id="isChequeBank">
+					Cheque Bank
+					</div>
+					<div class="col-md-3 isPaymentScreen2 hidden">
+					<input type="text" placeholder=""   maxlength="55"  class="form-control" name="pr_bank_name" id="pr_bank_name"  value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_bank_name%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_bank_name']%><% end %>"/>
+					</div>
+
+					</div>
+                                        <div>&nbsp;</div>
+                                        <div class="row">
+                                        <div class="col-md-2">
+					Remarks
+					</div>
+					<div class="col-md-3">
+					<input type="text" placeholder=""  maxlength="180"  class="form-control" name="pr_remarks" id="pr_remarks"  value="<% if @isReceivedObj!=nil %><%=@isReceivedObj.pr_remarks%><% elsif session[:request_params]!=nil %><%=session[:request_params]['pr_remarks']%><% end %>"/>
+					</div>
+                                        </div>
+					<div>&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2">
+					<input type="checkbox" name="sendEmail" id="sendEmail" value="<% if @isSendEmails %>Y<% end %>" <% if @isSendEmails %>checked="checked"<% end %>/>&nbsp;<label>Send Email</label>
+					</div>
+					<div class="col-md-3">
+					<input type="checkbox" name="sendSms" id="sendSms" value="<% if @isSendSMSs %>Y<% end %>" <% if @isSendSMSs %>checked="checked"<% end %>/>&nbsp;<label>Send SMS</label>
+					</div>
+
+					</div>
+
+
+					<div>&nbsp;</div>
+					<div class="row">
+					<div class="col-md-2 col-xs-5">
+					<input type="image" src="<%=root_url%>images/save.png"/>
+					</div>
+					<div class="col-md-2 col-xs-5">
+					 <img src="<%=root_url%>images/print.png" disabled="disabled"/>
+					</div>
+                                          <div class="col-md-2 col-xs-5">
+					 <a href="<%=root_url%>payment" tabindex="24">
+						 <img src="<%=root_url%>images/Quit.png"/>
+						</a>
+					</div>
+					<% end %>
+					</div>
+
+			  </div>
+			  </div>
+			  </div>
+			  <!-- END SAMPLE TABLE PORTLET-->
+			   </div>
+			   </div>
+
+			<!------------------text End-------------->
+
+
+
+
+                        </div>
+                </div>
+           </div>

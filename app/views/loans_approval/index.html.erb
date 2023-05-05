@@ -1,0 +1,367 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Advance Approvals</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+    <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+    <input type="hidden" name="server_request" id="server_request" value="Y"/>
+    <input type="hidden"  id="userXRoot" value="<%=root_url%>"/>
+    <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+   
+    
+    <input type="hidden" id="approvedby"  value="<% if session[:sec_ec_approved] %><%=session[:sec_ec_approved]%><% end %>"/>
+               <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department">
+                  <%
+                  if @sewDepart && @sewDepart.length >1
+                  %>
+                  <option value=""> -- Select -- </option>
+                  <% end %>
+                    <%
+                      if @sewDepart && @sewDepart.length >0
+                      @sewDepart.each do |depts|
+                  %>
+                    <option value="<%=depts.departCode%>" <% if @voucher_department && @voucher_department.to_s.downcase == depts.departCode.to_s.downcase%>selected="selected"<% end %>><%=depts.departDescription%></option>
+                  <%
+                    end
+                  end
+                  %>
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_category" id="voucher_category">
+                     <option value="">--Select--</option>
+                         <%
+                             if @sewadarCategory && @sewadarCategory.length >0
+                             @sewadarCategory.each do |secats|
+                          %>
+                            <option value="<%=secats.sc_catcode%>" <% if @voucher_category && @voucher_category.to_s.downcase == secats.sc_catcode.to_s.downcase%>selected="selected"<% end %> ><%=secats.sc_name%></option>
+                          <%
+                           end
+                         end
+                         %>
+                </select>
+                <label class="focus-label">Sewadar Type</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" name="sewadar_reqtype" id="sewadar_reqtype">
+                  <option value=""> --Select --</option>
+                  
+                  <option value="F" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'F'%>selected="selected"<% end %> >Forward To HR</option> 
+                  <option value="A" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'A'%>selected="selected"<% end %> >Approved</option>
+                  <option value="H" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'N'%>selected="selected"<% end %> >Hold </option>
+                  <option value="N" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'N'%>selected="selected"<% end %> >Pending </option>
+                  <option value="R" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'R'%>selected="selected"<% end %> >Reject</option>
+                  <option value="C" <% if @sewadar_reqtype && @sewadar_reqtype.to_s == 'C'%>selected="selected"<% end %> >Cancel</option>
+
+                                                                           
+                </select>
+                <label class="focus-label">Status</label>
+              </div>
+             </div>
+             
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="sewadar_loantype" id="sewadar_loantype">
+                  <option value="">-Select-</option>
+                  <option value="Loan" <% if @sewadar_loantype && @sewadar_loantype.to_s =='Loan'%>selected="selected"<% end %>>Advance upto 60k</option>
+                  <option value="Advance" <% if @sewadar_loantype && @sewadar_loantype.to_s == 'Advance'%>selected="selected"<% end %>>MA Advance</option>
+                  <%
+                if session[:requestuser_loggedintp] && ( session[:requestuser_loggedintp].to_s == 'hr'  || session[:requestuser_loggedintp].to_s == 'cod' || session[:requestuser_loggedintp].to_s == 'ec'  )
+              %>
+              <option value="Advance Above 60k" <% if @sewadar_loantype && @sewadar_loantype.to_s == 'Advance Above 60k'%>selected="selected"<% end %>>Advance Above 60k</option>
+              <option value="Ex-gratia" <% if @sewadar_loantype && @sewadar_loantype.to_s == 'Ex-gratia'%>selected="selected"<% end %>>Ex-gratia</option>
+              <option value="Special Advance" <% if @sewadar_loantype && @sewadar_loantype.to_s == 'Special Advance'%>selected="selected"<% end %>>Special Advance</option>
+              <option value="Wheat Advance" <% if @sewadar_loantype && @sewadar_loantype.to_s == 'Wheat Advance'%>selected="selected"<% end %>>Wheat Advance</option>
+              
+              <% end %>
+                </select>
+                <label class="focus-label">Request Type</label>
+              </div>
+             </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" onclick="filter_loans_approval();" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div>
+    <% end %>
+    <div class="row m-t-15">
+      <div class="col-md-12">
+      
+        <div class="table-responsive">
+<table class="table table-striped  mb-0 ">
+<thead class="new_tblhead">
+<tr>
+<th>Request No <br/> Request Date <br/> Request Type</th>
+<th >Sewadar Details</th>                      
+<th>Aadhaar No<br/>Date of birth</th>
+<th>Amount<br/>Installment</th>
+<th>Total Sewa </th>
+<th>Previous Balance <br>Last Advance Taken</th>
+<th>Purpose</th>
+<th>Status</th>
+<th>Reamrk</th>
+</tr>
+</thead>
+<tbody>
+<%
+if @LoanListReqest && @LoanListReqest.length >0
+  @LoanListReqest.each do |loanreqest|
+    sewdarname = ""
+    refercode  = ""
+    deginname  = ""
+    department = ""
+    dates      = ""
+    prevbalance = 0
+    mycatgpars  = ""
+    myimagex   = "#{root_url}assets/img/profiles/avatar-02.jpg"
+    sewdobjs   = get_mysewdar_list_details(loanreqest.al_sewadarcode)
+    if sewdobjs
+          sewdarname  = sewdobjs.sw_sewadar_name
+          refercode   = sewdobjs.sw_oldsewdarcode
+          dsicode     = sewdobjs.sw_desigcode
+          dates       = sewdobjs.sw_joiningdate
+          dobs        = sewdobjs.sw_date_of_birth
+          gnders      = sewdobjs.sw_gender
+          prevbalance = sewdobjs.sw_outstandingamt.to_f+sewdobjs.sw_loanamount.to_f
+          sewdptobj   = get_all_department_detail(loanreqest.al_depcode)
+          if sewdptobj
+              department = sewdptobj.departDescription
+          end
+          desobjs = get_sewdar_designation_detail(dsicode)
+          if desobjs
+             deginname = desobjs.ds_description
+          end          
+          if sewdobjs.sw_image !=nil && sewdobjs.sw_image !=''
+                  chekpaths = "#{Rails.root}/public/images/sewadar/"+sewdobjs.sw_image.to_s
+                  if File.file?(chekpaths)
+                    myimagex = "#{root_url}images/sewadar/"+sewdobjs.sw_image.to_s
+                  end
+
+              end
+
+        mycatgpars = sewdobjs.sw_catgeory
+
+    end
+    kycobj    =  global_sewadar_kyc_information(loanreqest.al_sewadarcode)  
+    if kycobj
+        selfadhar = kycobj.sk_adharno
+    end
+  %>
+<tr>
+<td><%=loanreqest.al_requestno%> <br/> <%=format_oblig_date(loanreqest.al_requestdate)%> <br/> 
+<%
+ if loanreqest.al_requesttype.to_s == 'Loan'
+%>
+Advance
+<% elsif loanreqest.al_requesttype.to_s == 'Advance' %>
+MA Advance
+<% else %>
+<%=loanreqest.al_requesttype%>
+<% end %>
+</td>
+<td>
+<h2 class="table-avatar">
+  <a href="javascript:;" class="avatar"><img alt="<%=sewdarname%>" src="<%=myimagex%>"/></a>
+  <div>
+  <span>	<%=loanreqest.al_sewadarcode%><% if refercode !=nil && refercode !='' %> (<%=refercode%>)<br/><% end %> <%=sewdarname%><br/><%=department%></span>
+   <span><% if gnders =='M'%>MALE<% elsif gnders =='F'%>FEMALE<% end %><br/><%=mycatgpars%></span>
+  </div>
+  </h2>
+  <br/> 
+</td>
+<td><%=selfadhar%><br/><%=formatted_date(dobs)%></td>
+<td class="right-action">
+  <%
+    amounts = loanreqest.al_loanamount.to_f+loanreqest.al_advanceamt.to_f
+  %>  
+  <%=currency_formatted(amounts)%><br/><%=currency_formatted(loanreqest.al_installpermonth)%> 
+</td>
+
+
+<td><%=get_dob_calculate(format_oblig_date(dates)).to_s%></td>
+<td><%=prevbalance%><br><%=format_oblig_date(loanreqest.created_at)%></td>
+<td><%=loanreqest.al_purpose%></td>
+<td>
+    <%    
+      if loanreqest.al_broucherno == '' || loanreqest.al_broucherno == nil       
+    %>
+    <div class="dropdown action-label">
+             <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="javascript:;" data-toggle="dropdown" aria-expanded="false">
+             <span id="requestloanid<%=loanreqest.id%>">         
+             <% if loanreqest.al_approvestatus == 'A' %>
+              <i class="fa fa-dot-circle-o text-success"></i> Approved
+             <% elsif loanreqest.al_approvestatus == 'R' %>
+              <i class="fa fa-dot-circle-o text-danger"></i> Rejected
+            <% elsif loanreqest.al_approvestatus == 'C' %>
+              <i class="fa fa-dot-circle-o text-danger"></i> Cancelled
+             <% elsif loanreqest.al_approvestatus == 'F' %>
+             <i class="fa fa-dot-circle-o text-purple"></i> Forwarded To HR   
+              <% else %>                
+              <i class="fa fa-dot-circle-o text-purple"></i> Pending             
+              <% end %>
+
+          </span>
+        </a>
+
+
+
+
+        <%
+        if session[:requestuser_loggedintp]  && ( session[:requestuser_loggedintp] == 'ec' || session[:requestuser_loggedintp] == 'cod' )
+      
+       %> 
+        <div class="dropdown-menu dropdown-menu-right">
+          <%          
+          if loanreqest.al_approvestatus == '' || loanreqest.al_approvestatus == nil || loanreqest.al_approvestatus == 'N'
+          %>         
+          <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','F');" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-success"></i> Forward To HR</a>
+          <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','C');"><i class="fa fa-dot-circle-o text-purple"></i> Cancel</a>
+          <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','R');"><i class="fa fa-dot-circle-o text-danger"></i> Reject</a>
+          
+         <% else %>           
+           <%
+            if loanreqest.al_approvestatus == 'C'
+           %>
+           <a class="dropdown-item" href="javascript:;" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-success"></i> Cancelled</a>
+           <%
+            elsif loanreqest.al_approvestatus == 'R'
+           %>
+           <a class="dropdown-item" href="javascript:;" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-success"></i> Rejected</a>
+          <%
+             elsif loanreqest.al_approvestatus == 'F'
+           %>
+           <a class="dropdown-item" href="javascript:;" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-danger"></i> Forwarded To HR</a>
+          <%
+             elsif loanreqest.al_hod_status == 'H'
+           %>
+           <a class="dropdown-item" href="javascript:;" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-purple"></i></i> Hold</a> 
+         <% end 
+         end
+         %>
+        </div>
+        <%
+        
+       elsif session[:requestuser_loggedintp]  &&  session[:requestuser_loggedintp].to_s.downcase == 'hr'     
+                   
+        %>
+       
+           <div class="dropdown-menu dropdown-menu-right">
+                <%         
+                  if loanreqest.al_approvestatus == 'F' 
+                %>
+                <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','A');" data-toggle="modal" data-target="#approve_leave"><i class="fa fa-dot-circle-o text-success"></i> Approve</a>
+                <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','R');"><i class="fa fa-dot-circle-o text-danger"></i> Reject</a>
+                <a class="dropdown-item" href="javascript:;" onclick="process_approval_request('<%=loanreqest.id%>','C');"><i class="fa fa-dot-circle-o text-danger"></i> Cancel</a>
+                     
+                 <% else %>
+            
+                          <%
+                            if loanreqest.al_approvestatus == 'A'          
+                          %>
+                          <a class="dropdown-item" href="javascript:;"><i class="fa fa-dot-circle-o text-success"></i> Approved</a>
+                          <%
+                            elsif loanreqest.al_approvestatus == 'R'          
+                          %>
+                          <a class="dropdown-item" href="javascript:;"><i class="fa fa-dot-circle-o text-success"></i> Rjected</a>
+                          <%
+                            elsif loanreqest.al_approvestatus == 'H'          
+                          %>
+                          <a class="dropdown-item" href="javascript:;"><i class="fa fa-dot-circle-o text-success"></i> Hold</a> 
+                          <%
+                            elsif loanreqest.al_approvestatus == 'C'          
+                          %>
+                          <a class="dropdown-item" href="javascript:;"><i class="fa fa-dot-circle-o text-success"></i> Cancelled</a>  
+                          <%
+                          else
+                          %>
+                          <a class="dropdown-item" href="javascript:;"><i class="fa fa-dot-circle-o text-success"></i> Pending</a>  
+                          <%
+                          end
+                          %>
+
+              <% end %>
+              
+              
+              </div>
+              <%
+                  
+                end
+              %>
+      </div>
+ <% else %>
+            
+              <%
+              if loanreqest.al_approvestatus == 'H'
+              %>
+              Hold
+              <% elsif loanreqest.al_approvestatus == 'A' %>
+              Approved
+            <% elsif loanreqest.al_approvestatus == 'R' %>
+              Rejected
+            <% elsif loanreqest.al_approvestatus == 'C' %>
+              Cancelled
+            <% elsif loanreqest.al_approvestatus == 'F' %>
+              Forwarded To HR 
+              <% else %> 
+                Pending
+            <% end %>
+
+    <%
+    end
+   %>
+
+</td>
+<td>
+<textarea maxlength="60" id="my_selected_remark<%=loanreqest.id%>" class=""><% if session[:sec_ec_approved] == 'ec' || session[:sec_ec_approved] == 'cod'%><%=loanreqest.al_hod_remark%><% else %><%=loanreqest.al_hrremark%><% end %></textarea>
+</td>
+</tr>
+
+<%
+
+ end
+else
+
+%>
+<tr>
+  <td colspan="4">No record(s) found.</td>
+</tr>
+<%
+ end
+
+ %>
+
+
+</tbody>
+</table>
+                                
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Page Content -->
+</div>
+</div>

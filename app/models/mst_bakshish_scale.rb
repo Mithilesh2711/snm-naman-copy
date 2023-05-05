@@ -1,0 +1,2 @@
+class MstBakshishScale < ApplicationRecord
+end

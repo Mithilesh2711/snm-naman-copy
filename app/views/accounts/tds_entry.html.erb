@@ -1,0 +1,217 @@
+  <!-- Page Wrapper -->
+            <div class="page-wrapper">
+      
+        <!-- Page Content -->
+                <div class="content container-fluid">
+        
+          <!-- Page Header -->
+          <div class="page-header">
+            <div class="row align-items-center">
+              <div class="col">
+                   <h3 class="page-title">TDS Entry</h3>
+          <%=render'layouts/breadcrumbs'%>
+              </div>
+                         </div>
+          </div>
+          <!-- /Page Header -->
+           <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+          <!-- Leave Statistics -->
+          
+          <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+          <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+          <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+          <input type="hidden" id="requestyears" value="<% if @Hryears %><%=@Hryears%><% end %>"/>
+          <input type="hidden" id="requestmonths"  value="<% if @HrMonths %><%=@HrMonths%><% end %>"/>
+
+          <div class="form-group row">
+               <label class="col-form-label col-md-2">Financial Year<span class="mandatory">*</span></label>
+          <div class="col-md-2">
+
+                    <select class="form-control" autofocus="" required  name="financial_year" id="financial_yearname" onchange="get_reset_tds_data();">
+                    <option value="">-Select-</option> 
+                    <%
+                      if @FincialListed && @FincialListed.length >0
+                        @FincialListed.each do |newfinacialyear|
+                      %>
+                        <option value="<%=newfinacialyear.pm_financialyear%>" ><%=newfinacialyear.pm_financialyear%></option>
+                        <%
+                          end 
+                        end
+                        %>
+
+                                  
+                    </select>
+
+          </div>
+         
+           
+        </div>
+          
+
+          <!-- /Leave Statistics -->
+          <div class="row">
+<div class="col-md-12 d-flex">
+<div class="card  flex-fill">
+<div class="card-body">
+<div class="row">
+
+<div class="col-md-12">
+                                    <div class="form-group row d-flex grid_bg">
+         
+ 
+          <div class="col-md-2 process_visibility">
+                 <label class="">Sewadar Name</label><br/>
+         <select class="form-control" autofocus="" required name="ls_empcode" id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                     <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+                    <%
+                     if @newsewdarList && @newsewdarList.length >0
+                      @newsewdarList.each do |newswd|
+                    %>
+                    <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewadar_name%></option>
+                    <%
+                    end
+                   end
+                   %>
+                    </select>
+         </div>
+          
+          <div class="col-md-2 process_visibility">
+                 <label class="">Sewadar Code</label><br/>
+         <select class="form-control" required  name="al_sewadarcode"  id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+               <%
+                if @allowedCaseduser
+              %>
+              <option value="">-Select-</option>
+              <% end %>
+              <%
+               if @newsewdarList && @newsewdarList.length >0
+                @newsewdarList.each do |newswd|
+              %>
+              <option value="<%=newswd.sw_sewcode%>" <% if @ListDist && @ListDist.ls_empcode.to_s.downcase == newswd.sw_sewcode.to_s.downcase %>selected="selected" <% end %>><%=newswd.sw_sewcode%></option>
+              <%
+              end
+             end
+             %>
+
+            </select>
+         </div>
+          <div class="col-md-2 process_visibility">
+                 <label class="">PAN</label><br/>
+                 <input autocomplete="off" readonly  type="text" class="form-control " maxlength="14"  id="process_pan" value=""/>
+          </div>
+          <div class="col-md-2 process_visibility">
+                 <label class="">Proc. Month</label><br/>
+         <input autocomplete="off" readonly type="text" class="form-control " name="process_month" id="process_month" value=""/>
+          </div>
+          <div class="col-md-2 process_visibility new_wd2">
+                 <label class="">Proc. Year</label><br/>
+         <input autocomplete="off" readonly type="text" class="form-control " name="process_year" id="process_year" value=""/>
+          </div>
+             <div class="col-md-2 process_visibility new_wd2">
+                 <label class="">TDS Deduction</label><br/>
+                 <input autocomplete="off"  type="text" class="form-control " onkeypress="return isNumberFloatKey(event);"  name="process_deduction" id="process_deduction" value=""/>
+          </div>
+            
+        
+          <div class="col-md-1 process_qualif_save" id="center">
+           <label>Action</label> <br/> <a href="javascript:;"  onclick="process_tds_data();" data-placement="bottom" data-toggle="tooltip" title="Save"  ><i class="fa fa-floppy-o"></i></a>
+          </div>
+         
+
+        </div>
+              
+            
+        </div>
+<div class="form-group col-md-12" style="padding:0px !important">
+
+
+<div class="col-md-12 m-t-15 ">
+<div class="table-responsive">
+
+
+  <table class="table_input table-bordered new mb-0" style="  width: 100%;">
+      <thead class="new_tblhead">
+                        <tr>
+<th class="process_visibility_2 col-md-2">Month</th>
+<th class="process_visibility_2 col-md-2">Year</th>
+<th class="process_visibility_2 col-md-2">MA Amount</th>
+<th class="process_visibility_2 col-md-2">TDS Deduction</th>
+<th class="process_visibility_2 col-md-2">Other Deduction</th>
+<th class="process_visibility_2 col-md-2">Net Pay</th>
+                        </tr>
+                      </thead>
+                      <tbody id="process_tdslisted">
+                      
+<tr class="new_qualification">
+
+<td class="process_visibility_2 col-md-2">
+
+
+</td>
+<td   class="process_visibility_2 col-md-1">
+
+</td>
+<td class="process_visibility_2 col-md-2">
+
+</td>
+<td   class="process_visibility_2 col-md-2"></td>
+<td    class="process_visibility_2 col-md-2"></td>
+<td   class="process_visibility_2 col-md-2"></td>
+</tr>
+
+
+                      </tbody>
+                    </table>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+          
+        <!-- /Page Content -->
+       
+          <div class="row filter-row" style="background:#87ceeb38;padding: 10px;justify-content: center;">
+
+          <!-- <p>Date: <input type="text" id="datepicker"></p> -->
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+         <input type="text" class="form-control floating" readonly id="total_maamount" value=""/>
+          <label class="focus-label">Total MA Amount</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+         <input type="text" class="form-control floating"  readonly  id="total_tds_deducted" value=""/>
+          <label class="focus-label">Total TDS Deduction</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+         <input type="text" class="form-control floating" readonly  id="total_otherdeduct" value=""/>
+          <label class="focus-label">Total Other Deductions</label>
+          </div>
+          </div>
+          <div class="col-sm-6 col-md-2  ">
+          <div class="form-group form-focus select-focus">
+         <input type="text" class="form-control floating" readonly id="total_netpay" value=""/>
+          <label class="focus-label">Total Pay in <% if @myfinacilayers %><%=@myfinacilayers%><% end %></label>
+          </div>
+          </div>
+          </div>
+        
+            </div>
+        <% end  %>
+      <!-- /Page Wrapper -->

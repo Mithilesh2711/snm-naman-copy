@@ -1,0 +1,222 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Sewadar Cards</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+				<input type="hidden" id="cattype" name="cattype" value="<% if @cattype %><%=@cattype%><% end %>"/>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+				<input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+				
+		<div class="row">
+		    <div class="col-md-12">
+		        <div class="row">
+											<div class="col-md-12" style="text-align: center;">
+								<label for="mylic" class="rad-btn"> <input type="radio" onclick="show_sewdar_checked_listed();" <% if @cattype.to_s =='SW'%>checked<% elsif @cattype == nil || @cattype == '' %>checked<% end %> name="sewdar_checked_filter" id="mylic" value="SW">&nbsp;
+																Sewadar List</label>
+																<label for="mylic1" class="rad-btn">
+                                &nbsp;<input type="radio" onclick="show_sewdar_checked_listed();" <% if @cattype.to_s =='MB'%>checked <% end %>  name="sewdar_checked_filter" id="mylic1" value="MB">&nbsp;
+																	Organisation List</label>
+																
+                              </div></div>
+
+
+				<%
+				catlisted = ""
+				meblisted = "hidden"
+				  if @cattype && @cattype == 'SW'
+						catlisted =""
+						meblisted = "hidden"
+				  elsif @cattype && @cattype == 'MB'
+						catlisted ="hidden"
+						meblisted = ""
+				  end
+				
+				%>			  
+                             <div class="row">
+                             <label class="col-form-label col-md-3 sewadar_organiztion <%=catlisted%>"> Category </label>
+					<div class="col-md-3 sewadar_organiztion <%=catlisted%>">
+					<div class="form-group">
+					    	<div >
+									<select class="form-control" name="sewadar_category" id="sewadar_category" required>
+                    <option value="">-Select-</option>
+                    <%
+					  if @sewadarCategory && @sewadarCategory.length >0
+					    @sewadarCategory.each do |newcat|
+					%>
+					<option value="<%=newcat.sc_catcode%>" <% if @sewadar_category && @sewadar_category.to_s == newcat.sc_catcode.to_s %>selected <% end %>><%=newcat.sc_name%></option>
+					<%
+					  end
+					 end 
+					%>
+                  </select>
+								</div>
+							</div>	
+								<!-- <label class="focus-label">From</label> -->
+							</div>
+							 <label class="col-form-label col-md-3 member_organiztion <%=meblisted%>"> Organisation </label>
+					<div class="col-md-3 member_organiztion <%=meblisted%>">
+					<div class="form-group">
+					    	<div >
+					<select class="form-control" name="sewa_member" id="sewa_member" required>
+                    <option value="">-Select-</option>
+					<option value="CPAB" <% if @sewa_member && @sewa_member == 'CPAB'%>selected<% end %>>CPAB Members</option>
+					<option value="EC" <% if @sewa_member && @sewa_member == 'EC'%>selected<% end %>>EC Members</option>
+					<option value="Cordinators" <% if @sewa_member && @sewa_member == 'Cordinators'%>selected<% end %>>Cordinators</option>
+					<option value="Active" <% if @sewa_member && @sewa_member == 'Active'%>selected<% end %>>Active Members</option>
+					<option value="SNCF" <% if @sewa_member && @sewa_member == 'SNCF'%>selected<% end %>>SNCF Members</option>
+					
+                    
+                  </select>
+								</div>
+							</div>	
+								<!-- <label class="focus-label">From</label> -->
+							</div>
+				</div></div>
+			<div class="col-md-12">
+			<div class="form-group row">
+			
+			
+				<div class="col-md-3">
+					<div class="form-group">
+<div>
+								
+								</div>
+							
+								<!-- <label class="focus-label">To</label> -->
+							</div>
+				</div>
+				</div>
+				
+				
+				<div class="submit-section">
+				
+                  
+                    <a href="javascript:;"  onclick="filter_sewdar_card_search();"><button class="btn btn-success submit-btn m-l-5 " type="button">View</button></a>
+
+                     <a href="<%=root_url%><%=@printPdfPath%>" target="_blank"><button class="btn btn-success submit-btn m-l-5 " type="button">Print</button></a>
+					<a href="<%=root_url%><%=@printPath%>" target="_blank"><button class="btn btn-success submit-btn m-l-5 " type="button">Excel</button></a>
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+                 <div class="row m-t-15">
+      <div class="col-md-12">
+      
+        <div class="table-responsive">
+<table class="table table-striped  mb-0 ">
+<thead class="new_tblhead">
+<tr>
+
+<th >S No.</th>                      
+<th>Image</th>
+<th>Sewadar Code</th>
+<th>Name</th>
+<th>
+<% if @cattype.to_s =='MB'%>
+	Designation
+<% else %>
+  Department	
+<% end%>
+</th>
+<th style="text-align: centert;">Category</th>
+</tr>
+</thead>
+<tbody>
+<%
+pagestart = params[:page] ? params[:page] : 1
+if pagestart.to_i <=1
+i = 1
+else
+i = ((pagestart.to_i-1)*30)+1
+i = i.to_i
+end
+location    = ''
+sublocation = ''
+ if @listedBirthday && @listedBirthday.length >0
+  @listedBirthday.each do |brthdaylist|
+%>
+<%
+designation = ""
+myimages = "#{root_url}assets/img/profiles/avatar-02.jpg"
+if brthdaylist.sw_image !=nil && brthdaylist.sw_image !=''
+		if @cattype == 'SW'
+			chekpath = "#{Rails.root}/public/images/sewadar/"+brthdaylist.sw_image.to_s
+			if File.file?(chekpath)
+				myimages = "#{root_url}images/sewadar/"+brthdaylist.sw_image.to_s
+			end
+		elsif 	@cattype == 'MB'
+		      
+			  desobjs = get_sewdar_designation_detail(brthdaylist.designcode)
+			  if desobjs
+				designation = desobjs.ds_description
+			  end
+			chekpath = "#{Rails.root}/public/images/ledger/profile/"+brthdaylist.sw_image.to_s
+			if File.file?(chekpath)
+				myimages = "#{root_url}images/ledger/profile/"+brthdaylist.sw_image.to_s
+			end
+		end
+
+  end
+  department =''
+deprtobj = get_all_department_detail(brthdaylist.sw_depcode)
+if deprtobj
+department = deprtobj.departDescription
+end
+
+%>
+<tr>
+<td><%=i%></td>
+<td><img src="<%=myimages%>" width="50"/></td>
+<td><%=brthdaylist.sw_sewcode%></td>
+<td><%=brthdaylist.sw_sewadar_name%></td>
+<td>
+<% if @cattype.to_s =='MB'%>
+<%=designation%>
+<% else %>
+ <%=department%>
+<% end %>
+ </td>
+<td><%=brthdaylist.sw_catgeory%></td>
+</tr>
+<%
+  i +=1
+   end
+   else
+%>
+
+<tr>
+  <td colspan="6">No record(s) found.</td>
+</tr>
+<% end%>
+
+
+</tbody>
+</table>
+   <div class="col-md-12 d-flex">
+                                  <div class="col-md-4"></div>
+                                  <div class="col-md-8">  <%= will_paginate(@listedBirthday)%></div>
+                              
+                                  </div>                             
+        </div>
+      </div>
+    </div>
+	</div>
+	<!-- /Page Content -->
+</div>

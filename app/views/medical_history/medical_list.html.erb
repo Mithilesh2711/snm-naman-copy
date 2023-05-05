@@ -1,0 +1,63 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Medical History</h3>
+					 <%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" id="userXRoot" value="<%=root_url%>"/>
+                <input type="hidden" id="requestserver" name="requestserver" value="Y"/>
+                <input type="hidden" id="mid" name="mid" value="<% if @ListMedical%><%=@ListMedical.id%><% end %>"/>
+                <input type="hidden" id="cur_medical" name="cur_medical" value=""/>
+                <input type="hidden" id="mh_code" name="mh_code" value="<% if @ListMedical%><%=@ListMedical.mh_code%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Type</label>
+					<div class="col-md-3">
+					<select required class="form-control" name="mh_other" id="mh_other">
+						<option value="Others" <% if @ListMedical && @ListMedical.mh_other.to_s == 'Others' %>selected="selected"<% end %>>Others</option>
+						<option value="Covid" <% if @ListMedical && @ListMedical.mh_other.to_s == 'Covid' %>selected="selected"<% end %>>Covid</option>
+					</select>
+					</div>
+						<label class="col-form-label col-md-2">Answer Type</label>
+					<div class="col-md-3">
+					<select required class="form-control" name="mh_answertype" id="mh_answertype">
+						<option value="Text" <% if @ListMedical && @ListMedical.mh_answertype.to_s == 'Text' %>selected="selected"<% end %>>Text</option>
+						<option value="Boolean" <% if @ListMedical && @ListMedical.mh_answertype.to_s == 'Boolean' %>selected="selected"<% end %>>Boolean</option>
+					</select> </div>
+					</div>
+					
+				
+				<div class="form-group row">
+					<label class="col-form-label col-md-2">Description</label>
+					<div class="col-md-5">
+						<input type="text" maxlength="250" autocomplete="off" class="form-control" name="mh_description" id="mh_description" value="<% if @ListMedical%><%=@ListMedical.mh_description%><% end %>"/> </div>
+						
+				</div>
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>medical_history"><button class="btn btn-danger submit-btn m-l-5  " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <%
+                 end
+               %>
+	</div>
+	<!-- /Page Content -->
+</div>

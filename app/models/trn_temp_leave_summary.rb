@@ -1,0 +1,2 @@
+class TrnTempLeaveSummary < ApplicationRecord
+end

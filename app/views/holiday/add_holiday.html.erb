@@ -1,0 +1,56 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+				<div class="col">
+					<h3 class="page-title">Add Holiday</h3>
+					<%=render'layouts/breadcrumbs'%>
+				</div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="curdateyear" id="curdateyear" value="<% if @selecHoliday %><%=@selecHoliday.dateYear%><% end %>"/>
+                <input type="hidden" name="mid" id="mid" value="<% if @selecHoliday %><%=@selecHoliday.id%><% end %>"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					
+					<label class="col-form-label col-md-2"> Date <span class="mandatory">*</span></label>
+					<div class="col-md-4">
+						<input type="text" maxlength="10" placeholder="" readonly="readonly" required class="form-control" name="dateYear"  id="calendar" value="<% if @selecHoliday %><%=formatted_date(@selecHoliday.dateYear)%><% else %><%=formatted_date(Date.today)%><% end %>"/></div>
+						<label class="col-form-label col-md-2"> Holiday <span class="mandatory">*</span></label>
+					<div class="col-md-4">
+					    <label for="holidaytype1" class="rad-btn"> 
+						<input type="radio"  required  name="holidaytype"  id="holidaytype1"  value="Full Day" <% if @selecHoliday && @selecHoliday.holidaytype.to_s.strip.delete(' ').downcase == 'fullday' %>checked="checked"<% end %>/>&nbsp;&nbsp;Full Day</label>
+                        <label for="holidaytype2" class="rad-btn">                         <input type="radio"  required  name="holidaytype"  id="holidaytype2"  value="Half Day" <% if @selecHoliday && @selecHoliday.holidaytype.to_s.strip.delete(' ').downcase == 'halfday' %>checked="checked"<% end %>/>&nbsp;&nbsp;Half Day</label>
+                                        </div>
+				</div>
+                          <div class="form-group row">
+
+					<label class="col-form-label col-md-2">Description <span class="mandatory">*</span></label>
+					<div class="col-md-4">
+						<input type="text" maxlength="80" placeholder="" required class="form-control hrmsfont_uppercase" name="description" value="<% if @selecHoliday %><%=@selecHoliday.description%><% end %>"/>
+                                        </div>
+						
+				</div>
+				
+				<div class="submit-section">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>holiday"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+</div>

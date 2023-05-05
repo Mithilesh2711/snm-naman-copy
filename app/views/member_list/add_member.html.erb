@@ -1,0 +1,321 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		<div class="page-header">
+			<div class="row align-items-center">
+			 <div class="col">
+              <div class="row">
+              <%
+                if set_dct(params[:member]).to_s == 'ADK'
+              %>
+              <h3 class="page-title  col-md-10">Add Sewadal Adhikaris</h3>
+              <% else %>
+           <h3 class="page-title  col-md-10">Add <% if params[:member] %><%=set_dct(params[:member])%><% end %> Member</h3>
+           <% end%>
+            <div class="col-md-2 m-b-5 ">
+                <a href="<%=root_url%>member_list?member=<%=params[:member]%>" class="btn add-btn float-left"><i class="fa fa-arrow-left"></i>Back to List</a>
+              </div>
+        
+        </div>
+          
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+			</div>
+		</div>
+		<!-- /Page Header -->
+                 <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden"  id="rootXPath" value="<%=root_url%>"/>
+                                        <input type="hidden"  id="currentcomplogo" name="currentcomplogo" value="<% if @mstXEmpEdit!=nil %><%=@mstXEmpEdit.lds_profile%><% end %>"/>
+                                        <input type="hidden"  id="srchId" value="<% if @mstXEmpEdit!=nil %><%=@mstXEmpEdit.id%><% end %>"/>
+                                        <input type="hidden"  name="currentemail" value="<% if @mstXEmpEdit!=nil %><%=@mstXEmpEdit.lds_email%><% end %>"/>
+				        <input type="hidden"  name="currentmobile" value="<% if @mstXEmpEdit!=nil %><%=@mstXEmpEdit.lds_mobile%><% end %>"/>
+                                        <input type="hidden"  name="mid" id="mid" value="<% if @mstXEmpEdit!=nil %><%=@mstXEmpEdit.id%><% end %>"/>
+                                        <input type="hidden"  name="currledger" id="currledger" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_name%><% end %>"/>
+                                        <input type="hidden"  name="lds_type" id="lds_type" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_type%><% else %><% if params[:member] %><%=set_dct(params[:member])%><% end %><% end %>"/>
+                                         <input type="hidden"  name="attachpropfile" id="attachpropfile" value=""/>
+		<div class="row">
+			<div class="col-md-12 d-flex">
+				
+			<div class="col-md-10">
+                          <div class="form-group row">
+
+
+						<label class="col-form-label col-md-2">Member No.</label>
+					<div class="col-md-3">
+						<input type="text" autocomplete="off"   maxlength="50" required readonly class="form-control text_input_new" name="lds_membno" id="lds_membno"  value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_membno%><% else %><%=@lastnumber%><% end %>"/>
+					</div>
+						
+				</div>
+					<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Name<span class="mandatory">*</span></label>
+					<div class="col-md-4 info">
+                                          <select class="form-control wd100" name="lds_prefix" id="lds_prefix" required>
+                                              <option value="Mr" <% if @mstXEmpEdit && @mstXEmpEdit.lds_prefix.to_s =='Mr'%>selected="selected"<% end %>>Mr</option>
+                                              <option value="Mrs" <% if @mstXEmpEdit && @mstXEmpEdit.lds_prefix.to_s =='Mrs'%>selected="selected"<% end %>>Mrs</option>
+                                              <option value="Miss" <% if @mstXEmpEdit && @mstXEmpEdit.lds_prefix.to_s =='Miss'%>selected="selected"<% end %>>Miss</option>
+                                              </select>
+						<input type="text" autocomplete="off"  maxlength="50" required class="form-control text_input_new" name="emp_name" id="emp_name"  value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_name%><% elsif session[:request_emp_name]!=nil %><%=session[:request_emp_name]%><% end %>"/>
+					</div>
+					
+				</div>
+
+        <div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Aadhaar No</label>
+					<div class="col-md-4">
+		<input type="text" autocomplete="off" maxlength="12" onkeypress="return isNumberKeys(event);"  class="form-control text_input" name="emp_adhar_no" id="emp_adhar_no"  value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_adharno)%><% elsif session[:request_emp_adhar_no]!=nil %><%=session[:request_emp_adhar_no]%><% end %>"/>
+					</div>
+							<label class="col-form-label col-md-2">PAN </label>
+					<div class="col-md-4">
+                                        	<input type="text" autocomplete="off"  maxlength="10"  class="form-control text_input nmcapital" name="emp_pano" id="emp_pano"  value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_panno)%><% elsif session[:request_emp_pano]!=nil %><%=session[:request_emp_pano]%><% end %>"/>
+                                        </div>
+				</div>
+
+					<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Personal Mobile No.</label>
+					<div class="col-md-4">
+		<input type="text" autocomplete="off" maxlength="10" onkeypress="return isNumberKeys(event);" class="form-control text_input" name="lds_personal_mobno" id="lds_personal_mobno"  value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_personal_mobno)%><% elsif session[:request_lds_personal_mobno]!=nil %><%=session[:request_lds_personal_mobno]%><% end %>"/>
+					</div>
+						<label class="col-form-label col-md-2">Official Mobile No</label>
+					<div class="col-md-4"><input type="text"  onkeypress="return isNumberKeys(event);" autocomplete="off"  maxlength="10"  class="form-control text_input_new" name="emp_mobile" id="emp_mobile" onkeypress="return isNumberKeys(event);" value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_mobile)%><% elsif session[:request_emp_mobile]!=nil %><%=session[:request_emp_mobile]%><% end %>"/>
+                                        </div>
+				</div>
+									<div class="form-group row">
+					
+					
+						<label class="col-form-label col-md-2">Personal Email</label>
+					<div class="col-md-4">
+	 <input type="email"  autocomplete="off" maxlength="80"  class="form-control text_input_new" name="emp_email" id="emp_email" value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_email)%><% elsif session[:request_emp_email]!=nil %><%=session[:request_emp_email]%><% end %>"/>
+					</div>
+								<label class="col-form-label col-md-2">Official Email</label>
+					<div class="col-md-4">
+	 <input type="email"  autocomplete="off" maxlength="80"  class="form-control text_input_new" name="lds_officialemail" id="lds_officialemail" value="<% if @mstXEmpEdit%><%=set_dct(@mstXEmpEdit.lds_officialemail)%><% elsif session[:request_lds_officialemail]!=nil %><%=session[:request_lds_officialemail]%><% end %>"/>
+					</div>
+				</div>
+							<div class="form-group row">
+					<label class="col-form-label col-md-2">Address </label>
+					<div class="col-md-4">
+						<textarea class="form-control" maxlength="250" cols="3" rows="3" style="overflow: hidden;" name="lds_address" id="lds_address"><% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_address%><% end %></textarea>
+						
+                                        </div>
+					
+						<label class="col-form-label col-md-2">Pin</label>
+					<div class="col-md-3">
+	<input type="text" autocomplete="off" maxlength="10"  class="form-control text_input" name="emp_pin_no" id="emp_pin_no" onkeypress="return isNumberKeys(event);" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_pin%><% end %>"/>
+					</div>
+			           </div>
+                          <div class="form-group row">
+					<label class="col-form-label col-md-2">Designation </label>
+					<div class="col-md-4">
+                                                  <select  autocomplete="off"  class="form-control " name="lds_designcode" id="lds_designcode">
+                                                    <option value="">-Select-</option>
+                                                    <%
+                                                     desobj = get_my_all_designation()
+                                                     if desobj.length >0
+                                                       desobj.each do |desig|
+
+                                                   %>
+                                                    <option value="<%=desig.desicode%>" <% if @mstXEmpEdit && @mstXEmpEdit.lds_designcode.to_s.downcase == desig.desicode.to_s.downcase %>selected="selected"<% end %>><%=desig.ds_description%></option>
+                                                    <%
+                                                     end
+                                                   end
+                                                   %>
+                                                  </select>
+
+                                        </div>
+
+                                        <label class="col-form-label col-md-2">Date of Birth</label>
+					<div class="col-md-4">
+                                          <input type="text" readonly  autocomplete="off" maxlength="15"  class="form-control text_input_new" name="lds_dob" id="lds_dob" value="<% if @mstXEmpEdit%><%=formatted_date(@mstXEmpEdit.lds_dob)%><% elsif session[:request_lds_dob]!=nil %><%=formatted_date(session[:request_lds_dob])%><% end %>"/>
+					</div>
+			           </div>
+
+
+          <div class="form-group row">
+					<label class="col-form-label col-md-2">Location </label>
+					<div class="col-md-4">
+                                                  <select  autocomplete="off"  class="form-control " name="lds_location" id="lds_location" onchange="get_my_sub_location();">
+                                                    <option value="">-Select-</option>
+                                                    <%
+                                                      if @HeadOffices && @HeadOffices.length >0
+                                                        @HeadOffices.each do |newd|
+                                                    %>
+                                                    <option value="<%=newd.id%>" <% if @mstXEmpEdit && @mstXEmpEdit.lds_location.to_i == newd.id.to_i %>selected="selected" <% end %>><%=newd.hof_description%></option>
+                                                    <%
+                                                      end
+                                                    end
+                                                    %>
+                                                  </select>
+
+                                        </div>
+
+                                        <label class="col-form-label col-md-2">Sub Location</label>
+					<div class="col-md-4">
+                                          <select  autocomplete="off"  class="form-control " name="lds_sublocation" id="lds_sublocation">
+                                                    <option value="">-Select-</option>
+                                                   <%
+                                                      if @subLocobj && @subLocobj.length >0
+                                                        @subLocobj.each do |newsublocs|
+                                                    %>
+                                                      <option value="<%=newsublocs.id.to_i%>" <% if @mstXEmpEdit && @mstXEmpEdit.lds_sublocation.to_i == newsublocs.id.to_i %>selected="selected" <% end %> ><%=newsublocs.sl_description%></option>
+                                                    <%
+                                                      end
+                                                    end
+                                                    %>
+                                                  </select>
+					</div>
+			           </div>
+
+
+
+			</div>
+                          <%
+myimages = "https://user.gadjian.com/static/images/personnel_boy.png"
+if @mstXEmpEdit
+if @mstXEmpEdit.lds_profile !=nil && @mstXEmpEdit.lds_profile !=''
+chekpath = "#{Rails.root}/public/images/ledger/profile/thumb/"+@mstXEmpEdit.lds_profile.to_s
+if File.file?(chekpath)
+myimages = "#{root_url}images/ledger/profile/thumb/"+@mstXEmpEdit.lds_profile.to_s
+end
+
+end
+end
+
+%>
+                          '
+           <div class="col-md-2">
+<div class="profile-img-wrap edit-img">
+<img src="<%=myimages%>" class=" img-responsive img-thumbnail" id="item-img-output" />
+
+<div class="fileupload btn">
+<span class="btn-text">Upload</span>
+<input type="file" class="upload item-img file center-block" name="lds_profile" id="lds_profile"/>
+</div>
+</div>
+
+</div>
+                         
+</div>
+			           <div class="col-md-12">
+                                          
+                                            <label class="card-title"> Attached Documents</label>
+
+                                            <a  href="javascript:;"  id="plus" data-placement="bottom" data-toggle="tooltip" title="Add more file" class="red-tooltip">&nbsp;<i class="fa fa-plus-circle"></i></a>
+                                     
+                                            
+                                        </div>
+                                        <div class="col-md-12">
+                                          
+                                         
+                                              <table>
+                                                <tbody>
+                                                   <tr>
+                                                <input type="hidden" name="currentpanfile" id="currentpanfile" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_pan%><% end %>"/>
+                                                <input type="hidden" name="currentadharfile" id="currentadharfile" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_adhar%><% end %>"/>
+                                                    <td width="30%">Upload PAN Card </td>
+                                                    <td width="30%"><input type="file" name="pancardFile" id="pancardFile"/>&nbsp;</td>
+                                                    
+                                                    <td width="25%"><input type="text" name="pancardTitle" placeholder="File Name" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_pan_title%><% end %>"/></td>
+                                                    <% if @mstXEmpEdit%><td><a href="<%=root_url%>images/ledger/pan/<%=@mstXEmpEdit.lds_pan%>" target="_blank"><%=@mstXEmpEdit.lds_pan%></a></td><% end %>
+                                                    </tr>
+                                                    <tr>
+                                                    <td width="30%">Upload Adhar Card </td>
+                                                    <td width="30%"><input type="file" name="adharFile" id="adharFile"/>&nbsp;</td>
+                                                    
+                                                    <td width="25%"><input type="text" name="adharTitle" placeholder="File Name" value="<% if @mstXEmpEdit%><%=@mstXEmpEdit.lds_adhar_title%><% end %>"/></td>
+                                                      <% if @mstXEmpEdit%><td><a href="<%=root_url%>images/ledger/adhar/<%=@mstXEmpEdit.lds_adhar%>" target="_blank"><%=@mstXEmpEdit.lds_adhar%></a></td><% end %>
+                                                    </tr>
+                                                    <%
+                                                myfilesid = ''
+                                                compcode = ''
+                                                fl = 1
+                                                c1 = 0;
+                                                if  @mstXEmpEdit!=nil
+                                                    myfilesid = @mstXEmpEdit.id
+                                                    compcode = @mstXEmpEdit.lds_compcode
+                                                end
+                                                  obfile    = get_ledger_attached_file(compcode,myfilesid)
+                                                  if obfile.length >0
+                                                      obfile.each do |fila|
+
+                                               %>
+                                              <tr id="duplicate<%=fl%>">
+                                                    <input type="hidden" name="myreceivedocumentid<%=c1%>" id="myreceivedocumentid<%=fl%>" value="<%=fila.id%>"/>
+                                                    <input type="hidden" name="removefiles<%=c1%>" id="removefiles<%=fl%>" value=""/>
+                                                    <input type="hidden" name="existfile<%=c1%>" id="existfile<%=fl%>" value="<%=fila.sma_attachment%>"/>
+                                                    <input type="hidden" name="processedit[]" value="<%=fila.id%>"/>
+                                                    <td width="30%">Other Documents</td>
+                                                    <td width="30%"><input type="file" name="receivefile<%=c1%>" /></td>
+                                                    <td width="25%"><input type="text" name="cfl_title<%=c1%>" value="<%=fila.sma_title%>" placeholder="File Name"/></td>
+                                                    <td><a href="<%=root_url%>images/ledger/other/<%=fila.sma_attachment%>" target="_blank"><%=fila.sma_attachment%></a></td>
+                                                    <td width="10%">&nbsp;<a rel="<%=fl%>" id="myminus" href="javascript:;" data-toggle="tooltip" title="Delete file" class="red-tooltip"><i class="fa fa-trash-o hrmsfonts_size" aria-hidden="true"></i></a></td>
+
+                                                    </tr>
+                                                    <%
+                                                      fl +=1
+                                                      c1 +=1
+                                                    end
+                                                    end
+                                                   %>
+                                                  <tr id="duplicate">
+                                                    <input type="hidden" name="myreceivedocumentid[]" value=""/>
+                                                    <input type="hidden" name="removefiles[]" value=""/>
+                                                    <input type="hidden" name="existfile[]" value=""/>
+                                                    <input type="hidden" name="processedit[]" value=""/>
+                                                    <td width="">Other Documents</td>
+                                                    <td width="30%"><input type="file" name="receivefile[]"/></td>
+                                                    <td width="25%"><input type="text" name="cfl_title[]" placeholder="File Name"/></td>
+                                                    <td width="10%">&nbsp;<a id="minus" href="javascript:;" data-toggle="tooltip" title="" class="red-tooltip" data-original-title="Delete file"><i class="fa fa-trash-o hrmsfonts_size" aria-hidden="true"></i></a></td>
+
+                                                    </tr>
+
+                                              </tbody></table>
+                                             
+                                           
+                                            
+                                          
+                                          
+
+                                        </div>
+				</div>
+				
+                                        
+			<div class="submit-section">
+					<button class="btn btn-primary submit-btn" onclick="return validate_pan_adhaar();">Save</button>
+					<a href="<%=root_url%>member_list?member=<%=params[:member]%>"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+		</div>
+                <% end %>
+	</div>
+	<!-- /Page Content -->
+<div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<h4 class="modal-title" id="myModalLabel">
+<?=multiLanguage( "Edit Foto" , "Edit Photo" )?></h4>
+</div>
+<div class="modal-body">
+<div id="upload-demo" class="center-block"></div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+<button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+</div>
+</div>
+</div>
+</div>

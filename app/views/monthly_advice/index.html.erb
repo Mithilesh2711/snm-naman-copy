@@ -1,0 +1,310 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+	<!-- Page Content -->
+	<div class="content container-fluid">
+		<!-- Page Header -->
+		    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Monthly Advice for <%=get_month_listed_data(@HrMonths)%>,<%=@Hryears%></h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+		<!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myforms ) do  %>
+                <input type="hidden" name="mid" id="mid" value=""/>
+		<div class="row">
+                  <input type="hidden" id="slary_month" value="<% if @HrMonths %><%=@HrMonths%><% end %>" />
+                  <input type="hidden" id="slary_years" value="<% if @Hryears %><%=@Hryears%><% end %>" />
+				<div class="col-md-12">
+
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Department <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" required  id="al_depcode" onchange="get_all_sewadar_by_department();">
+                                                    <option value="">-Select-</option>
+                                                    <%
+                                                     if @sewDepart && @sewDepart.length >0
+                                                      @sewDepart.each do |newdp|
+                                                    %>
+                                                    <option value="<%=newdp.departCode%>" <% if @LoanRequest && @LoanRequest.al_depcode.to_s == newdp.departCode.to_s %>selected="selected"<% end %> ><%=newdp.departDescription%></option>
+                                                    <%
+                                                      end
+                                                    end
+                                                   %>
+                                                  </select>
+					</div>
+						<label class="col-form-label col-md-3">Sewadar Code <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select class="form-control" required name="pm_sewacode" id="al_sewadarcode" onchange="fill_from_sewadar_listed('code');">
+                                                  <option value="">-Select-</option>
+                                                  
+                                                </select>
+
+                                        </div>
+					</div>
+					
+						<div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Sewadar Name <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<select required class="form-control"  id="alsewdarname" onchange="fill_from_sewadar_listed('sewadar');">
+                                                  <option value="">-Select-</option>
+                                                  
+                                                </select> 
+					</div>
+						<label class="col-form-label col-md-3">Joining Date</label>
+					<div class="col-md-3">
+                                          <input type="text" readonly class="form-control" autocomplete="off" name="myjoining_dated" id="myjoining_dated" value=""/>
+					</div>
+					</div>
+
+
+          <div class="form-group row">
+					
+					<label class="col-form-label col-md-3">Category <span class="mandatory">*</span></label>
+					<div class="col-md-3">
+						<input type="text" readonly required class="form-control" required name="sewadar_category"  id="sewadar_category" >
+            
+					</div>
+
+            <label class="col-form-label col-md-1"></label>
+					<div class="col-md-2">
+						<input type="checkbox"  name="pm_hold"  id="pm_hold"  value="Y">&nbsp;Hold
+            
+					</div>
+					
+					</div>
+
+
+                                              <input type="hidden" id="current_work_days" value=""/>
+                                              <input type="hidden" id="current_paid_leave" value=""/>
+						<div class="form-group row">
+					
+                                                  <label class="col-form-label col">WD <span class="mandatory">*</span><br/><input type="text" required maxlength="4" onkeyup="check_salary_recalculation();" onkeypress="return isNumberFloatKey(event);" class="form-control right-action " autocomplete="off" name="pm_workingday" id="working_days"/></label>
+						<label class="col-form-label col">Paid Leaves <span class="mandatory">*</span><br/><input type="text" readonly  required maxlength="4" onkeyup="check_salary_recalculation();" onkeypress="return isNumberFloatKey(event);" class="form-control right-action" autocomplete="off" name="pm_paidleave" id="paid_leaves"/></label>
+                                                <label class="col-form-label col">WO <br/><input type="text" readonly class="form-control right-action" autocomplete="off" name="pm_wo" id="weekly_off"/></label>
+						<label class="col-form-label col">Holiday <br/><input type="text" readonly class="form-control right-action" autocomplete="off" name="pm_hl" id="no_holidays"/></label>
+						<label class="col-form-label col">Paid Days <br/><input type="text" readonly class="form-control right-action" autocomplete="off" name="pm_paydays" id="paid_days"/></label>
+						<label class="col-form-label col">Abs/Unpaid <br/><input type="text" class="form-control right-action" readonly autocomplete="off" name="pm_absent" id="absent_days"/></label>
+						<label class="col-form-label col">Total Days <br/><input type="text" class="form-control right-action"  readonly autocomplete="off" name="pm_monthday" id="total_days"/></label>
+					</div>
+			<div class=" row">
+        <div class="col-md-6 ">
+				<div class="col-md-12 bg-divider">
+				<div class="row">
+				    	<label class="card-title label-line col-md-12">Allowance</label>
+				</div>
+
+          <div class="form-group row">
+            <label class="col-form-label col-md-3">Allowance 1</label>
+            <div class="col-md-3"><input type="text" maxlength="20" onkeypress="return isNumberFloatKey(event);" class="form-control right-action" autocomplete="off" name="pm_allowancefirst" id="pm_allowancefirst"/></div>
+            <label class="col-form-label col-md-3">Remark 1</label>
+            <div class="col-md-3">
+                <input type="text" maxlength="50" class="form-control" autocomplete="off" name="pm_allowanremarkfirst" id="pm_allowanremarkfirst"/>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-form-label col-md-3">Allowance 2</label>
+            <div class="col-md-3"><input type="text" maxlength="20" onkeypress="return isNumberFloatKey(event);" class="form-control right-action" autocomplete="off" name="pm_allowancesecond" id="pm_allowancesecond"/></div>
+            <label class="col-form-label col-md-3">Remark 2</label>
+            <div class="col-md-3">
+                <input type="text" maxlength="50" class="form-control " autocomplete="off" name="pm_allowanceremksecond" id="pm_allowanceremksecond"/>
+            </div>
+          </div>
+
+                                        <div class="form-group row">
+                                          <label class="col-form-label col-md-3">Arrear</label>
+                                          <div class="col-md-3"><input type="text" onkeypress="return isNumberFloatKey(event);" class="form-control right-action" autocomplete="off" name="pm_fixarear" id="pm_fixarear"/></div>
+                                           <label class="col-form-label col-md-3">Remark 3</label>
+            <div class="col-md-3">
+                <input type="text" maxlength="50" class="form-control " autocomplete="off" maxlength="50" name="pm_arearremarks" id="pm_arearremarks"/>
+            </div>
+                                        </div>
+						<div class="form-group row">
+
+					<label class="col-form-label col-md-12 plr0">Arrear Previous Month</label>
+						<label class="col-form-label col-md-4 plr0">Month <br/>
+							<select class="form-control " name="pm_prvmonths" id="hph_months"  onchange="check_years_months();">
+                                                        <option value="">-Select-</option>
+                                                        <option value="1"  >Jan</option>
+                                                       <option value="2"   >Feb</option>
+                                                       <option value="3"   >Mar</option>
+                                                       <option value="4"   >Apr</option>
+                                                       <option value="5"   >May</option>
+                                                       <option value="6"   >Jun</option>
+                                                       <option value="7"   >Jul</option>
+                                                       <option value="8"   >Aug</option>
+                                                       <option value="9"   >Sep</option>
+                                                       <option value="10"  >Oct</option>
+                                                       <option value="11"  >Nov</option>
+                                                       <option value="12"  >Dec</option>
+                                                  </select>
+                                                </label>
+						<label class="col-form-label col-md-4">Year <br/>
+							<select class="form-control " id="hph_years" name="pm_prvyears"  onchange="check_years_months();">
+                                                          <option value="">-Select-</option>
+                                                           <%
+                                                           prevdate = @nbegindate
+                                                           newprvs  = @nbegindate.to_i+2
+                                                           while prevdate.to_i <=newprvs.to_i do
+                                                          %>
+                                                           <option value="<%=prevdate.to_i%>" ><%=prevdate.to_i%></option>
+                                                           <%
+                                                           prevdate= prevdate.to_i+1
+                                                           end
+                                                           %>
+
+                                                      </select>
+
+                                                </label>
+								<label class="col-form-label col-md-4">Days <br/><input type="text" maxlength="4" class="form-control  right-action" onkeypress="return isNumberFloatKey(event);" autocomplete="off"  name="pm_areardays" id="no_days"/></label>
+										
+											
+					</div>
+				</div></div>
+          <div class="col-md-6 ">
+				<div class="col-md-12 bg-divider">
+				    	<div class="row">
+				    	<label class="card-title label-line col-md-12">Deductions</label>
+				</div>
+					
+            <div class="row">
+             <div class ="col-md-12">
+              <div class ="col-md-6 float-left">
+					     <label class="col-form-label">Deduction 1 </label>
+              </div>
+              <div class ="col-md-3 float-left" >
+               <input type="text" maxlength="20"  class="form-control" placeholder="Amount" onkeypress="return isNumberFloatKey(event);" autocomplete="off"  name="pm_dedfirst" id="pm_dedfirst"/>
+              </div>
+              <div class ="col-md-3 float-left" >
+               <input type="text" maxlength="50"  class="form-control " placeholder="Remark" autocomplete="off"  name="pm_dedremarkfirst" id="pm_dedremarkfirst"/>
+              </div>
+            </div>
+           </div>
+
+           <div class="row">
+             <div class ="col-md-12">
+              <div class ="col-md-6 float-left">
+					     <label class="col-form-label">Deduction 2 </label>
+              </div>
+              <div class ="col-md-3 float-left" >
+               <input type="text" maxlength="20"  class="form-control right-action" placeholder="Amount" onkeypress="return isNumberFloatKey(event);" autocomplete="off"  name="pm_dedsecond" id="pm_dedsecond"/>
+              </div>
+              <div class ="col-md-3 float-left" >
+               <input type="text" maxlength="50"  class="form-control " placeholder="Remark"  autocomplete="off"  name="pm_dedremarksecond" id="pm_dedremarksecond"/>
+              </div>
+            </div>
+           </div>
+
+						<div class="row">
+             <div class ="col-md-12">
+              <div class ="col-md-6 float-left">
+					     <label class="col-form-label">Repaid</label>
+              </div>
+              <div class ="col-md-6 float-left" >
+               <input type="text" maxlength="18" readonly class="form-control right-action" onkeypress="return isNumberKeys(event);" autocomplete="off"  name="pm_ded_repaidadvance" id="pm_ded_repaidadvance"/>
+              </div>
+            </div>
+           </div>
+
+
+          <div class = "row hidden">
+            <div class ="col-md-12"> 
+               <div class ="col-md-6 float-left" >
+						      <label class="col-form-label">Advance Instalment </label>
+               </div>
+               <div class ="col-md-6 float-left" >
+                  <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_ded_repaidloan" id="pm_ded_repaidloan"/> <br/>
+					     </div>
+             </div>
+          </div>
+
+           <div class = "row ">
+          <div class ="col-md-12"> 
+           <div class ="col-md-6 float-left" >
+						<label class="col-form-label"> LIC </label>
+            </div>
+             <div class ="col-md-6 float-left" >
+             <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_ded_licemployee" id="pm_ded_licemployee"/> 
+					   </div>
+          </div>
+          </div>
+           
+            <div class = "row nab">
+          <div class ="col-md-12"> 
+           <div class ="col-md-6 float-left">
+						<label class="col-form-label"> Health Insurance </label>
+            </div>
+             <div class ="col-md-6 float-left">
+             <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_ded_healthsewdarpay" id="pm_ded_healthsewdarpay"/> 
+					   </div>
+          </div>
+          </div> 
+
+           <div class = "row nab">
+          <div class ="col-md-12"> 
+           <div class ="col-md-6 float-left" >
+						<label class="col-form-label"> Electricity </label>
+            </div>
+             <div class ="col-md-6 float-left" >
+             <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_ded_electricamount" id="pm_ded_electricamount"/> 
+					   </div>
+          </div>
+          </div>
+
+           <div class = "row nab">
+          <div class ="col-md-12"> 
+           <div class ="col-md-6 float-left" >
+						<label class="col-form-label">Building </label>
+            </div>
+             <div class ="col-md-6 float-left" >
+             <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_dedaccomodatamount" id="pm_dedaccomodatamount"/> 
+					   </div>
+          </div>
+          </div>
+
+          <div class = "row nab">
+          <div class ="col-md-12"> 
+           <div class ="col-md-6 float-left" >
+						<label class="col-form-label">Income Tax </label>
+            </div>
+             <div class ="col-md-6 float-left" >
+             <input type="text" readonly maxlength="18" onkeypress="return isNumberKeys(event);" class="form-control right-action" autocomplete="off"  name="pm_incometaxamount" id="pm_incometaxamount"/>
+					   </div>
+          </div>
+          </div>
+
+
+					
+				</div>
+          
+			</div>
+						
+			
+				</div>
+				<div class="submit-section m-t-0">
+					<button class="btn btn-primary submit-btn">Save</button>
+					<a href="<%=root_url%>sewadar_information"><button class="btn btn-danger submit-btn m-l-5 " type="button">Quit</button></a>
+				</div>
+			
+				
+			
+		</div>
+                <%
+                 end
+               %>
+	</div>
+	<!-- /Page Content -->
+</div>

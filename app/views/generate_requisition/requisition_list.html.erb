@@ -1,0 +1,116 @@
+<!-- Page Wrapper -->
+<div class="page-wrapper">
+  <!-- Page Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-center">
+        <div class="col">
+          <h3 class="page-title">Requisition List</h3>
+          <%=render'layouts/breadcrumbs'%>
+        </div>
+      
+            
+      </div>
+    </div>
+    <!-- /Page Header -->
+                <% if flash[:error] %>
+                           <div class="alert <% if session[:isErrorhandled].to_i >0 %>alert-danger<% else %>alert-success<% end %>" style="width:900px;" id="successXMessage">
+                             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                             <%= flash[:error] %>
+                           </div>
+                          <% end %>
+                
+                <%= form_tag({:action=>'create'} ,:multipart=>true,:id=>:myForms ) do  %>
+                <input type="hidden" id="rootXPath" value="<%=root_url%>"/>
+           <div class="row filter-row">
+           
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12">  
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="voucher_department" id="voucher_department">
+                                                                  <option value=""> -- Select -- </option>
+                                                                  
+
+                </select>
+                <label class="focus-label">Department</label>
+              </div>
+           </div>
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-3 col-12"> 
+              <div class="form-group form-focus select-focus">
+                <select class="form-control" name="" id="">
+                     <option value="">--Select--</option>
+                       
+                </select>
+                <label class="focus-label">Sewadar</label>
+              </div>
+             </div>
+              <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12"> 
+              <div class="form-group form-focus select-focus">
+                 <select class="form-control" name="sewadar_reqtype" id="sewadar_reqtype">
+                  <option value=""> --Select --</option>
+                  
+
+                                                                           
+                </select>
+                <label class="focus-label">Product</label>
+              </div>
+             </div>
+             
+          
+             <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">  
+              <a href="javascript:;" class="btn btn-success btn-block" style="padding:14px"> Search </a>
+             </div>     
+                    </div>       
+    <div class="row">
+            <div class="col-md-12">
+                   <div >
+                                    <a href="<%=root_url%>generate_requisition" class="btn add-btn float-left">Generate Requisition</a> 
+                                  
+                                  </div>
+              <div class="table-responsive">
+                <table class="table table-striped custom-table mb-0 datatable">
+                  <thead>
+                    <tr>
+                      <th>SNo</th>
+
+<th>Department</th>
+<th >Sewadar Code</th>
+<th>Sewadar Name </th>
+<th>Product Name</th>
+                      <th class="text-center">Quantity</th>
+                      <th>Status</th>
+                    
+                    </tr>
+                  </thead>
+                  <tbody>
+                   
+                    <tr>
+                    
+                     <td>1</td>
+<td>Accounts</td>
+<td>SD0001</td>
+<td>Narinder Pal</td>
+<td>Pens</td>
+<td>50</td>
+                      <td class="text-center">
+                        <div class="action-label">
+                          <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
+                            <i class="fa fa-dot-circle-o text-success"></i> Pending
+                          </a>
+                        </div>
+                      </td>
+                    
+                    </tr>
+                   
+                    
+                  </tbody>
+                </table>
+             
+              </div>
+            </div>
+          </div>
+      </div>
+                 <% end %>  
+    </div>
+  </div>
+  <!-- /Page Content -->
